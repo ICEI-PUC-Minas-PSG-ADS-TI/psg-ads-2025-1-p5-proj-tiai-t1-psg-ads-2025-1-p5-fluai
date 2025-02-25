@@ -9,11 +9,6 @@ Muitos alunos enfrentam dificuldades no aprendizado de inglês por falta de um m
 O FluAI resolve essa lacuna ao adaptar os exercícios conforme o desempenho do usuário, garantindo um aprendizado progressivo e sem lacunas, otimizando o tempo de estudo e aumentando a retenção de conhecimento.
 
 
-
-Descreva também o contexto em que essa aplicação será usada, se  houver: empresa, tecnologias, etc. Novamente, descreva apenas o que de  fato existir, pois ainda não é a hora de apresentar requisitos  detalhados ou projetos.
-
-Nesse momento, o grupo pode optar por fazer uso  de ferramentas como Design Thinking, que permite um olhar de ponta a ponta para o problema.
-
 ## Objetivos
 
  **Objetivo Geral**
