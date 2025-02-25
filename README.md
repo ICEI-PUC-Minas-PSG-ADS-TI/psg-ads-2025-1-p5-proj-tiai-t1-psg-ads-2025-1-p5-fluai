@@ -1,25 +1,26 @@
 # TÍTULO DO PROJETO
 
-`CURSO`
+`Análise e Desenvolvimento de Sistemas`
 
-`DISCIPLINA`
+`Trabalho Interdisciplinar:Aplicações Inovadoras`
 
-`SEMESTRE`
+`Quinto Semestre`
 
-Descrever resumidamente, em um ou dois parágrafos, o projeto que está sendo desenvolvido.
+O FluAI será um aplicativo móvel que usará inteligência artificial para personalizar o aprendizado de inglês. O usuário começará com um teste inicial para determinar seu nível, e, a partir dos resultados, o app criará atividades sob medida, incluindo vocabulário, gramática e atividades interativas.Com base no progresso do usuário, a IA ajustará os exercícios continuamente, proporcionando uma experiência dinâmica e envolvente.
 
 ODS Alinhados:
 
 ## Integrantes
 
-* Nome completo do aluno 1
-* Nome completo do aluno 2
-* Nome completo do aluno 3
-* Nome completo do aluno 4
+* David Silva Barbosa
+* Gabriel Henrique Penido de Jesus
+* Gustavo Coelho Reis
+* João Pedro Bomfim Victor
+* Savio Belfort Nascimento Gama
 
 ## Orientador
 
-* Nome completo do professor 1
+* Juliana Padilha
 
 ## Instruções de utilização
 
