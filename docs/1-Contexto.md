@@ -1,46 +1,41 @@
 # Introdução
+O aprendizado de inglês nem sempre é eficiente, pois muitos métodos são padronizados e não se adaptam às dificuldades individuais dos alunos. O FluAI surge como uma solução inovadora, utilizando inteligência artificial para personalizar o ensino de inglês.
 
-Texto descritivo com a visão geral do projeto abordado. Inclui o contexto, o problema, os objetivos, a justificativa e o público-alvo do projeto.
+O aplicativo inicia com um teste de nivelamento e, com base nos resultados, ajusta dinamicamente os exercícios de vocabulário, gramática.O objetivo é oferecer um aprendizado contínuo, engajador e eficiente, garantindo que o usuário evolua de forma personalizada.
 
 ## Problema
-Nesse momento você deve apresentar o problema que a sua aplicação deve  resolver. No entanto, não é a hora de comentar sobre a aplicação.
+Muitos alunos enfrentam dificuldades no aprendizado de inglês por falta de um método personalizado. Cursos tradicionais seguem um ritmo fixo, ignorando as necessidades individuais, o que pode levar à frustração e ao abandono dos estudos.
+
+O FluAI resolve essa lacuna ao adaptar os exercícios conforme o desempenho do usuário, garantindo um aprendizado progressivo e sem lacunas, otimizando o tempo de estudo e aumentando a retenção de conhecimento.
+
+
 
 Descreva também o contexto em que essa aplicação será usada, se  houver: empresa, tecnologias, etc. Novamente, descreva apenas o que de  fato existir, pois ainda não é a hora de apresentar requisitos  detalhados ou projetos.
 
 Nesse momento, o grupo pode optar por fazer uso  de ferramentas como Design Thinking, que permite um olhar de ponta a ponta para o problema.
 
-> **Links Úteis**:
-> - [Objetivos, Problema de pesquisa e Justificativa](https://medium.com/@versioparole/objetivos-problema-de-pesquisa-e-justificativa-c98c8233b9c3)
-> - [Matriz Certezas, Suposições e Dúvidas](https://medium.com/educa%C3%A7%C3%A3o-fora-da-caixa/matriz-certezas-suposi%C3%A7%C3%B5es-e-d%C3%BAvidas-fa2263633655)
-> - [Brainstorming](https://www.euax.com.br/2018/09/brainstorming/)
-
 ## Objetivos
 
-Aqui você deve descrever os objetivos do trabalho indicando que o objetivo geral é desenvolver um software para solucionar o problema apresentado acima. 
+ **Objetivo Geral**
+> - Desenvolver um aplicativo móvel baseado em inteligência artificial para personalizar o aprendizado de inglês, tornando-o mais eficiente e acessível.
 
-Apresente também alguns (pelo menos 2) objetivos específicos dependendo de onde você vai querer concentrar a sua prática investigativa, ou como você vai aprofundar no seu trabalho.
- 
-> **Links Úteis**:
-> - [Objetivo geral e objetivo específico: como fazer e quais verbos utilizar](https://blog.mettzer.com/diferenca-entre-objetivo-geral-e-objetivo-especifico/)
+ **Objetivos Específicos**
+> - Criar um teste de nivelamento para identificar o conhecimento inicial do usuário.
+> - Desenvolver um sistema adaptativo que ajuste os conteúdos com base no progresso do aluno.
+> - Implementar exercícios interativos e gamificados para aumentar o engajamento.
+> - Oferecer feedback personalizado para reforçar o aprendizado.
 
 ## Justificativa
 
-Descreva a importância ou a motivação para trabalhar com esta aplicação que você escolheu. Indique as razões pelas quais você escolheu seus objetivos específicos ou as razões para aprofundar em certos aspectos do software.
+A crescente demanda por inglês no mercado de trabalho e no dia a dia exige métodos mais eficientes de ensino. Muitas plataformas são genéricas, tornando o aprendizado cansativo e pouco produtivo.
 
-O grupo de trabalho pode fazer uso de questionários, entrevistas e dados estatísticos, que podem ser apresentados, com o objetivo de esclarecer detalhes do problema que será abordado pelo grupo.
-
-> **Links Úteis**:
-> - [Como montar a justificativa](https://guiadamonografia.com.br/como-montar-justificativa-do-tcc/)
+O FluAI se destaca por oferecer uma experiência personalizada e interativa, garantindo que cada usuário tenha um plano de estudos adaptado às suas necessidades. Com a IA ajustando os conteúdos continuamente, o aprendizado se torna mais dinâmico, motivador e eficaz.
 
 ## Público-Alvo
 
-Descreva quem serão as pessoas que usarão a sua aplicação indicando os diferentes perfis. O objetivo aqui não é definir quem serão os clientes ou quais serão os papéis dos usuários na aplicação. A ideia é, dentro do possível, conhecer um pouco mais sobre o perfil dos usuários: conhecimentos prévios, relação com a tecnologia, relações
-hierárquicas, etc.
+O FluAI atende estudantes, profissionais e autodidatas que buscam aprender inglês de forma prática e eficiente. O app é ideal para:
 
-Adicione informações sobre o público-alvo por meio de uma descrição textual.
-
-> **Links Úteis**:
-> - [Público-alvo](https://blog.hotmart.com/pt-br/publico-alvo/)
-> - [Como definir o público alvo](https://exame.com/pme/5-dicas-essenciais-para-definir-o-publico-alvo-do-seu-negocio/)
-> - [Público-alvo: o que é, tipos, como definir seu público e exemplos](https://klickpages.com.br/blog/publico-alvo-o-que-e/)
-> - [Qual a diferença entre público-alvo e persona?](https://rockcontent.com/blog/diferenca-publico-alvo-e-persona/)
+> - Estudantes que precisam reforçar o aprendizado da escola/universidade.
+> - Profissionais que desejam melhorar sua fluência para o mercado de trabalho.
+> - Viajantes que querem aprender inglês para comunicação global.
+> - Autodidatas que preferem métodos flexíveis e adaptáveis.
