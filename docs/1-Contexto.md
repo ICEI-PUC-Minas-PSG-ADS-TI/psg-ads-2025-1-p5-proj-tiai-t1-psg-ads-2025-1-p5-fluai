@@ -12,7 +12,8 @@ O FluAI resolve essa lacuna ao adaptar os exercícios conforme o desempenho do u
 ## Objetivos
 
  **Objetivo Geral**
-Desenvolver um aplicativo móvel baseado em inteligência artificial para personalizar o aprendizado de inglês, tornando-o mais eficiente e acessível.
+ 
+- Desenvolver um aplicativo móvel baseado em inteligência artificial para personalizar o aprendizado de inglês, tornando-o mais eficiente e acessível.
 
  **Objetivos Específicos**
 - Criar um teste de nivelamento para identificar o conhecimento inicial do usuário.
