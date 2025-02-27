@@ -31,7 +31,7 @@ O FluAI se destaca por oferecer uma experiência personalizada e interativa, gar
 
 O FluAI atende estudantes, profissionais e autodidatas que buscam aprender inglês de forma prática e eficiente. O app é ideal para:
 
-> - Estudantes que precisam reforçar o aprendizado da escola/universidade.
-> - Profissionais que desejam melhorar sua fluência para o mercado de trabalho.
-> - Viajantes que querem aprender inglês para comunicação global.
-> - Autodidatas que preferem métodos flexíveis e adaptáveis.
+- Estudantes que precisam reforçar o aprendizado da escola/universidade.
+- Profissionais que desejam melhorar sua fluência para o mercado de trabalho.
+- Viajantes que querem aprender inglês para comunicação global.
+- Autodidatas que preferem métodos flexíveis e adaptáveis.
