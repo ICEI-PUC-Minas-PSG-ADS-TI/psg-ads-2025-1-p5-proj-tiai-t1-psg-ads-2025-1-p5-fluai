@@ -48,7 +48,7 @@ Legenda:
   
 ## Sprint 2
 
-Atualizado em: 21/04/2024
+Atualizado em: 14/03/2024
 
 | Responsável   | Tarefa/Requisito | Iniciado em    | Prazo      | Status | Terminado em    |
 | :----         |    :----         |      :----:    | :----:     | :----: | :----:          |
@@ -60,6 +60,27 @@ Legenda:
 - 📝: em execução
 - ⌛: atrasado
 - ❌: não iniciado
+
+A partir da Sprint 3, as tarefas do nosso projeto estão sendo definidas no Projects do GitHub, com um board contendo todas as tasks a serem feitas e seus respectivos status, sendo um para o backend e outro para o frontend.
+
+## Sprint 3
+
+Atualizado 14/03/2024
+
+### Backend
+![image](https://github.com/user-attachments/assets/1babbdd7-3ace-49e4-a734-100e96c0c0b8)
+
+### Frontend
+![image](https://github.com/user-attachments/assets/e0521469-6bfb-46bd-a5ff-28d2a3f256b3)
+
+## Sprint 4
+
+### Backend
+
+### Frontend
+
+
+
 
 
 
