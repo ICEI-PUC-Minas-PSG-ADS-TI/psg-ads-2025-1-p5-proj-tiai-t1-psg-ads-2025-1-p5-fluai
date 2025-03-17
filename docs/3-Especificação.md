@@ -6,11 +6,12 @@
 
 | ID     | Descrição do Requisito                                  | Prioridade |
 |--------|---------------------------------------------------------|------------|
-| RF-001 | Permitir que o usuário realize um teste de nivelamento  | ALTA       |
-| RF-002 | Adaptar os exercícios conforme o desempenho do usuário  | ALTA       |
-| RF-003 | Oferecer feedback personalizado após cada atividade     | MÉDIA      |
-| RF-004 | Implementar exercícios interativos e gamificados        | MÉDIA      |
-| RF-005 | Permitir acesso ao histórico de progresso               | BAIXA      |
+| RF-001 | Permitir que o usuário faça cadastro e login no aplicativo   | ALTA       |
+| RF-002 | Permitir que o usuário realize um teste de nivelamento  | ALTA       |
+| RF-003 | Adaptar os exercícios conforme o desempenho do usuário  | ALTA       |
+| RF-004 | Oferecer feedback personalizado após cada atividade     | MÉDIA      |
+| RF-005 | Implementar exercícios interativos e gamificados        | MÉDIA      |
+| RF-006 | Permitir acesso ao histórico de progresso               | BAIXA      |
 
 ### Requisitos Não Funcionais
 
