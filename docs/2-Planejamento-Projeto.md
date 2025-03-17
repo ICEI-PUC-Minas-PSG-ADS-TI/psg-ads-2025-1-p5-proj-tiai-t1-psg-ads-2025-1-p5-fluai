@@ -61,23 +61,47 @@ Legenda:
 - ⌛: atrasado
 - ❌: não iniciado
 
-A partir da Sprint 3, as tarefas do nosso projeto estão sendo definidas no Projects do GitHub, com um board contendo todas as tasks a serem feitas e seus respectivos status, sendo um para o backend e outro para o frontend.
-
 ## Sprint 3
+
+A partir da Sprint 3, as tarefas do nosso projeto estão sendo definidas no Projects do GitHub, com um board contendo todas as tasks a serem feitas e seus respectivos status, sendo um para o backend e outro para o frontend.
 
 Atualizado 14/03/2024
 
 ### Backend
-![image](https://github.com/user-attachments/assets/1babbdd7-3ace-49e4-a734-100e96c0c0b8)
+![image](https://github.com/user-attachments/assets/cd51e373-c947-425c-ac02-2763e03b5acd)
+
 
 ### Frontend
-![image](https://github.com/user-attachments/assets/e0521469-6bfb-46bd-a5ff-28d2a3f256b3)
+![image](https://github.com/user-attachments/assets/de9fb8cf-cd55-4db4-9c99-fe1a9e29a0b9)
+
 
 ## Sprint 4
 
+Atualizado 17/03/2024
+
 ### Backend
+![image](https://github.com/user-attachments/assets/de895431-ce3c-403f-ae56-6d08e4784807)
+
 
 ### Frontend
+![image](https://github.com/user-attachments/assets/324b7217-2652-4a2a-ae34-a1f79066fff0)
+
+
+### Descrição
+A escolha do GitHub Projects foi feita para garantir o dinamismo e a automação do processo de planejamento e desenvolvimento do projeto.
+
+![image](https://github.com/user-attachments/assets/47840a21-5061-40a0-ab23-6bb803148c69)
+
+Como pode ser visto na imagem, cada card possui uma descrição do que precisa ser desenvolvido, juntamente com as pessoas atribuídas àquela tarefa. Também pode ser criada uma branch a partir de determinado card, facilitando o desenvolvimento das tasks.
+
+Os cards são divididos em Epics. Dessa maneira, os desenvolvedores conseguem visualizar a etapa do desenvolvimento em que estão, tendo uma boa noção do tempo e conseguindo focar nos pontos mais críticos de cada Epic. As duas Epics que serão utilizadas no desenvolvimento são:
+
+![image](https://github.com/user-attachments/assets/93fe85ed-0150-41cb-8884-337491ba90a9)
+
+
+
+
+
 
 
 
