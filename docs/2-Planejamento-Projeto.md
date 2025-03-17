@@ -37,7 +37,7 @@ Atualizado em: 14/03/2025
 
 | Responsável   | Tarefa/Requisito | Iniciado em    | Prazo      | Status | Terminado em    |
 | :----         |    :----         |      :----:    | :----:     | :----: | :----:          |
-| Gustavo Coelho        | Contexto | 01/02/2025     | 27/02/2025 | ✔️    | 25/02/2025      |
+| David Silva, Gabriel Penido, Gustavo Coelho, João Pedro e Savio Gama      | Contexto | 01/02/2025     | 27/02/2025 | ✔️    | 25/02/2025      |
 
 Legenda:
 - ✔️: terminado
@@ -52,8 +52,8 @@ Atualizado em: 14/03/2024
 
 | Responsável   | Tarefa/Requisito | Iniciado em    | Prazo      | Status | Terminado em    |
 | :----         |    :----         |      :----:    | :----:     | :----: | :----:          |
-| David Silva        | Planejamento        | 01/03/2025     | 20/03/2025 | ✔️    | 14/03/2025      |
-| Gustavo Coelho        | Especificação   | 01/03/2025    | 20/03/2025 | ✔️    |   14/03/2025    |
+| David Silva, Gabriel Penido, Gustavo Coelho, João Pedro e Savio Gama       | Planejamento        | 01/03/2025     | 20/03/2025 | ✔️    | 14/03/2025      |
+| David Silva, Gabriel Penido, Gustavo Coelho, João Pedro e Savio Gama       | Especificação   | 01/03/2025    | 20/03/2025 | ✔️    |   14/03/2025    |
 
 Legenda:
 - ✔️: terminado
