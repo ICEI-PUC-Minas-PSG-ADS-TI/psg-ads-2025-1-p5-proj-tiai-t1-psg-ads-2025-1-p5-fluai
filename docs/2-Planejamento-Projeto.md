@@ -72,8 +72,7 @@ Atualizado 14/03/2024
 
 
 ### Frontend
-![image](https://github.com/user-attachments/assets/de9fb8cf-cd55-4db4-9c99-fe1a9e29a0b9)
-
+![image](https://github.com/user-attachments/assets/faf4e766-5f84-43fc-bc50-42691efba0c5)
 
 ## Sprint 4
 
@@ -84,7 +83,7 @@ Atualizado 17/03/2024
 
 
 ### Frontend
-![image](https://github.com/user-attachments/assets/324b7217-2652-4a2a-ae34-a1f79066fff0)
+![image](https://github.com/user-attachments/assets/8be4f94e-1dd6-4849-8970-f37a5f902f22)
 
 
 ### Descrição
