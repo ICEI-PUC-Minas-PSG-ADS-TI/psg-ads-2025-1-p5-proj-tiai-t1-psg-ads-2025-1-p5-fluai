@@ -18,7 +18,7 @@
 |---------|----------------------------------------------------------|------------|
 | RNF-001 | O sistema deve ser responsivo em dispositivos móveis      | ALTA       |
 | RNF-002 | As respostas devem ser processadas em no máximo 2 segundos| MÉDIA      |
-| RNF-003 | O sistema deve funcionar em Android e iOS                 | ALTA       |
+| RNF-003 | O sistema deve funcionar no Android              | ALTA       |
 
 ## Restrições
 
