@@ -24,9 +24,9 @@
 
 | ID  | Restrição                                            |
 |-----|-----------------------------------------------------|
-| 01  | O aplicativo deve ser desenvolvido em Python com Streamlit |
+| 01  | O aplicativo deve ser desenvolvido em Python e Kotlin |
 | 02  | Deve integrar APIs de IA para personalizar os exercícios  |
-| 03  | O sistema deve armazenar os dados no Google Drive         |
+| 03  | O nível dos usuarios deve ser salvo no banco de dados         |
 
 ## 3.2 Histórias de Usuários
 
