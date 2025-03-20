@@ -1,13 +1,17 @@
-from sqlalchemy import Column, Integer, String, createe_engine
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from data.dataConfig import db
+from sqlalchemy.sql import func
 
 
-class User(Base):
-    __tablename__ = 'users'
+class Users(db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True),
+                           default=func.current_date())
+    level = db.Column(db.String(3), default="A1")
+    progress_history = db.Column(db.Text, default="")
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String(100), nulllable=False)
-    password = Column(String(100), nullable=False)
-    email = Column(String(100), unique=True, nullable=False)
+    def __repr__(self):
+        return f"<User: {self.username} {self.id}>"
