@@ -10,6 +10,10 @@ O FluAI será um aplicativo móvel que usará inteligência artificial para pers
 
 ODS Alinhados:
 
+* ODS 4: Educação de Qualidade – Ao oferecer um aprendizado personalizado e acessível, o FluAI contribui para a melhoria da educação e a redução das barreiras linguísticas.
+* ODS 9: Indústria, Inovação e Infraestrutura – Utilizando inteligência artificial para otimizar o ensino, o aplicativo promove inovação na educação digital.
+* ODS 10: Redução das Desigualdades – A plataforma pode ser acessada por diversos públicos, permitindo que pessoas de diferentes contextos tenham oportunidades iguais de aprendizado.
+
 ## Integrantes
 
 * David Silva Barbosa
