@@ -1,4 +1,21 @@
 services:
+  backend:
+    build: ./backend
+    ports: 
+      - 5000:5000
+    depends_on:
+      - database
+      - ollama
+    networks:
+      - fluai_network
+
+  ollama:
+    build: ./ollama
+    ports:
+      - 11434:11434
+    networks:
+      - fluai_network
+
   database:
     image: postgres
     ports:
@@ -17,6 +34,10 @@ services:
       - database
     ports:
       - 8080:8080
-  
+
 volumes:
   fluai_pg_data:
+
+networks:
+  fluai_network:
+    driver: bridge
