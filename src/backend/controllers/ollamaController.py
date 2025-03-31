@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
 from services.ollamaService import generate_text_from_ollama
-from flasgger import swag_from
 
 ollama_bp = Blueprint("ollama", __name__)
 
