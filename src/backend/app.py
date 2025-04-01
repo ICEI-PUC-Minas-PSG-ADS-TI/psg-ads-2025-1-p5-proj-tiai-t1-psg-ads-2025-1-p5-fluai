@@ -1,3 +1,4 @@
+from controllers.ollamaController import ollama_bp
 from controllers.userController import user_bp
 from flask import Flask
 from data.dataConfig import init_db
@@ -11,6 +12,7 @@ init_firebase()
 
 app.register_blueprint(user_bp, url_prefix="/users")
 
+app.register_blueprint(ollama_bp, url_prefix="/ollama")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=5050)
