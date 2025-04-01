@@ -2,7 +2,7 @@ services:
   backend:
     build: ./backend
     ports: 
-      - 5000:5000
+      - 5050:5050
     depends_on:
       - database
       - ollama
@@ -26,6 +26,8 @@ services:
       POSTGRES_DB: fluaidb    
     volumes:
      - fluai_pg_data:/bitnami/postgresql
+    networks:
+      - fluai_network
 
   adminer:
     image: adminer
@@ -34,6 +36,8 @@ services:
       - database
     ports:
       - 8080:8080
+    networks:
+      - fluai_network
 
 volumes:
   fluai_pg_data:
