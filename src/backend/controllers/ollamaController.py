@@ -27,3 +27,5 @@ def generate_level_test():
     
     if response:
         return jsonify({"questions": response})
+    else:
+        return jsonify({"error": "Erro ao gerar teste com a IA."}), 500
