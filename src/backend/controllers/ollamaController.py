@@ -18,3 +18,12 @@ def generate_text():
         return jsonify({"response": response})
     else:
         return jsonify({"error": "Failed to generate text"}), 500
+
+@ollama_bp.route("/generate-level-test", methods=["GET"])
+def generate_level_test():
+    prompt = "Crie 10 questões de inglês com diferentes níveis de dificuldade (fácil, médio, difícil) e opções de resposta."
+    
+    response = generate_text_from_ollama(prompt)
+    
+    if response:
+        return jsonify({"questions": response})
