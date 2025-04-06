@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="splash_title">Aprenda utilizando inteligência artifical!</string>
+    <string name="splash_subtitle">Sua jornada rumo a fluência começa aqui!</string>
+    <string name="splash_signup_button_text">Cadastrar</string>
+    <string name="splash_login_button_text">Entrar</string>
+</resources>

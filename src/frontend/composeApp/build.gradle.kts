@@ -29,12 +29,23 @@ kotlin {
     }
     
     sourceSets {
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.client.okhttp)
+            implementation(libs.kotlinx.coroutines.android)
+            implementation(compose.runtime)
+            implementation(libs.androidx.material)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+            implementation(compose.runtime)
         }
         commonMain.dependencies {
+            implementation(libs.androidx.navigation.compose)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.ktor.client.core)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
