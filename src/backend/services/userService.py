@@ -1,7 +1,6 @@
 from data.dataConfig import db
 from models.userModel import Users
-from werkzeug.security import generate_password_hash, check_password_hash
-from data.firebaseConfig import firebase_config
+from werkzeug.security import generate_password_hash
 from firebase_admin import auth
 
 

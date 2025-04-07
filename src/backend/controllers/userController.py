@@ -27,3 +27,6 @@ def signup():
             return jsonify({"message": "User created successfully"}), 201
 
     return jsonify({"error": "Invalid data"}), 400
+
+
+user_bp.route("/login", methods=["POST"])

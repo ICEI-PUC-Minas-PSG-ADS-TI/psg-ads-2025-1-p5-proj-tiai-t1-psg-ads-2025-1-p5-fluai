@@ -10,7 +10,7 @@ class Users(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     created_at = db.Column(db.DateTime(timezone=True),
                            default=func.current_date())
-    level = db.Column(db.String(3), default="A1")
+    level = db.Column(db.String(3), default="")
     progress_history = db.Column(db.Text, default="")
 
     def __repr__(self):
