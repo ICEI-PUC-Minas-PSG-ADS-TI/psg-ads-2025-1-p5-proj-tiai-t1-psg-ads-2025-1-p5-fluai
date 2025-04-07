@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  frontend:
+    container_name: kmp-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: ./gradlew :composeApp:assembleDebug
+    environment:
+      - ANDROID_SDK_ROOT=/opt/android-sdk
+    tty: true
