@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -9,14 +8,23 @@ plugins {
     alias(libs.plugins.composeCompiler)
 }
 
+if (System.getenv("CI") != "true") {
+    android {
+        compileSdk = 33
+        // ...
+    }
+}
+
+
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-    
+
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -70,18 +78,31 @@ android {
         versionName = "1.0"
     }
     packaging {
+        jniLibs {
+            keepDebugSymbols.add("**/*.so")
+        }
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
     buildTypes {
+        getByName("debug") {
+            ndk {
+                debugSymbolLevel = "none"
+            }
+        }
         getByName("release") {
             isMinifyEnabled = false
+            ndk {
+                debugSymbolLevel = "none"
+            }
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
