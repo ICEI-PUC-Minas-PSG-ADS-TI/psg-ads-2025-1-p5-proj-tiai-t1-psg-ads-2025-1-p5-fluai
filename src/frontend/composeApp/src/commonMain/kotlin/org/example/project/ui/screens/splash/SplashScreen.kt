@@ -32,7 +32,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SplashScreen(
-    component : SplashScreenComponent
+    viewModel : SplashViewModel
 ) {
     Surface(
         modifier = Modifier
@@ -48,14 +48,14 @@ fun SplashScreen(
                 modifier = Modifier
                     .weight(1f)
             )
-            SplashActionButtons(component)
+            SplashActionButtons(viewModel)
 
         }
     }
 }
 
 @Composable
-private fun SplashActionButtons(component: SplashScreenComponent) {
+private fun SplashActionButtons(component: SplashViewModel) {
     Row(
         modifier = Modifier.padding(bottom = 60.dp)
     ) {
@@ -67,7 +67,9 @@ private fun SplashActionButtons(component: SplashScreenComponent) {
                 .padding(end = 16.dp),
             buttonText = stringResource(Res.string.splash_signup_button_text),
             textColor = Color.White,
-            onClick = {}
+            onClick = {
+                component.onEvent(SplashScreenEvent.GoToSignUp)
+            }
         )
         PrimaryButton(
             color = Color.White,
@@ -95,6 +97,7 @@ private fun SplashTexts() {
     Text(
         text = stringResource(Res.string.splash_subtitle),
         style = PoppinsTypography().body1,
+        color = Color.Gray,
         fontWeight = FontWeight.W300,
         textAlign = TextAlign.Center,
         modifier = Modifier.padding(

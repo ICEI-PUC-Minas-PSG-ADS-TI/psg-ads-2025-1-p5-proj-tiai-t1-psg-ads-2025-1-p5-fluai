@@ -9,6 +9,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import org.example.project.ui.screens.auth.AuthScreen
+import org.example.project.ui.screens.signup.SignUpScreen
 import org.example.project.ui.screens.splash.SplashScreen
 
 
@@ -23,6 +24,7 @@ fun App(root : RootComponent){
             when(val instance = child.instance){
                 is RootComponent.Child.AuthScreen -> AuthScreen(instance.component)
                 is RootComponent.Child.SplashScreen -> SplashScreen(instance.component)
+                is RootComponent.Child.SignUpScreen -> SignUpScreen(instance.component)
             }
         }
     }
