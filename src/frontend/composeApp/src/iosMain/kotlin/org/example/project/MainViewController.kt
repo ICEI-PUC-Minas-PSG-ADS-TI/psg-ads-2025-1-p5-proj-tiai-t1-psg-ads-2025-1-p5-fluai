@@ -1,6 +1,14 @@
 package org.example.project
 
+import androidx.compose.runtime.remember
 import androidx.compose.ui.window.ComposeUIViewController
-import org.example.project.ui.screens.splash.SplashScreen
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import org.example.project.ui.navigation.RootComponent
 
-fun MainViewController() = ComposeUIViewController { SplashScreen() }
+fun MainViewController() = ComposeUIViewController {
+    val root = remember {
+        RootComponent(DefaultComponentContext(LifecycleRegistry()))
+    }
+    App(root)
+}
