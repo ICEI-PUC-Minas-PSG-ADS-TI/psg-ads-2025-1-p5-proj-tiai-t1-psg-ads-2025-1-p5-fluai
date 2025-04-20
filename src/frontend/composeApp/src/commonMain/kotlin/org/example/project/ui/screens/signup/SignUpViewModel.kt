@@ -4,7 +4,6 @@ import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,16 +38,12 @@ class SignUpViewModel(
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState = _uiState.asStateFlow()
 
-//    private val _signUpResult = MutableStateFlow<SignUpResult?>(null)
-//    val signUpResult = _signUpResult.asStateFlow()
-
     private val _signUpResult = MutableSharedFlow<SignUpResult?>()
     val signUpResult = _signUpResult.asSharedFlow()
 
 
     suspend fun sendUserData(name : String, email : String, password: String){
         _signUpResult.emit(SignUpResult.Loading)
-        delay(5000)
         try {
             withContext(Dispatchers.IO){
                 val user = User(name = name, email = email, password = password)
@@ -98,10 +93,6 @@ class SignUpViewModel(
             )
         }
     }
-
-//    fun resetResult(){
-//        _signUpResult.value = null
-//    }
 }
 
 private fun isValidName(name : String) : Boolean{
