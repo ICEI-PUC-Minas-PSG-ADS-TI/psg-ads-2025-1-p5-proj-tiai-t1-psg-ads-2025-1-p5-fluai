@@ -1,5 +1,11 @@
 package org.example.project.ui.screens.signup
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
@@ -7,38 +13,55 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.zIndex
 import frontend.composeapp.generated.resources.Res
 import frontend.composeapp.generated.resources.auth_email_label_text
 import frontend.composeapp.generated.resources.auth_password_label_text
+import frontend.composeapp.generated.resources.sign_up_name_label_text
 import frontend.composeapp.generated.resources.signup_button_text
 import frontend.composeapp.generated.resources.signup_subtitle
 import frontend.composeapp.generated.resources.signup_text_button_login
 import frontend.composeapp.generated.resources.signup_title
+import frontend.composeapp.generated.resources.success_feedback
+import frontend.composeapp.generated.resources.success_feedback_button_continue
+import frontend.composeapp.generated.resources.success_feedback_subtitle
+import frontend.composeapp.generated.resources.success_feedback_title
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.example.project.theme.Blue
 import org.example.project.theme.gray_darker
 import org.example.project.ui.components.PrimaryButton
 import org.example.project.ui.components.TextFieldComponent
-import org.example.project.ui.screens.auth.AuthUiState
-import org.example.project.ui.screens.auth.AuthViewModel
 import org.example.project.ui.theme.PoppinsTypography
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SignUpScreen(
@@ -48,17 +71,46 @@ fun SignUpScreen(
 
     val emailValue = uiState.textEmail
     val passwordValue = uiState.textPassword
+    val nameValue = uiState.textName
+    val isDisplayDialog = remember { mutableStateOf(false) }
+    val showCircularProgressBar = remember { mutableStateOf(false)}
+
+    val coroutineScope = rememberCoroutineScope()
+
+
+    LaunchedEffect(Unit) {
+        viewModel.signUpResult.collect{ result ->
+            when (result) {
+                SignUpResult.Success -> {
+                    isDisplayDialog.value = true
+                    showCircularProgressBar.value = false
+                }
+
+                SignUpResult.Loading -> showCircularProgressBar.value = true
+
+                SignUpResult.Error -> {
+
+                }
+                else -> Unit
+            }
+        }
+    }
+
 
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
+        if (isDisplayDialog.value) {
+            SuccessDialog(onDismiss = { isDisplayDialog.value = false })
+        }
+        LoadingComponent(showCircularProgressBar.value)
         Column(
             modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SignUpHeader()
             Spacer(modifier = Modifier.height(50.dp))
-            SignUpForm(emailValue, uiState, viewModel, passwordValue)
+            SignUpForm(nameValue, emailValue, uiState, viewModel, passwordValue, coroutineScope)
             SignUpFooter(viewModel)
         }
     }
@@ -103,8 +155,23 @@ private fun ColumnScope.SignUpHeader() {
 
 @Composable
 private fun SignUpForm(
-    emailValue: String, uiState: SignUpUiState, viewModel: SignUpViewModel, passwordValue: String
+    nameValue: String,
+    emailValue: String,
+    uiState: SignUpUiState,
+    viewModel: SignUpViewModel,
+    passwordValue: String,
+    coroutineScope: CoroutineScope
 ) {
+
+    TextFieldComponent(
+        stringResource(Res.string.sign_up_name_label_text),
+        textFieldValue = nameValue,
+        isError = uiState.isErrorName,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        visualTransformation = VisualTransformation.None,
+        onChange = viewModel::onTextNameChange
+    )
+
     TextFieldComponent(
         stringResource(Res.string.auth_email_label_text),
         textFieldValue = emailValue,
@@ -128,6 +195,97 @@ private fun SignUpForm(
         modifier = Modifier.fillMaxWidth().height(70.dp).padding(top = 16.dp),
         buttonText = stringResource(Res.string.signup_button_text),
         textColor = Color.White,
-        onClick = {}
+        enable = viewModel.isFieldsValid().not(),
+        onClick = {
+            coroutineScope.launch {
+                viewModel.sendUserData(nameValue, emailValue, passwordValue)
+            }
+        }
     )
+}
+
+
+@Preview
+@Composable
+fun SuccessDialog(onDismiss: () -> Unit) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.Black.copy(alpha = 0.5f))
+        .zIndex(1f)
+    ){
+        Dialog(onDismissRequest = onDismiss) {
+            Surface(
+                modifier = Modifier
+                    .height(300.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(16.dp)
+                    ,
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(Res.drawable.success_feedback),
+                        contentDescription = "Sucesso",
+                        modifier = Modifier
+                    )
+                    Text(
+                        text = stringResource(Res.string.success_feedback_title),
+                        style = PoppinsTypography().subtitle2,
+                        color = Color.Black,
+                        modifier = Modifier
+                            .padding(top = 12.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+                    Text(
+                        text = stringResource(Res.string.success_feedback_subtitle),
+                        style = PoppinsTypography().caption,
+                        color = Color.Gray,
+                        maxLines = 1,
+                        fontWeight = FontWeight.W300,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+                    PrimaryButton(
+                        color = Blue,
+                        modifier = Modifier.fillMaxWidth().height(70.dp).padding(top = 16.dp),
+                        buttonText = stringResource(Res.string.success_feedback_button_continue),
+                        textColor = Color.White,
+                        enable = true,
+                        onClick = {
+
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+fun LoadingComponent(isLoading : Boolean){
+    if (isLoading){
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .zIndex(1f)
+            .pointerInput(Unit){
+                awaitPointerEventScope {
+                    while(true){
+                        awaitPointerEvent()
+                    }
+                }
+            },
+        ){
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(Alignment.Center),
+                color = Blue,
+            )
+        }
+    }
 }

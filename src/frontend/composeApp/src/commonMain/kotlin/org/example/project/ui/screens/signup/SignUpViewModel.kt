@@ -1,31 +1,81 @@
 package org.example.project.ui.screens.signup
 
 import com.arkivanov.decompose.ComponentContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.withContext
+import org.example.project.domain.model.User
+import org.example.project.domain.usecase.SignUpUseCase
 
 
 data class SignUpUiState(
-    val isLoading: Boolean = false,
+    val textName : String = "",
     val textEmail: String = "",
     val textPassword: String = "",
     val isErrorEmail: Boolean = false,
     val isErrorPassword: Boolean = false,
+    val isErrorName : Boolean = false
 )
+
+sealed class SignUpResult {
+    data object Loading : SignUpResult()
+    data object Success : SignUpResult()
+    data object Error : SignUpResult()
+}
 
 
 class SignUpViewModel(
     componentContext: ComponentContext,
+    private val signUpUseCase: SignUpUseCase? = null,
     private val onNavigateToAuth : () -> Unit
 ) : ComponentContext by componentContext{
 
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState = _uiState.asStateFlow()
 
+//    private val _signUpResult = MutableStateFlow<SignUpResult?>(null)
+//    val signUpResult = _signUpResult.asStateFlow()
+
+    private val _signUpResult = MutableSharedFlow<SignUpResult?>()
+    val signUpResult = _signUpResult.asSharedFlow()
+
+
+    suspend fun sendUserData(name : String, email : String, password: String){
+        _signUpResult.emit(SignUpResult.Loading)
+        delay(5000)
+        try {
+            withContext(Dispatchers.IO){
+                val user = User(name = name, email = email, password = password)
+                signUpUseCase?.addUser(user)
+            }
+            _signUpResult.emit(SignUpResult.Success)
+        } catch (e : Exception){
+            _signUpResult.emit(SignUpResult.Error)
+        }
+    }
+
+
+    fun isFieldsValid() = _uiState.value.isErrorEmail || _uiState.value.textEmail.isEmpty() || _uiState.value.isErrorPassword || _uiState.value.textPassword.isEmpty() || _uiState.value.textName.isEmpty()
+
     fun onEvent(event : SignUpScreenEvent){
         when(event){
             SignUpScreenEvent.GoToAuth -> onNavigateToAuth()
+        }
+    }
+
+    fun onTextNameChange(name : String){
+        val isErrorName = isValidName(name)
+        _uiState.update {
+            it.copy(
+                textName = name,
+                isErrorName = isErrorName.not()
+            )
         }
     }
 
@@ -48,6 +98,15 @@ class SignUpViewModel(
             )
         }
     }
+
+//    fun resetResult(){
+//        _signUpResult.value = null
+//    }
+}
+
+private fun isValidName(name : String) : Boolean{
+    val nameRegex = "^[A-ZÀ-Ÿ][a-zà-ÿ]+(?: [A-ZÀ-Ÿ][a-zà-ÿ]+)*$".toRegex()
+    return name.matches(nameRegex)
 }
 
 private fun isValidEmail(email: String): Boolean {

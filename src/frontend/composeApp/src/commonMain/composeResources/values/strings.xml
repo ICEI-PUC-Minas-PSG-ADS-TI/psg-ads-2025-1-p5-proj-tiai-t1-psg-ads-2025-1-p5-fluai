@@ -10,8 +10,12 @@
     <string name="auth_text_button_signup">Não tem uma conta? Cadastre-se</string>
     <string name="auth_text_button_forget_password">Esqueceu a senha?</string>
     <string name="auth_title_login">Login</string>
+    <string name ="sign_up_name_label_text">Nome</string>
     <string name="signup_title">Cadastre-se</string>
     <string name="signup_subtitle">Insira seus dados abaixo e faça um cadastro gratuito</string>
     <string name="signup_button_text">Criar conta</string>
     <string name="signup_text_button_login">Já tem uma conta? Faça o Log in</string>
+    <string name="success_feedback_title">Sucesso</string>
+    <string name="success_feedback_subtitle">Parabéns, você completou o seu cadastro</string>
+    <string name="success_feedback_button_continue">Continuar</string>
 </resources>
