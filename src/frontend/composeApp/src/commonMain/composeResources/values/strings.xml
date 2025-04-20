@@ -4,4 +4,14 @@
     <string name="splash_subtitle">Sua jornada rumo a fluência começa aqui!</string>
     <string name="splash_signup_button_text">Cadastrar</string>
     <string name="splash_login_button_text">Entrar</string>
+    <string name="auth_email_label_text">Seu e-mail</string>
+    <string name="auth_password_label_text">Senha</string>
+    <string name="auth_button_text">Login</string>
+    <string name="auth_text_button_signup">Não tem uma conta? Cadastre-se</string>
+    <string name="auth_text_button_forget_password">Esqueceu a senha?</string>
+    <string name="auth_title_login">Login</string>
+    <string name="signup_title">Cadastre-se</string>
+    <string name="signup_subtitle">Insira seus dados abaixo e faça um cadastro gratuito</string>
+    <string name="signup_button_text">Criar conta</string>
+    <string name="signup_text_button_login">Já tem uma conta? Faça o Log in</string>
 </resources>

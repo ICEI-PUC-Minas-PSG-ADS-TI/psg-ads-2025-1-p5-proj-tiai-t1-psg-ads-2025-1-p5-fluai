@@ -1,4 +1,4 @@
-package org.example.project.ui.screens.auth
+package org.example.project.ui.screens.signup
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -25,24 +25,24 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import frontend.composeapp.generated.resources.Res
-import frontend.composeapp.generated.resources.auth_button_text
 import frontend.composeapp.generated.resources.auth_email_label_text
 import frontend.composeapp.generated.resources.auth_password_label_text
-import frontend.composeapp.generated.resources.auth_text_button_forget_password
-import frontend.composeapp.generated.resources.auth_text_button_signup
-import frontend.composeapp.generated.resources.auth_title_login
+import frontend.composeapp.generated.resources.signup_button_text
+import frontend.composeapp.generated.resources.signup_subtitle
+import frontend.composeapp.generated.resources.signup_text_button_login
+import frontend.composeapp.generated.resources.signup_title
 import org.example.project.theme.Blue
 import org.example.project.theme.gray_darker
 import org.example.project.ui.components.PrimaryButton
 import org.example.project.ui.components.TextFieldComponent
+import org.example.project.ui.screens.auth.AuthUiState
+import org.example.project.ui.screens.auth.AuthViewModel
 import org.example.project.ui.theme.PoppinsTypography
 import org.jetbrains.compose.resources.stringResource
 
-
-
 @Composable
-fun AuthScreen(
-    viewModel: AuthViewModel
+fun SignUpScreen(
+    viewModel: SignUpViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -56,48 +56,54 @@ fun AuthScreen(
             modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AuthHeader()
+            SignUpHeader()
             Spacer(modifier = Modifier.height(50.dp))
-            LoginForm(emailValue, uiState, viewModel, passwordValue)
-            AuthFooter(viewModel)
+            SignUpForm(emailValue, uiState, viewModel, passwordValue)
+            SignUpFooter(viewModel)
         }
     }
 }
 
 @Composable
-private fun ColumnScope.AuthFooter(component: AuthViewModel) {
-    TextButton(
-        modifier = Modifier.padding(top = 24.dp)
-            .align(Alignment.CenterHorizontally),
+private fun ColumnScope.SignUpFooter(viewModel: SignUpViewModel) {
+    TextButton(modifier = Modifier.padding(top = 24.dp).align(Alignment.CenterHorizontally),
         onClick = {
-            component.onEvent(AuthScreenEvent.GoToSignUp)
+            viewModel.onEvent(SignUpScreenEvent.GoToAuth)
         }
     ) {
         Text(
-            text = stringResource(Res.string.auth_text_button_signup),
+            text = stringResource(Res.string.signup_text_button_login),
             fontWeight = FontWeight.W400,
             color = gray_darker,
             textDecoration = TextDecoration.Underline,
             style = PoppinsTypography().body2,
-            modifier = Modifier,
+            modifier = Modifier
         )
     }
 
 }
 
 @Composable
-private fun ColumnScope.AuthHeader() {
+private fun ColumnScope.SignUpHeader() {
     Text(
-        text = stringResource(Res.string.auth_title_login),
+        text = stringResource(Res.string.signup_title),
         style = PoppinsTypography().h4,
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(top = 80.dp).align(Alignment.Start)
     )
+
+    Text(
+        text = stringResource(Res.string.signup_subtitle),
+        style = PoppinsTypography().body2,
+        color = Color.Gray,
+        fontWeight = FontWeight.W200,
+        modifier = Modifier.padding(top = 6.dp).align(Alignment.Start)
+    )
 }
 
 @Composable
-private fun ColumnScope.LoginForm(
-    emailValue: String, uiState: AuthUiState, viewModel: AuthViewModel, passwordValue: String
+private fun SignUpForm(
+    emailValue: String, uiState: SignUpUiState, viewModel: SignUpViewModel, passwordValue: String
 ) {
     TextFieldComponent(
         stringResource(Res.string.auth_email_label_text),
@@ -117,23 +123,11 @@ private fun ColumnScope.LoginForm(
         onChange = viewModel::onTextPasswordChange
     )
 
-    TextButton(modifier = Modifier.Companion.align(Alignment.End), onClick = {}) {
-        Text(
-            text = stringResource(Res.string.auth_text_button_forget_password),
-            fontWeight = FontWeight.W400,
-            color = gray_darker,
-            textDecoration = TextDecoration.Underline,
-            style = PoppinsTypography().body2,
-            modifier = Modifier
-        )
-    }
-
     PrimaryButton(
         color = Blue,
         modifier = Modifier.fillMaxWidth().height(70.dp).padding(top = 16.dp),
-        buttonText = stringResource(Res.string.auth_button_text),
+        buttonText = stringResource(Res.string.signup_button_text),
         textColor = Color.White,
         onClick = {}
     )
 }
-
