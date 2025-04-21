@@ -5,14 +5,17 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.pushToFront
+import org.koin.core.component.get
 import kotlinx.serialization.Serializable
 import org.example.project.ui.screens.auth.AuthViewModel
 import org.example.project.ui.screens.signup.SignUpViewModel
 import org.example.project.ui.screens.splash.SplashViewModel
+import org.koin.core.parameter.parametersOf
+import org.koin.core.component.KoinComponent
 
 class RootComponent(
     componentContext: ComponentContext
-): ComponentContext by componentContext{
+): ComponentContext by componentContext, KoinComponent{
 
     private val navigation = StackNavigation<Configuration>()
     val childStack = childStack(
@@ -48,12 +51,9 @@ class RootComponent(
                 )
             )
             is Configuration.SignUpScreen -> Child.SignUpScreen(
-                SignUpViewModel(
-                    componentContext = context,
-                    onNavigateToAuth = {
-                        navigation.pushToFront(Configuration.AuthScreen)
-                    }
-                )
+                get<SignUpViewModel>(parameters = {
+                   parametersOf(context, {navigation.pushToFront(Configuration.AuthScreen)})
+               })
             )
         }
     }

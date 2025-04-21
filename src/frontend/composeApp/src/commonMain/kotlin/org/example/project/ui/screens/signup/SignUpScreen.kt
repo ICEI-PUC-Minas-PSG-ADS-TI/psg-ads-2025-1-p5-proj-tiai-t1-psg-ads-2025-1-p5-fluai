@@ -1,9 +1,7 @@
 package org.example.project.ui.screens.signup
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -74,6 +76,7 @@ fun SignUpScreen(
     val nameValue = uiState.textName
     val isDisplayDialog = remember { mutableStateOf(false) }
     val showCircularProgressBar = remember { mutableStateOf(false)}
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -81,37 +84,43 @@ fun SignUpScreen(
     LaunchedEffect(Unit) {
         viewModel.signUpResult.collect{ result ->
             when (result) {
-                SignUpResult.Success -> {
+                is SignUpResult.Success -> {
                     isDisplayDialog.value = true
                     showCircularProgressBar.value = false
                 }
 
-                SignUpResult.Loading -> showCircularProgressBar.value = true
+                is SignUpResult.Loading -> showCircularProgressBar.value = true
 
-                SignUpResult.Error -> {
-
+                is SignUpResult.Error -> {
+                    showCircularProgressBar.value = false
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(result.message)
+                    }
                 }
                 else -> Unit
             }
         }
     }
 
-
-    Surface(
-        modifier = Modifier.fillMaxSize()
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) {
-        if (isDisplayDialog.value) {
-            SuccessDialog(onDismiss = { isDisplayDialog.value = false })
-        }
-        LoadingComponent(showCircularProgressBar.value)
-        Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Surface(
+            modifier = Modifier.fillMaxSize()
         ) {
-            SignUpHeader()
-            Spacer(modifier = Modifier.height(50.dp))
-            SignUpForm(nameValue, emailValue, uiState, viewModel, passwordValue, coroutineScope)
-            SignUpFooter(viewModel)
+            if (isDisplayDialog.value) {
+                SuccessDialog(onDismiss = { isDisplayDialog.value = false })
+            }
+            LoadingComponent(showCircularProgressBar.value)
+            Column(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                SignUpHeader()
+                Spacer(modifier = Modifier.height(50.dp))
+                SignUpForm(nameValue, emailValue, uiState, viewModel, passwordValue, coroutineScope)
+                SignUpFooter(viewModel)
+            }
         }
     }
 }
@@ -272,14 +281,6 @@ fun LoadingComponent(isLoading : Boolean){
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.5f))
-            .zIndex(1f)
-            .pointerInput(Unit){
-                awaitPointerEventScope {
-                    while(true){
-                        awaitPointerEvent()
-                    }
-                }
-            },
         ){
             CircularProgressIndicator(
                 modifier = Modifier

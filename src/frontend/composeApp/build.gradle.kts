@@ -52,6 +52,7 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             implementation(compose.runtime)
+            implementation(libs.koin.core)
         }
         commonMain.dependencies {
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
@@ -60,9 +61,15 @@ kotlin {
             implementation(libs.decompose.extensions.compose)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
+            implementation(libs.koin.coroutines)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.ktor.serialization)
+            implementation(libs.ktor.json)
+            implementation(libs.ktor.client)
+            implementation(libs.ktor.negotiation)
+            implementation(libs.ktor.logging)
             implementation(libs.androidx.navigation.compose)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.ktor.client.core)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)

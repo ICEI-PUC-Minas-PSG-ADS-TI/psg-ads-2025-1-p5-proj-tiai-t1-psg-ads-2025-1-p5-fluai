@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserRequestDto(
-    val name : String,
-    val email : String,
-    val password : String
+    val username : String,
+    val password : String,
+    val email : String
 )

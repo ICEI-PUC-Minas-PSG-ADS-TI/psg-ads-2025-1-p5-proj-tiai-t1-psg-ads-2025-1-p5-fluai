@@ -5,16 +5,16 @@ import org.example.project.domain.model.User
 
 fun User.toDto(): UserRequestDto {
     return UserRequestDto(
-        name = name,
-        email = email,
-        password = password
+        username = username,
+        password = password,
+        email = email
     )
 }
 
 fun UserRequestDto.toDomain(): User {
     return User(
-        name = name,
-        email = email,
-        password = password
+        username = username,
+        password = password,
+        email = email
     )
 }
