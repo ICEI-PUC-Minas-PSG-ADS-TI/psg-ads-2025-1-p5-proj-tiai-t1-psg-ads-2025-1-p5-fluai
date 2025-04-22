@@ -158,9 +158,7 @@ Este script deverá ser incluído em um arquivo .sql na pasta src\bd.
 
 ### 4.4. Tecnologias
 
-_Descreva qual(is) tecnologias você vai usar para resolver o seu problema, ou seja, implementar a sua solução. Liste todas as tecnologias envolvidas, linguagens a serem utilizadas, serviços web, frameworks, bibliotecas, IDEs de desenvolvimento, e ferramentas._
-
-Apresente também uma figura explicando como as tecnologias estão relacionadas ou como uma interação do usuário com o sistema vai ser conduzida, por onde ela passa até retornar uma resposta ao usuário.
+Para a construção do FluAI, foram escolhidas tecnologias modernas e adequadas ao escopo do projeto, garantindo desempenho, escalabilidade e uma boa experiência para o usuário final.
 
 
 | **Dimensão**   | **Tecnologia**  |
