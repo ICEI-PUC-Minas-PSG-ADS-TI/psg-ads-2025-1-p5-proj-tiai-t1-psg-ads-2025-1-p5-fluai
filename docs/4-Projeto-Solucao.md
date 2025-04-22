@@ -3,16 +3,34 @@
 <span style="color:red">Pré-requisitos: <a href="03-Modelagem do Processo de Negocio.md"> Modelagem do Processo de Negocio</a></span>
 
 ## 4.1. Arquitetura da solução
+A arquitetura do FluAI foi desenhada para garantir escalabilidade, performance e uma experiência fluida ao usuário. A solução segue uma abordagem modular, dividida em três camadas principais: aplicativo móvel (frontend), servidor de aplicação (backend) e bancos de dados (armazenamento).
 
+#### Componentes da Arquitetura
+Aplicativo Móvel (Frontend – Kotlin)
+Desenvolvido em Kotlin, o aplicativo é responsável por toda a interação com o usuário. Ele oferece uma interface moderna, responsiva e intuitiva, permitindo que o usuário realize o teste de nivelamento, acesse os exercícios personalizados, visualize seu progresso e receba feedback em tempo real.
 
-......  COLOQUE AQUI O SEU TEXTO E O DIAGRAMA DE ARQUITETURA .......
+#### Servidor de Aplicação (Backend – Python)
+O backend, desenvolvido em Python, é responsável pelo processamento da lógica de negócio, análise de desempenho dos usuários e adaptação dos conteúdos com base nos resultados. Ele também integra as bibliotecas de Inteligência Artificial para ajustar os exercícios e enviar feedbacks personalizados ao app.
 
- Inclua um diagrama da solução e descreva os módulos e as tecnologias
- que fazem parte da solução. Discorra sobre o diagrama.
+#### Banco de Dados
+
+Firebase: Utilizado para autenticação de usuários.
+
+PostgreSQL: Gerencia dados relacionais como histórico de desempenho, respostas dos testes e progresso individual, com alta confiabilidade e segurança.
+
+🔁Fluxo de Funcionamento
+- O usuário acessa o app e realiza o teste de nivelamento.
+
+- As respostas são enviadas ao backend em Python, que processa os dados e consulta o modelo de IA.
+
+- O backend retorna os exercícios adaptados com base no desempenho do usuário.
+
+- As informações são armazenadas.
+
+- O app exibe o conteúdo personalizado.
  
- **Exemplo do diagrama de Arquitetura**:
- 
- ![Exemplo de Arquitetura](./images/arquitetura-exemplo.png)
+![image](https://github.com/user-attachments/assets/ac068762-39ce-4fa2-a5cc-af50764db57d)
+
  
 
 ### 4.2. Protótipos de telas
