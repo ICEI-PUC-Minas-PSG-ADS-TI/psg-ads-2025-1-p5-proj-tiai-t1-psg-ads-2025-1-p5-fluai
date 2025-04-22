@@ -58,102 +58,54 @@ As telas foram pensadas para serem fáceis de usar, visualmente agradáveis e ac
 
 ## Diagrama de Classes
 
-O diagrama de classes ilustra graficamente como será a estrutura do software, e como cada uma das classes da sua estrutura estarão interligadas. Essas classes servem de modelo para materializar os objetos que executarão na memória.
+O diagrama que representa as classes da aplicação é bem simples. Teremos os usuários, que farão uso do aplicativo, e estes terão acesso às atividades geradas por IA.
 
-As referências abaixo irão auxiliá-lo na geração do artefato “Diagrama de Classes”.
+Será necessário apenas realizar uma verificação de nível, garantindo que os usuários avancem de forma condizente com o conhecimento que já possuem.
 
-> - [Diagramas de Classes - Documentação da IBM](https://www.ibm.com/docs/pt-br/rational-soft-arch/9.6.1?topic=diagrams-class)
-> - [O que é um diagrama de classe UML? | Lucidchart](https://www.lucidchart.com/pages/pt/o-que-e-diagrama-de-classe-uml)
+![image](https://github.com/user-attachments/assets/2ae611b8-4761-4005-b115-9f05abb868a4)
+
+
 
 ## Modelo ER
 
-O Modelo ER representa através de um diagrama como as entidades (coisas, objetos) se relacionam entre si na aplicação interativa.]
-
-As referências abaixo irão auxiliá-lo na geração do artefato “Modelo ER”.
-
-> - [Como fazer um diagrama entidade relacionamento | Lucidchart](https://www.lucidchart.com/pages/pt/como-fazer-um-diagrama-entidade-relacionamento)
-
-
 ### 4.3. Modelo de dados
 
-O desenvolvimento da solução proposta requer a existência de bases de dados que permitam efetuar os cadastros de dados e controles associados aos processos identificados, assim como recuperações.
-Utilizando a notação do DER (Diagrama Entidade e Relacionamento), elaborem um modelo, na ferramenta visual indicada na disciplina, que contemple todas as entidades e atributos associados às atividades dos processos identificados. Deve ser gerado um único DER que suporte todos os processos escolhidos, visando, assim, uma base de dados integrada. O modelo deve contemplar, também, o controle de acesso de usuários (partes interessadas dos processos) de acordo com os papéis definidos nos modelos do processo de negócio.
-_Apresente o modelo de dados por meio de um modelo relacional que contemple todos os conceitos e atributos apresentados na modelagem dos processos._
+Projetamos nossos dados para atender às necessidades da aplicação. No nosso caso, não foi necessário criar muitas tabelas nem estabelecer relacionamentos complexos, já que a complexidade da aplicação está na forma como a dinâmica de ensino será implementada.
 
 #### 4.3.1 Modelo ER
 
-O Modelo ER representa através de um diagrama como as entidades (coisas, objetos) se relacionam entre si na aplicação interativa.]
+![image](https://github.com/user-attachments/assets/502c0f34-e87e-4301-8be5-b92b0705a409)
 
-As referências abaixo irão auxiliá-lo na geração do artefato “Modelo ER”.
-
-> - [Como fazer um diagrama entidade relacionamento | Lucidchart](https://www.lucidchart.com/pages/pt/como-fazer-um-diagrama-entidade-relacionamento)
 
 #### 4.3.2 Esquema Relacional
 
-O Esquema Relacional corresponde à representação dos dados em tabelas juntamente com as restrições de integridade e chave primária.
- 
-As referências abaixo irão auxiliá-lo na geração do artefato “Esquema Relacional”.
+![image](https://github.com/user-attachments/assets/725039bb-7a32-4a86-9612-7ad014d21012)
 
-> - [Criando um modelo relacional - Documentação da IBM](https://www.ibm.com/docs/pt-br/cognos-analytics/10.2.2?topic=designer-creating-relational-model)
-
-![Exemplo de um modelo relacional](images/modeloRelacional.png "Exemplo de Modelo Relacional.")
----
 
 
 #### 4.3.3 Modelo Físico
 
-Insira aqui o script de criação das tabelas do banco de dados.
+A parte de criação das tabelas para o gerenciamento de dados da aplicação é feita com a ajuda de um ORM (Mapeamento Objeto-Relacional). Dessa forma, os desenvolvedores não precisam se preocupar em escrever comandos SQL diretamente, podendo realizar essa tarefa por meio do código da aplicação. Isso permite manter o foco no desenvolvimento das funcionalidades.
 
-> **OBS:** Se o aluno utilizar BD NoSQL, ele derá incluir o script aqui também. 
+O ORM utilizado em nosso projeto foi o SQLAlchemy, uma biblioteca voltada para a linguagem Python.
 
-Veja um exemplo:
+##### Backend
 
-<code>
+![image](https://github.com/user-attachments/assets/7d47b402-1ada-4fc4-8731-31e636f76d3b)
 
- -- Criação da tabela Médico
-CREATE TABLE Medico (
-    MedCodigo INTEGER PRIMARY KEY,
-    MedNome VARCHAR(100)
-);
+No exemplo acima, estamos criando a tabela de usuários e especificando as informações que devem ser armazenadas.
 
+##### Banco de dados 
 
--- Criação da tabela Paciente
-CREATE TABLE Paciente (
-    PacCodigo INTEGER PRIMARY KEY,
-    PacNome VARCHAR(100)
-);
+![image](https://github.com/user-attachments/assets/310ff64e-953f-4eed-8676-6a78f0ede60f)
 
--- Criação da tabela Consulta
-CREATE TABLE Consulta (
-    ConCodigo INTEGER PRIMARY KEY,
-    MedCodigo INTEGER,
-    PacCodigo INTEGER,
-    Data DATE,
-    FOREIGN KEY (MedCodigo) REFERENCES Medico(MedCodigo),
-    FOREIGN KEY (PacCodigo) REFERENCES Paciente(PacCodigo)
-);
+No banco de dados, conseguimos visualizar as informações conforme foram definidas no backend.
 
--- Criação da tabela Medicamento
-CREATE TABLE Medicamento (
-    MdcCodigo INTEGER PRIMARY KEY,
-    MdcNome VARCHAR(100)
-);
+##### Criação Automática das Tabelas
 
--- Criação da tabela Prescricao
-CREATE TABLE Prescricao (
-    ConCodigo INTEGER,
-    MdcCodigo INTEGER,
-    Posologia VARCHAR(200),
-    PRIMARY KEY (ConCodigo, MdcCodigo),
-    FOREIGN KEY (ConCodigo) REFERENCES Consulta(ConCodigo),
-    FOREIGN KEY (MdcCodigo) REFERENCES Medicamento(MdcCodigo)
-);
+Para criar as tabelas, é necessário apenas executar um único comando e a criação é feita automaticamente.
 
-</code>
-
-Este script deverá ser incluído em um arquivo .sql na pasta src\bd.
-
-
+![image](https://github.com/user-attachments/assets/6e9b7269-da46-4c2b-8842-bf001a06f3fb)
 
 
 ### 4.4. Tecnologias
