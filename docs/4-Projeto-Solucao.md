@@ -143,8 +143,8 @@ Apresente também uma figura explicando como as tecnologias estão relacionadas 
 
 | **Dimensão**   | **Tecnologia**  |
 | ---            | ---             |
-| SGBD           | MySQL           |
-| Front end      | HTML+CSS+JS     |
-| Back end       | Java SpringBoot |
+| SGBD           | Firebase E Postgre           |
+| Front end      | Kotlin   |
+| Back end       | Pyhton|
 | Deploy         | Github Pages    |
-
+| IA             | Llama     |
