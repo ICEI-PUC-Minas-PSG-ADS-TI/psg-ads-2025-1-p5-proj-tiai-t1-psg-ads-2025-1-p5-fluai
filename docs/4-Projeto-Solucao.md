@@ -17,21 +17,25 @@
 
 ### 4.2. Protótipos de telas
 
-Visão geral da interação do usuário pelas telas do sistema e protótipo interativo das telas com as funcionalidades que fazem parte do sistema (wireframes).
-Apresente as principais interfaces da plataforma. Discuta como ela foi elaborada de forma a atender os requisitos funcionais, não funcionais e histórias de usuário abordados nas <a href="02-Especificação do Projeto.md"> Especificação do Projeto</a>.
-A partir das atividades de usuário identificadas na seção anterior, elabore o protótipo de tela de cada uma delas.
-![Exemplo de Wireframe](images/wireframe-example.png)
+Com o objetivo de garantir uma experiência de usuário intuitiva, envolvente e personalizada, foram desenvolvidos protótipos de interface para o aplicativo FluAI. Esses protótipos representam as principais telas do sistema e foram criados com base nos requisitos funcionais, histórias de usuário e nas boas práticas de design de aplicativos.
 
-São protótipos usados em design de interface para sugerir a estrutura de um site web e seu relacionamentos entre suas páginas. Um wireframe web é uma ilustração semelhante do layout de elementos fundamentais na interface.
- 
-> **Links Úteis**:
-> - [Protótipos vs Wireframes](https://www.nngroup.com/videos/prototypes-vs-wireframes-ux-projects/)
-> - [Ferramentas de Wireframes](https://rockcontent.com/blog/wireframes/)
-> - [MarvelApp](https://marvelapp.com/developers/documentation/tutorials/)
-> - [Figma](https://www.figma.com/)
-> - [Adobe XD](https://www.adobe.com/br/products/xd.html#scroll)
-> - [Axure](https://www.axure.com/edu) (Licença Educacional)
-> - [InvisionApp](https://www.invisionapp.com/) (Licença Educacional)
+As telas foram pensadas para serem fáceis de usar, visualmente agradáveis e acessíveis, criando um ambiente leve e motivador para quem está aprendendo inglês. Para deixar tudo mais interativo e interessante, usamos elementos de gamificação e feedback visual, que ajudam o usuário a se manter engajado e entender melhor seu progresso no app.
+
+### Login e Cadastro
+![image](https://github.com/user-attachments/assets/8a5b7c93-f020-48e5-a6db-cf3361b1c171)
+
+### Esqueceu/Redefinir senha
+![image](https://github.com/user-attachments/assets/5c32af54-a29c-4a82-8024-9d2431ca9d5f)
+
+### Conta
+![image](https://github.com/user-attachments/assets/769fe812-0293-493b-b341-dfcef094e5fb)
+
+### Telas do APP
+![image](https://github.com/user-attachments/assets/725cd3af-69e7-4d88-8563-dc167ba70eee)
+![image](https://github.com/user-attachments/assets/f47a8600-ff0a-42c4-811b-7f4f7bdde4f4)
+![image](https://github.com/user-attachments/assets/af356cbf-d84b-4293-90cd-708bb86db90f)
+
+
 
 
 ## Diagrama de Classes
