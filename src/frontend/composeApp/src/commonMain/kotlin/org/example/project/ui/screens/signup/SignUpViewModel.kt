@@ -45,29 +45,16 @@ class SignUpViewModel(
 
     suspend fun sendUserData(name: String, email: String, password: String) {
         _signUpResult.emit(SignUpResult.Loading)
-        try {
             val user = User(username = name, password = password, email = email)
             val result = signUpUseCase.addUser(user)
             if(result.isSuccess){
                 _signUpResult.emit(SignUpResult.Success)
-            }else{
-                when(val error = result.exceptionOrNull()){
-                    is AppError.ApiError -> {
-                        _signUpResult.emit(SignUpResult.Error("Erro interno: ${error.message}"))
-                    }
-
-                    is IOException -> {
-                        _signUpResult.emit(SignUpResult.Error("Erro de rede: ${error.message}"))
-                    }
-
-                    else -> {
-                        _signUpResult.emit(SignUpResult.Error("Erro desconhecido: ${error?.message}"))
-                    }
-                }
             }
-        } catch (e: Exception) {
-            _signUpResult.emit(SignUpResult.Error("Falha no cadastro: ${e.message}"))
-        }
+            else {
+                val error = result.exceptionOrNull()
+                _signUpResult.emit(SignUpResult.Error("Erro interno: ${error?.message}"))
+            }
+
     }
 
 
