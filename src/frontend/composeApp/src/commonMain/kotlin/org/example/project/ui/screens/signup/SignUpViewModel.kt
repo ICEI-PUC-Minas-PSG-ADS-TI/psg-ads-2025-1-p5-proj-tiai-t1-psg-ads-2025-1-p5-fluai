@@ -1,15 +1,11 @@
 package org.example.project.ui.screens.signup
 
 import com.arkivanov.decompose.ComponentContext
-import io.ktor.client.network.sockets.ConnectTimeoutException
-import io.ktor.client.network.sockets.SocketTimeoutException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.io.IOException
-import org.example.project.data.utils.AppError
 import org.example.project.domain.model.User
 import org.example.project.domain.usecase.SignUpUseCase
 
