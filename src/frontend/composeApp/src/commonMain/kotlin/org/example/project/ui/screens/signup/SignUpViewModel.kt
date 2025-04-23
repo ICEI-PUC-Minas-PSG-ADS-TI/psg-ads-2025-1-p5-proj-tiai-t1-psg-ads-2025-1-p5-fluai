@@ -1,14 +1,14 @@
 package org.example.project.ui.screens.signup
 
 import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import io.ktor.client.network.sockets.ConnectTimeoutException
+import io.ktor.client.network.sockets.SocketTimeoutException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.withContext
+import kotlinx.io.IOException
 import org.example.project.data.utils.AppError
 import org.example.project.domain.model.User
 import org.example.project.domain.usecase.SignUpUseCase
@@ -47,8 +47,24 @@ class SignUpViewModel(
         _signUpResult.emit(SignUpResult.Loading)
         try {
             val user = User(username = name, password = password, email = email)
-            signUpUseCase.addUser(user)
-            _signUpResult.emit(SignUpResult.Success)
+            val result = signUpUseCase.addUser(user)
+            if(result.isSuccess){
+                _signUpResult.emit(SignUpResult.Success)
+            }else{
+                when(val error = result.exceptionOrNull()){
+                    is AppError.ApiError -> {
+                        _signUpResult.emit(SignUpResult.Error("Erro interno: ${error.message}"))
+                    }
+
+                    is IOException -> {
+                        _signUpResult.emit(SignUpResult.Error("Erro de rede: ${error.message}"))
+                    }
+
+                    else -> {
+                        _signUpResult.emit(SignUpResult.Error("Erro desconhecido: ${error?.message}"))
+                    }
+                }
+            }
         } catch (e: Exception) {
             _signUpResult.emit(SignUpResult.Error("Falha no cadastro: ${e.message}"))
         }

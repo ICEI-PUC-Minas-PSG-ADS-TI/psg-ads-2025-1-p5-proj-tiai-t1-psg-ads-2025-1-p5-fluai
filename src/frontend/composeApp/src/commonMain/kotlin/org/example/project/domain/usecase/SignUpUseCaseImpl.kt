@@ -9,8 +9,6 @@ import org.example.project.domain.repository.SignUpRepository
 class SignUpUseCaseImpl(
     private val signUpRepository : SignUpRepository
 ) : SignUpUseCase {
-    override suspend fun addUser(user: User)  = withContext(Dispatchers.IO){
-        signUpRepository.postUser(user)
-    }
-
+    override suspend fun addUser(user: User): Result<Unit> =
+        withContext(Dispatchers.IO) { signUpRepository.postUser(user) }
 }

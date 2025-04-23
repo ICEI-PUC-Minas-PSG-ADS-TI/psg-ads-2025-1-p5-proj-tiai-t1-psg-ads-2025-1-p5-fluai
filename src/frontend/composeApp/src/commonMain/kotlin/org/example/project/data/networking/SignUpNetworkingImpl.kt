@@ -6,7 +6,6 @@ import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.Parameters
 import io.ktor.http.contentType
 import kotlinx.io.IOException
 import kotlinx.serialization.Serializable
@@ -17,8 +16,8 @@ import org.example.project.data.utils.AppError
 class SignUpNetworkingImpl(
     private val httpClient : HttpClient
 ) : SignUpNetworking {
-    override suspend fun postUser(user: UserRequestDto) {
-        try {
+    override suspend fun postUser(user: UserRequestDto) : Result<Unit>  {
+        return try {
             val response = httpClient.post(urlString = "http://10.0.2.2:5050/users/signup"){
                 contentType(ContentType.Application.Json)
                 setBody(user)
@@ -27,17 +26,21 @@ class SignUpNetworkingImpl(
             when(response.status.value){
                 in 400..499 -> {
                     val errorBody = response.body<ErrorResponse>()
-                    throw AppError.ApiError(
-                        statusCode = errorBody.code,
-                        userMessage = errorBody.message
+                    Result.failure(
+                        AppError.ApiError(
+                            statusCode = errorBody.code,
+                            userMessage = errorBody.message
+                        )
                     )
                 }
-                500 -> throw AppError.ApiError(500, "Erro Inesperado")
+                500 -> Result.failure(AppError.ApiError(500, "Erro Inesperado"))
+
+                else -> Result.success(Unit)
             }
         }catch (e : IOException){
-            throw AppError.NetworkError
+            Result.failure(e)
         }catch (e: SerializationException){
-            throw AppError.ApiError(-1, "Falha na comunicação: ${e.message ?: "Erro desconhecido"}")
+            Result.failure(AppError.ApiError(-1, "Falha na comunicação: ${e.message ?: "Erro desconhecido"}"))
         }
 
     }

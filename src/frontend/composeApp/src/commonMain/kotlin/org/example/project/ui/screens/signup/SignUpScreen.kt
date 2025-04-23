@@ -111,7 +111,6 @@ fun SignUpScreen(
             if (isDisplayDialog.value) {
                 SuccessDialog(onDismiss = { isDisplayDialog.value = false })
             }
-            LoadingComponent(showCircularProgressBar.value)
             Column(
                 modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -121,6 +120,7 @@ fun SignUpScreen(
                 SignUpForm(nameValue, emailValue, uiState, viewModel, passwordValue, coroutineScope)
                 SignUpFooter(viewModel)
             }
+            LoadingComponent(showCircularProgressBar.value)
         }
     }
 }
@@ -280,7 +280,14 @@ fun LoadingComponent(isLoading : Boolean){
     if (isLoading){
         Box(modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.5f))
+            .background(Color.LightGray.copy(0.3f))
+            .pointerInput(Unit) {
+                awaitPointerEventScope {
+                    while (true) {
+                        awaitPointerEvent()
+                    }
+                }
+            }
         ){
             CircularProgressIndicator(
                 modifier = Modifier
