@@ -67,6 +67,7 @@ private fun SplashActionButtons(component: SplashViewModel) {
                 .padding(end = 16.dp),
             buttonText = stringResource(Res.string.splash_signup_button_text),
             textColor = Color.White,
+            enable = true,
             onClick = {
                 component.onEvent(SplashScreenEvent.GoToSignUp)
             }
@@ -78,6 +79,7 @@ private fun SplashActionButtons(component: SplashViewModel) {
                 .width(180.dp),
             buttonText = stringResource(Res.string.splash_login_button_text),
             textColor = Blue,
+            enable = true,
             onClick = {
                 component.onEvent(SplashScreenEvent.GoToAuth)
             }
