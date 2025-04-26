@@ -16,10 +16,10 @@ class SignUpRepositoryImpl(
             signUpNetworking.postUser(dto)
         } catch (e: AppError) {
             Result.failure(e)
-        } catch (e: Exception) {
-            Result.failure(AppError.ApiError(-1, "Falha na operação: ${e.message}"))
         }catch (e : IOException){
             Result.failure(e)
+        } catch(e: Exception) {
+            Result.failure(AppError.ApiError(-1, "Falha na operação: ${e.message}"))
         }
     }
 }

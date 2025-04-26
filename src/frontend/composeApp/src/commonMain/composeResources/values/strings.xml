@@ -18,4 +18,6 @@
     <string name="success_feedback_title">Sucesso</string>
     <string name="success_feedback_subtitle">Parabéns, você completou o seu cadastro</string>
     <string name="success_feedback_button_continue">Continuar</string>
+    <string name="error_feedback_title">Erro</string>
+    <string name="error_feedback_button">Ok</string>
 </resources>

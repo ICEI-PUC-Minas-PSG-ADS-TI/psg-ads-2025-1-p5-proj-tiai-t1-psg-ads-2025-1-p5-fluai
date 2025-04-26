@@ -6,8 +6,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import org.example.project.domain.model.User
 import org.example.project.domain.usecase.SignUpUseCase
+import org.example.project.ui.extensions.coroutineScope
+import org.example.project.ui.utils.isValidEmail
+import org.example.project.ui.utils.isValidName
+import org.example.project.ui.utils.isValidPassword
 
 
 data class SignUpUiState(
@@ -17,7 +22,10 @@ data class SignUpUiState(
     val isErrorEmail: Boolean = false,
     val isErrorPassword: Boolean = false,
     val isErrorName: Boolean = false
-)
+) {
+    val isValid: Boolean
+        get() = textName.isNotEmpty() && textEmail.isNotEmpty() && textPassword.isNotEmpty() && !isErrorName && !isErrorEmail && !isErrorPassword
+}
 
 sealed class SignUpResult {
     data object Loading : SignUpResult()
@@ -38,28 +46,38 @@ class SignUpViewModel(
     private val _signUpResult = MutableSharedFlow<SignUpResult?>()
     val signUpResult = _signUpResult.asSharedFlow()
 
+    private val scope = coroutineScope
 
-    suspend fun sendUserData(name: String, email: String, password: String) {
+
+    private suspend fun sendUserData() {
         _signUpResult.emit(SignUpResult.Loading)
-            val user = User(username = name, password = password, email = email)
-            val result = signUpUseCase.addUser(user)
-            if(result.isSuccess){
+        val user = User(
+            username = _uiState.value.textName,
+            password = _uiState.value.textPassword,
+            email = _uiState.value.textEmail
+        )
+        val result = signUpUseCase.addUser(user)
+        result
+            .onSuccess {
                 _signUpResult.emit(SignUpResult.Success)
             }
-            else {
+            .onFailure {
                 val error = result.exceptionOrNull()
                 _signUpResult.emit(SignUpResult.Error("Erro interno: ${error?.message}"))
             }
-
     }
-
-
-    fun isFieldsValid() =
-        _uiState.value.isErrorEmail || _uiState.value.textEmail.isEmpty() || _uiState.value.isErrorPassword || _uiState.value.textPassword.isEmpty() || _uiState.value.textName.isEmpty()
 
     fun onEvent(event: SignUpScreenEvent) {
         when (event) {
             SignUpScreenEvent.GoToAuth -> onNavigateToAuth()
+            is SignUpScreenEvent.IsValidEmail -> isValidEmail(event.email)
+            is SignUpScreenEvent.IsValidPassword -> isValidPassword(event.password)
+            is SignUpScreenEvent.IsValidName -> isValidName(event.name)
+            is SignUpScreenEvent.SendUserData -> {
+                scope.launch {
+                    sendUserData()
+                }
+            }
         }
     }
 
@@ -94,20 +112,10 @@ class SignUpViewModel(
     }
 }
 
-private fun isValidName(name: String): Boolean {
-    val nameRegex = "^[A-ZÀ-Ÿ][a-zà-ÿ]+(?: [A-ZÀ-Ÿ][a-zà-ÿ]+)*$".toRegex()
-    return name.matches(nameRegex)
-}
-
-private fun isValidEmail(email: String): Boolean {
-    val emailRegex = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+".toRegex()
-    return email.matches(emailRegex)
-}
-
-private fun isValidPassword(password: String): Boolean {
-    return password.length > 3
-}
-
 sealed interface SignUpScreenEvent {
     data object GoToAuth : SignUpScreenEvent
+    data class IsValidEmail(val email: String) : SignUpScreenEvent
+    data class IsValidName(val name: String) : SignUpScreenEvent
+    data class IsValidPassword(val password: String) : SignUpScreenEvent
+    data object SendUserData : SignUpScreenEvent
 }

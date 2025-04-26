@@ -11,9 +11,4 @@ sealed class AppError(
         override val userMessage: String,
         val details : String? = null
     ) : AppError(userMessage, details)
-
-    data class ValidationError(
-        val field: String,
-        override val userMessage: String
-    ) : AppError(userMessage)
 }

@@ -57,7 +57,6 @@ kotlin {
         commonMain.dependencies {
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(libs.decompose)
-
             implementation(libs.decompose.extensions.compose)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
