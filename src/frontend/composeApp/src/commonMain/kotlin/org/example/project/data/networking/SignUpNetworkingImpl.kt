@@ -1,6 +1,5 @@
 package org.example.project.data.networking
 
-import frontend.composeapp.generated.resources.Res
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
