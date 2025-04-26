@@ -133,6 +133,7 @@ private fun ColumnScope.LoginForm(
         modifier = Modifier.fillMaxWidth().height(70.dp).padding(top = 16.dp),
         buttonText = stringResource(Res.string.auth_button_text),
         textColor = Color.White,
+        enable = true,
         onClick = {}
     )
 }

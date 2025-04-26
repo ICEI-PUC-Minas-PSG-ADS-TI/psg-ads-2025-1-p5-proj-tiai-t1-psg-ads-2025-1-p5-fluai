@@ -20,13 +20,21 @@ fun PrimaryButton(
     textColor: Color,
     modifier: Modifier = Modifier,
     buttonText : String,
+    enable : Boolean,
     onClick : () -> Unit
 ){
+    val border = when(color){
+        Color.White -> BorderStroke(0.5.dp, Blue)
+        Blue -> null
+        else -> null
+    }
+
     Button(
         onClick = onClick,
         modifier = modifier,
+        enabled = enable,
         colors = ButtonDefaults.buttonColors(backgroundColor = color),
-        border = BorderStroke(0.5.dp, Blue),
+        border = border,
         shape = RoundedCornerShape(8.dp),
         content = {
             Text(
