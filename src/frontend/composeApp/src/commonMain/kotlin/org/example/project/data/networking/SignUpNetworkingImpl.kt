@@ -1,52 +1,34 @@
 package org.example.project.data.networking
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import kotlinx.io.IOException
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationException
 import org.example.project.data.dto.UserRequestDto
-import org.example.project.data.utils.AppError
+import org.example.project.domain.error.DataError
+import org.example.project.domain.error.Result
+import org.example.project.domain.error.mapExceptionToDataError
 
 class SignUpNetworkingImpl(
-    private val httpClient : HttpClient
+    private val httpClient: HttpClient
 ) : SignUpNetworking {
-    override suspend fun postUser(user: UserRequestDto) : Result<Unit>  {
-        return try {
-            val response = httpClient.post(urlString = "http://192.168.1.4:5050/users/signup"){
+    override suspend fun postUser(user: UserRequestDto) : Result<Unit, DataError>{
+        return try{
+            val response = httpClient.post(urlString = "http://192.168.1.4:5050/users/signup") {
                 contentType(ContentType.Application.Json)
                 setBody(user)
             }
 
             when(response.status.value){
-                in 400..499 -> {
-                    val errorBody = response.body<ErrorResponse>()
-                    Result.failure(
-                        AppError.ApiError(
-                            statusCode = errorBody.code,
-                            userMessage = errorBody.message
-                        )
-                    )
-                }
-                500 -> Result.failure(AppError.ApiError(500, "Erro Inesperado"))
-
-                else -> Result.success(Unit)
+                in 200..299 -> Result.Success(Unit)
+                in 500..599 -> Result.Error(DataError.Network.SERVER_ERROR)
+                else -> Result.Error(DataError.Network.UNKNOWN)
             }
-        }catch (e : IOException){
-            Result.failure(e)
-        }catch (e: SerializationException){
-            Result.failure(AppError.ApiError(-1, "Falha na comunicação: ${e.message ?: "Erro desconhecido"}"))
+        } catch (e: Exception){
+            Result.Error(mapExceptionToDataError(e))
         }
 
     }
 }
 
-@Serializable
-data class ErrorResponse(
-    val code : Int,
-    val message : String
-)

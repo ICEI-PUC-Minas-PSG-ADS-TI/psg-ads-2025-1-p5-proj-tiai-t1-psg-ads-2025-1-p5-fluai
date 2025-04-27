@@ -21,6 +21,7 @@ import org.example.project.ui.theme.PoppinsTypography
 
 @Composable
 fun TextFieldComponent(
+    modifier: Modifier,
     textLabel : String,
     textFieldValue : String,
     isError : Boolean,
@@ -41,8 +42,7 @@ fun TextFieldComponent(
                 .align(Alignment.Start)
         )
         OutlinedTextField(
-            modifier = Modifier
-                .padding(bottom = 24.dp)
+            modifier = modifier
                 .width(400.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = gray,
