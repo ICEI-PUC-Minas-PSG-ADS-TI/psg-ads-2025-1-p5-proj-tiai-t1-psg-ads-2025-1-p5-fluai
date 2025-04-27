@@ -9,16 +9,22 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.project.domain.model.User
 import org.example.project.domain.usecase.SignUpUseCase
+import org.example.project.domain.error.Result
 import org.example.project.ui.extensions.coroutineScope
-import org.example.project.ui.utils.isValidEmail
-import org.example.project.ui.utils.isValidName
-import org.example.project.ui.utils.isValidPassword
+import org.example.project.ui.screens.signup.model.UserDataValidator
+import org.example.project.domain.error.NameError
+import org.example.project.domain.error.EmailError
+import org.example.project.domain.error.PasswordError
+import org.example.project.domain.error.mapErrorToFriendlyMessage
 
 
 data class SignUpUiState(
     val textName: String = "",
     val textEmail: String = "",
     val textPassword: String = "",
+    val textErrorName : String = "",
+    val textErrorEmail : String = "",
+    val textErrorPassword : String = "",
     val isErrorEmail: Boolean = false,
     val isErrorPassword: Boolean = false,
     val isErrorName: Boolean = false
@@ -35,8 +41,10 @@ sealed class SignUpResult {
 
 
 class SignUpViewModel(
+    private val userDataValidator: UserDataValidator,
     componentContext: ComponentContext,
     private val signUpUseCase: SignUpUseCase,
+    private val onNavigateToAuthBySignUp: () -> Unit,
     private val onNavigateToAuth: () -> Unit
 ) : ComponentContext by componentContext {
 
@@ -56,23 +64,21 @@ class SignUpViewModel(
             password = _uiState.value.textPassword,
             email = _uiState.value.textEmail
         )
-        val result = signUpUseCase.addUser(user)
-        result
-            .onSuccess {
+        when(val result = signUpUseCase.addUser(user)){
+            is Result.Error -> {
+                val errorMessage = mapErrorToFriendlyMessage(result.error)
+                _signUpResult.emit(SignUpResult.Error(message = errorMessage))
+            }
+            is Result.Success -> {
                 _signUpResult.emit(SignUpResult.Success)
             }
-            .onFailure {
-                val error = result.exceptionOrNull()
-                _signUpResult.emit(SignUpResult.Error("Erro interno: ${error?.message}"))
-            }
+        }
     }
 
     fun onEvent(event: SignUpScreenEvent) {
         when (event) {
+            SignUpScreenEvent.GoToAuthBySignUp -> onNavigateToAuthBySignUp()
             SignUpScreenEvent.GoToAuth -> onNavigateToAuth()
-            is SignUpScreenEvent.IsValidEmail -> isValidEmail(event.email)
-            is SignUpScreenEvent.IsValidPassword -> isValidPassword(event.password)
-            is SignUpScreenEvent.IsValidName -> isValidName(event.name)
             is SignUpScreenEvent.SendUserData -> {
                 scope.launch {
                     sendUserData()
@@ -82,40 +88,113 @@ class SignUpViewModel(
     }
 
     fun onTextNameChange(name: String) {
-        val isErrorName = isValidName(name)
         _uiState.update {
             it.copy(
                 textName = name,
-                isErrorName = isErrorName.not()
+                isErrorName = false,
+                textErrorName = ""
             )
+        }
+        when(val result = userDataValidator.isValidName(name)){
+            is Result.Error -> {
+                when(result.error){
+                    NameError.TOO_SHORT -> {
+                        _uiState.update{
+                            it.copy(
+                                isErrorName = true,
+                                textErrorName = "O nome deve ter pelo menos 3 caracteres."
+                            )
+                        }
+                    }
+                    NameError.NO_UPPERCASE -> {
+                        _uiState.update{
+                            it.copy(
+                                isErrorName = true,
+                                textErrorName = "O nome deve começar com letra maiúscula."
+                            )
+                        }
+                    }
+                }
+            }
+            is Result.Success -> {
+                _uiState.update {
+                    it.copy(
+                        isErrorName = result.data.not(),
+                        textErrorName = ""
+                    )
+                }
+            }
         }
     }
 
     fun onTextPasswordChange(password: String) {
-        val isPasswordValid = isValidPassword(password)
         _uiState.update {
             it.copy(
                 textPassword = password,
-                isErrorPassword = isPasswordValid.not()
+                isErrorPassword = false,
+                textErrorPassword = ""
             )
+        }
+        when(val result = userDataValidator.isValidPassword(password)){
+            is Result.Error -> {
+                when(result.error){
+                    PasswordError.TOO_SHORT -> {
+                        _uiState.update{
+                            it.copy(
+                                isErrorPassword = true,
+                                textErrorPassword = "A senha deve ter pelo menos 6 caracteres."
+                            )
+                        }
+                    }
+                }
+            }
+            is Result.Success -> {
+                _uiState.update {
+                    it.copy(
+                        isErrorPassword = result.data.not(),
+                        textErrorPassword = ""
+                    )
+                }
+            }
         }
     }
 
     fun onTextEmailChange(email: String) {
-        val isValid = isValidEmail(email)
         _uiState.update {
             it.copy(
                 textEmail = email,
-                isErrorEmail = isValid.not()
+                isErrorEmail = false,
+                textErrorEmail = ""
             )
         }
+        when(val result = userDataValidator.isValidEmail(email)){
+            is Result.Error -> {
+                when(result.error){
+                    EmailError.INVALID_EMAIL -> {
+                        _uiState.update{
+                            it.copy(
+                                isErrorEmail = true,
+                                textErrorEmail = "Email inválido"
+                            )
+                        }
+                    }
+                }
+            }
+            is Result.Success -> {
+                _uiState.update {
+                    it.copy(
+                        isErrorEmail = result.data.not(),
+                        textErrorEmail = ""
+                    )
+                }
+            }
+        }
     }
+
 }
 
 sealed interface SignUpScreenEvent {
     data object GoToAuth : SignUpScreenEvent
-    data class IsValidEmail(val email: String) : SignUpScreenEvent
-    data class IsValidName(val name: String) : SignUpScreenEvent
-    data class IsValidPassword(val password: String) : SignUpScreenEvent
+    data object GoToAuthBySignUp : SignUpScreenEvent
     data object SendUserData : SignUpScreenEvent
 }

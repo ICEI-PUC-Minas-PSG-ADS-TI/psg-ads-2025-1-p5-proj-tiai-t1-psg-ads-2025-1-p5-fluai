@@ -100,6 +100,7 @@ private fun ColumnScope.LoginForm(
     emailValue: String, uiState: AuthUiState, viewModel: AuthViewModel, passwordValue: String
 ) {
     TextFieldComponent(
+        modifier = Modifier.padding(bottom = 24.dp),
         stringResource(Res.string.auth_email_label_text),
         textFieldValue = emailValue,
         isError = uiState.isErrorEmail,
@@ -109,6 +110,7 @@ private fun ColumnScope.LoginForm(
     )
 
     TextFieldComponent(
+        modifier = Modifier.padding(bottom = 24.dp),
         stringResource(Res.string.auth_password_label_text),
         textFieldValue = passwordValue,
         isError = uiState.isErrorPassword,

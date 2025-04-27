@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -100,7 +101,7 @@ fun SignUpScreen(
                 onDismiss = { isDisplayDialogError.value = false })
         }
         if (isDisplayDialog.value) {
-            SuccessDialog(onAuthClick = {viewModel.onEvent(SignUpScreenEvent.GoToAuth)}, onDismiss = { isDisplayDialog.value = false })
+            SuccessDialog(onAuthClick = {viewModel.onEvent(SignUpScreenEvent.GoToAuthBySignUp)})
         }
         Column(
             modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
@@ -164,8 +165,8 @@ private fun SignUpForm(
     formCallbacks: FormCallbacks,
     onClick : () -> Unit
 ) {
-
     TextFieldComponent(
+        modifier = Modifier.padding(bottom = 24.dp.takeIf { uiState.textErrorName.isEmpty() } ?: 0.dp),
         stringResource(Res.string.sign_up_name_label_text),
         textFieldValue = uiState.textName,
         isError = uiState.isErrorName,
@@ -173,8 +174,20 @@ private fun SignUpForm(
         visualTransformation = VisualTransformation.None,
         onChange = formCallbacks.onClickNameChange
     )
+    uiState.textErrorName.let { error->
+        if (error.isNotEmpty()){
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 24.dp),
+                text = uiState.textErrorName,
+                textAlign = TextAlign.Start,
+                style = PoppinsTypography().caption,
+                color = Color.Red,
+            )
+        }
+    }
 
     TextFieldComponent(
+        modifier = Modifier.padding(bottom = 24.dp.takeIf { uiState.textErrorEmail.isEmpty() } ?: 0.dp),
         stringResource(Res.string.auth_email_label_text),
         textFieldValue = uiState.textEmail,
         isError = uiState.isErrorEmail,
@@ -183,7 +196,20 @@ private fun SignUpForm(
         onChange = formCallbacks.onClickEmailChange
     )
 
+    uiState.textErrorEmail.let { error->
+        if (error.isNotEmpty()){
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 24.dp),
+                text = uiState.textErrorEmail,
+                textAlign = TextAlign.Start,
+                style = PoppinsTypography().caption,
+                color = Color.Red,
+            )
+        }
+    }
+
     TextFieldComponent(
+        modifier = Modifier.padding(bottom = 24.dp.takeIf { uiState.textErrorPassword.isEmpty() } ?: 0.dp),
         stringResource(Res.string.auth_password_label_text),
         textFieldValue = uiState.textPassword,
         isError = uiState.isErrorPassword,
@@ -191,6 +217,18 @@ private fun SignUpForm(
         visualTransformation = PasswordVisualTransformation(),
         onChange = formCallbacks.onClickPasswordChange
     )
+
+    uiState.textErrorPassword.let { error->
+        if (error.isNotEmpty()){
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 24.dp),
+                text = uiState.textErrorPassword,
+                textAlign = TextAlign.Start,
+                style = PoppinsTypography().caption,
+                color = Color.Red
+            )
+        }
+    }
 
     PrimaryButton(
         color = Blue,
@@ -239,7 +277,7 @@ fun ErrorDialog(errorMessage: String, onDismiss: () -> Unit) {
                         text = errorMessage,
                         style = PoppinsTypography().caption,
                         color = Color.Gray,
-                        maxLines = 1,
+                        maxLines = 3,
                         fontWeight = FontWeight.W300,
                         modifier = Modifier
                             .padding(top = 8.dp)
@@ -261,13 +299,20 @@ fun ErrorDialog(errorMessage: String, onDismiss: () -> Unit) {
 
 
 @Composable
-fun SuccessDialog(onAuthClick: () -> Unit, onDismiss: () -> Unit) {
+fun SuccessDialog(onAuthClick: () -> Unit) {
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Color.Black.copy(alpha = 0.5f))
         .zIndex(1f)
+        .pointerInput(Unit) {
+            awaitPointerEventScope {
+                while (true) {
+                    awaitPointerEvent()
+                }
+            }
+        }
     ){
-        Dialog(onDismissRequest = onDismiss) {
+        Dialog({}) {
             Surface(
                 modifier = Modifier
                     .height(300.dp)
@@ -297,7 +342,7 @@ fun SuccessDialog(onAuthClick: () -> Unit, onDismiss: () -> Unit) {
                         text = stringResource(Res.string.success_feedback_subtitle),
                         style = PoppinsTypography().caption,
                         color = Color.Gray,
-                        maxLines = 1,
+                        maxLines = 2,
                         fontWeight = FontWeight.W300,
                         modifier = Modifier
                             .padding(top = 8.dp)

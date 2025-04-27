@@ -5,6 +5,7 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.pushToFront
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import org.koin.core.component.get
 import kotlinx.serialization.Serializable
 import org.example.project.ui.screens.auth.AuthViewModel
@@ -52,7 +53,7 @@ class RootComponent(
             )
             is Configuration.SignUpScreen -> Child.SignUpScreen(
                 get<SignUpViewModel>(parameters = {
-                   parametersOf(context, {navigation.pushToFront(Configuration.AuthScreen)})
+                   parametersOf(context, {navigation.pushToFront(Configuration.AuthScreen)}, {navigation.replaceCurrent(Configuration.AuthScreen)})
                })
             )
         }
