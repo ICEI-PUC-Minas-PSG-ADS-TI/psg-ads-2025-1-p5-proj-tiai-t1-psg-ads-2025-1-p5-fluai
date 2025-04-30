@@ -12,15 +12,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,21 +27,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import frontend.composeapp.generated.resources.Res
-import frontend.composeapp.generated.resources.auth_email_label_text
-import frontend.composeapp.generated.resources.auth_password_label_text
 import frontend.composeapp.generated.resources.error_feedback_button
 import frontend.composeapp.generated.resources.error_feedback_title
 import frontend.composeapp.generated.resources.icon_error
-import frontend.composeapp.generated.resources.sign_up_name_label_text
 import frontend.composeapp.generated.resources.signup_button_text
 import frontend.composeapp.generated.resources.signup_subtitle
 import frontend.composeapp.generated.resources.signup_text_button_login
@@ -55,9 +46,13 @@ import frontend.composeapp.generated.resources.success_feedback_title
 import org.example.project.theme.Blue
 import org.example.project.theme.gray_darker
 import org.example.project.ui.components.PrimaryButton
-import org.example.project.ui.components.TextFieldComponent
-import org.example.project.ui.screens.signup.model.FormCallbacks
 import org.example.project.ui.theme.PoppinsTypography
+import org.example.project.ui.components.textfield.EmailValidator
+import org.example.project.ui.components.textfield.NameValidator
+import org.example.project.ui.components.textfield.PasswordValidator
+import org.example.project.ui.utils.TextFieldGeneric
+import org.example.project.ui.components.textfield.TextFieldState
+import org.example.project.ui.utils.rememberTextFieldState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -65,7 +60,6 @@ import org.jetbrains.compose.resources.stringResource
 fun SignUpScreen(
     viewModel: SignUpViewModel
 ) {
-    val uiState by viewModel.uiState.collectAsState()
 
     val isDisplayDialog = remember { mutableStateOf(false) }
     val isDisplayDialogError = remember { mutableStateOf(false)}
@@ -109,14 +103,7 @@ fun SignUpScreen(
         ) {
             SignUpHeader()
             Spacer(modifier = Modifier.height(50.dp))
-            SignUpForm(
-                uiState = uiState,
-                formCallbacks = FormCallbacks(
-                    onClickNameChange = viewModel::onTextNameChange,
-                    onClickEmailChange = viewModel::onTextEmailChange,
-                    onClickPasswordChange = viewModel::onTextPasswordChange
-                ),
-                onClick = { viewModel.onEvent(SignUpScreenEvent.SendUserData)})
+            SignUpForm{ name, email, password -> viewModel.onEvent(SignUpScreenEvent.SendUserData(name = name, email = email, password = password)) }
             SignUpFooter(onAuthClick = {viewModel.onEvent(SignUpScreenEvent.GoToAuth)})
         }
         LoadingComponent(showCircularProgressBar.value)
@@ -160,83 +147,33 @@ private fun ColumnScope.SignUpHeader() {
 }
 
 @Composable
-private fun SignUpForm(
-    uiState: SignUpUiState,
-    formCallbacks: FormCallbacks,
-    onClick : () -> Unit
-) {
-    TextFieldComponent(
-        modifier = Modifier.padding(bottom = 24.dp.takeIf { uiState.textErrorName.isEmpty() } ?: 0.dp),
-        stringResource(Res.string.sign_up_name_label_text),
-        textFieldValue = uiState.textName,
-        isError = uiState.isErrorName,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-        visualTransformation = VisualTransformation.None,
-        onChange = formCallbacks.onClickNameChange
-    )
-    uiState.textErrorName.let { error->
-        if (error.isNotEmpty()){
-            Text(
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 24.dp),
-                text = uiState.textErrorName,
-                textAlign = TextAlign.Start,
-                style = PoppinsTypography().caption,
-                color = Color.Red,
-            )
+private fun SignUpForm(onClick: (name: String, email: String, password: String) -> Unit ) {
+
+    val name = rememberTextFieldState(validators = NameValidator())
+    val email = rememberTextFieldState(validators = EmailValidator())
+    val password = rememberTextFieldState(validators = PasswordValidator())
+
+
+    name.TextFieldGeneric(label = "Nome")
+    email.TextFieldGeneric(label = "Email")
+    password.TextFieldGeneric(label = "Senha")
+
+    val isFormValid = remember {
+        derivedStateOf {
+            name.fieldState.value is TextFieldState.SUCCESS && email.fieldState.value is TextFieldState.SUCCESS && password.fieldState.value is TextFieldState.SUCCESS
         }
     }
 
-    TextFieldComponent(
-        modifier = Modifier.padding(bottom = 24.dp.takeIf { uiState.textErrorEmail.isEmpty() } ?: 0.dp),
-        stringResource(Res.string.auth_email_label_text),
-        textFieldValue = uiState.textEmail,
-        isError = uiState.isErrorEmail,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        visualTransformation = VisualTransformation.None,
-        onChange = formCallbacks.onClickEmailChange
-    )
-
-    uiState.textErrorEmail.let { error->
-        if (error.isNotEmpty()){
-            Text(
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 24.dp),
-                text = uiState.textErrorEmail,
-                textAlign = TextAlign.Start,
-                style = PoppinsTypography().caption,
-                color = Color.Red,
-            )
-        }
-    }
-
-    TextFieldComponent(
-        modifier = Modifier.padding(bottom = 24.dp.takeIf { uiState.textErrorPassword.isEmpty() } ?: 0.dp),
-        stringResource(Res.string.auth_password_label_text),
-        textFieldValue = uiState.textPassword,
-        isError = uiState.isErrorPassword,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        visualTransformation = PasswordVisualTransformation(),
-        onChange = formCallbacks.onClickPasswordChange
-    )
-
-    uiState.textErrorPassword.let { error->
-        if (error.isNotEmpty()){
-            Text(
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 24.dp),
-                text = uiState.textErrorPassword,
-                textAlign = TextAlign.Start,
-                style = PoppinsTypography().caption,
-                color = Color.Red
-            )
-        }
-    }
 
     PrimaryButton(
         color = Blue,
         modifier = Modifier.fillMaxWidth().height(70.dp).padding(top = 16.dp),
         buttonText = stringResource(Res.string.signup_button_text),
         textColor = Color.White,
-        enable = uiState.isValid,
-        onClick = onClick
+        enable = isFormValid.value,
+        onClick = {
+            onClick(name.textState.value.text,email.textState.value.text, password.textState.value.text)
+        }
     )
 }
 

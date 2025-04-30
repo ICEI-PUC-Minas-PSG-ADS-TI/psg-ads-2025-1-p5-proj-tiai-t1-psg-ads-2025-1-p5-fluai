@@ -1,4 +1,4 @@
-package org.example.project.ui.components
+package org.example.project.ui.components.textfield
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,7 +20,6 @@ import org.example.project.theme.gray
 import org.example.project.theme.gray_darker
 import org.example.project.ui.theme.PoppinsTypography
 import org.example.project.ui.utils.TextFieldBuilder
-import org.example.project.ui.utils.TextFieldState
 
 
 @Composable
