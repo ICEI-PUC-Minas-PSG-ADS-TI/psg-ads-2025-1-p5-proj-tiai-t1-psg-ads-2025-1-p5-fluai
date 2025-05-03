@@ -6,17 +6,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import org.example.project.domain.model.User
 import org.example.project.domain.usecase.SignUpUseCase
-import org.example.project.domain.error.Result
 import org.example.project.ui.extensions.coroutineScope
-import org.example.project.domain.error.mapErrorToFriendlyMessage
-
-
-sealed class SignUpResult {
-    data object Loading : SignUpResult()
-    data object Success : SignUpResult()
-    data class Error(val message: String) : SignUpResult()
-}
-
 
 class SignUpViewModel(
     componentContext: ComponentContext,
@@ -25,29 +15,29 @@ class SignUpViewModel(
     private val onNavigateToAuth: () -> Unit
 ) : ComponentContext by componentContext {
 
-
     private val _signUpResult = MutableSharedFlow<SignUpResult?>()
     val signUpResult = _signUpResult.asSharedFlow()
 
     private val scope = coroutineScope
 
-
     private suspend fun sendUserData(name: String, email: String, password: String) {
         _signUpResult.emit(SignUpResult.Loading)
+
         val user = User(
             username = name,
             password = email,
             email = password
         )
-        when(val result = signUpUseCase.addUser(user)){
-            is Result.Error -> {
-                val errorMessage = mapErrorToFriendlyMessage(result.error)
-                _signUpResult.emit(SignUpResult.Error(message = errorMessage))
-            }
-            is Result.Success -> {
+
+        val result = signUpUseCase.addUser(user)
+
+        result
+            .onSuccess {
                 _signUpResult.emit(SignUpResult.Success)
             }
-        }
+            .onFailure {
+                _signUpResult.emit(SignUpResult.Error(it.message ?: "Erro desconhecido"))
+            }
     }
 
     fun onEvent(event: SignUpScreenEvent) {
@@ -56,15 +46,13 @@ class SignUpViewModel(
             is SignUpScreenEvent.GoToAuth -> onNavigateToAuth()
             is SignUpScreenEvent.SendUserData -> {
                 scope.launch {
-                    sendUserData(name = event.name, email = event.email, password = event.password)
+                    sendUserData(
+                        name = event.name,
+                        email = event.email,
+                        password = event.password
+                    )
                 }
             }
         }
     }
-}
-
-sealed interface SignUpScreenEvent {
-    data object GoToAuth : SignUpScreenEvent
-    data object GoToAuthBySignUp : SignUpScreenEvent
-    data class SendUserData(val name : String, val email : String, val password : String) : SignUpScreenEvent
 }

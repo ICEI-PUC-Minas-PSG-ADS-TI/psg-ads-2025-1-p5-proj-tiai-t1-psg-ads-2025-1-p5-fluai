@@ -172,7 +172,7 @@ private fun SignUpForm(onClick: (name: String, email: String, password: String) 
         textColor = Color.White,
         enable = isFormValid.value,
         onClick = {
-            onClick(name.textState.value.text,email.textState.value.text, password.textState.value.text)
+            onClick(name.textState.value.text,password.textState.value.text,email.textState.value.text)
         }
     )
 }

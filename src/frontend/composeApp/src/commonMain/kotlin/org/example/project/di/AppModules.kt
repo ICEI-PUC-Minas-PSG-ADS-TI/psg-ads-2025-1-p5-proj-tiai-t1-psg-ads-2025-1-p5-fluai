@@ -13,7 +13,7 @@ import org.koin.dsl.module
 
 
 val dataModules = module {
-    single<SignUpNetworking>{ SignUpNetworkingImpl(httpClient = KtorApiClient.httpClient) }
+    single<SignUpNetworking>{ SignUpNetworkingImpl(httpClient = KtorApiClient.getClient("")) }
     single<SignUpRepository>{ SignUpRepositoryImpl(get()) }
     single<SignUpUseCase>{ SignUpUseCaseImpl(get()) }
 
