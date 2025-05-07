@@ -7,6 +7,7 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import org.example.project.ui.navigation.RootComponent
 
 fun MainViewController() = ComposeUIViewController {
+    initKoin()
     val root = remember {
         RootComponent(DefaultComponentContext(LifecycleRegistry()))
     }
