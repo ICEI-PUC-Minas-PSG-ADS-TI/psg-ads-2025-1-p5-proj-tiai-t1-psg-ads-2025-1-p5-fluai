@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerializatin)
+    id("com.google.devtools.ksp") version libs.versions.ksp.get()
 }
 
 if (System.getenv("CI") != "true") {
@@ -57,6 +58,9 @@ kotlin {
         commonMain.dependencies {
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(libs.decompose)
+            implementation(libs.material.icons.extended)
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
             implementation(libs.decompose.extensions.compose)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
@@ -122,6 +126,11 @@ android {
 }
 
 dependencies {
+    add("kspCommonMainMetadata", libs.room.compiler)
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosX64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
     debugImplementation(compose.uiTooling)
 }
 

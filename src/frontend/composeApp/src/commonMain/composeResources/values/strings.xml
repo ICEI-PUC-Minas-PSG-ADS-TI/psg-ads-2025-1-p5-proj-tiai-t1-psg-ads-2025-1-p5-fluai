@@ -11,6 +11,8 @@
     <string name="auth_text_button_forget_password">Esqueceu a senha?</string>
     <string name="auth_title_login">Login</string>
     <string name ="sign_up_name_label_text">Nome</string>
+    <string name ="sign_up_email_label_text">E-mail</string>
+    <string name ="sign_up_password_label_text">Senha</string>
     <string name="signup_title">Cadastre-se</string>
     <string name="signup_subtitle">Insira seus dados abaixo e faça um cadastro gratuito</string>
     <string name="signup_button_text">Criar conta</string>

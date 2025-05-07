@@ -23,7 +23,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import frontend.composeapp.generated.resources.Res
 import frontend.composeapp.generated.resources.auth_button_text
 import frontend.composeapp.generated.resources.auth_email_label_text
@@ -34,7 +33,7 @@ import frontend.composeapp.generated.resources.auth_title_login
 import org.example.project.theme.Blue
 import org.example.project.theme.gray_darker
 import org.example.project.ui.components.PrimaryButton
-import org.example.project.ui.components.TextFieldComponent
+import org.example.project.ui.components.textfield.TextFieldComponent
 import org.example.project.ui.theme.PoppinsTypography
 import org.jetbrains.compose.resources.stringResource
 
