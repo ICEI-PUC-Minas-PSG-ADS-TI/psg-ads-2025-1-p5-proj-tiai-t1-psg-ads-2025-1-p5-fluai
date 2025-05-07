@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -27,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -35,6 +37,9 @@ import frontend.composeapp.generated.resources.Res
 import frontend.composeapp.generated.resources.error_feedback_button
 import frontend.composeapp.generated.resources.error_feedback_title
 import frontend.composeapp.generated.resources.icon_error
+import frontend.composeapp.generated.resources.sign_up_email_label_text
+import frontend.composeapp.generated.resources.sign_up_name_label_text
+import frontend.composeapp.generated.resources.sign_up_password_label_text
 import frontend.composeapp.generated.resources.signup_button_text
 import frontend.composeapp.generated.resources.signup_subtitle
 import frontend.composeapp.generated.resources.signup_text_button_login
@@ -151,12 +156,12 @@ private fun SignUpForm(onClick: (name: String, email: String, password: String) 
 
     val name = rememberTextFieldState(validators = NameValidator())
     val email = rememberTextFieldState(validators = EmailValidator())
-    val password = rememberTextFieldState(validators = PasswordValidator())
+    val password = rememberTextFieldState(validators = PasswordValidator(), isPassword = true)
 
 
-    name.TextFieldGeneric(label = "Nome")
-    email.TextFieldGeneric(label = "Email")
-    password.TextFieldGeneric(label = "Senha")
+    name.TextFieldGeneric(label = stringResource(Res.string.sign_up_name_label_text))
+    email.TextFieldGeneric(label = stringResource(Res.string.sign_up_email_label_text), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email))
+    password.TextFieldGeneric(label = stringResource(Res.string.sign_up_password_label_text), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password))
 
     val isFormValid = remember {
         derivedStateOf {

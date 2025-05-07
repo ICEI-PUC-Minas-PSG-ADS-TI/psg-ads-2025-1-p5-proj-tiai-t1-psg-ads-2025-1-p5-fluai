@@ -6,14 +6,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import org.example.project.theme.gray
@@ -28,12 +38,21 @@ fun TextFieldComponentGeneric(
     modifier: Modifier = Modifier,
     textLabel: String,
     keyboardOptions: KeyboardOptions,
-    visualTransformation: VisualTransformation,
+    isPassword : Boolean,
     trailingIcon: @Composable (() -> Unit)? = null
 ){
     val errorMessage = when (val currentState = state.fieldState.value) {
         is TextFieldState.ERROR -> currentState.erroMessage
         else -> null
+    }
+
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    val icon = if (!passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+
+    val visualTransf = when{
+        isPassword && !passwordVisible -> PasswordVisualTransformation()
+        else -> VisualTransformation.None
     }
 
     Column(
@@ -57,12 +76,26 @@ fun TextFieldComponentGeneric(
                 unfocusedBorderColor = gray
             ),
             keyboardOptions = keyboardOptions,
-            visualTransformation = visualTransformation,
+            visualTransformation = visualTransf,
             shape = RoundedCornerShape(12.dp),
             value = state.textState.value,
             isError = errorMessage != null,
             trailingIcon = {
-                trailingIcon?.invoke()
+                if(isPassword){
+                    IconButton(
+                        onClick = {
+                            passwordVisible = !passwordVisible
+                        }
+                    ){
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = "",
+                            tint = Color.Black
+                        )
+                    }
+                }else{
+                    trailingIcon?.invoke()
+                }
             },
             onValueChange = {
                 state.textState.value = it

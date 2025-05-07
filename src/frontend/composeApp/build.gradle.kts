@@ -58,6 +58,7 @@ kotlin {
         commonMain.dependencies {
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(libs.decompose)
+            implementation(libs.material.icons.extended)
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
             implementation(libs.decompose.extensions.compose)
