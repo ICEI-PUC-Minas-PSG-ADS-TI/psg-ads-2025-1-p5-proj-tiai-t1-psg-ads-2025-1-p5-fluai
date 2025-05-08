@@ -44,12 +44,9 @@ class RootComponent(
                )
             )
             is Configuration.AuthScreen -> Child.AuthScreen(
-                AuthViewModel(
-                    componentContext = context,
-                    onNavigateToSignUp = {
-                        navigation.pushToFront(Configuration.SignUpScreen)
-                    }
-                )
+                get<AuthViewModel>(parameters = {
+                    parametersOf(context, {navigation.pushToFront(Configuration.SignUpScreen)})
+                })
             )
             is Configuration.SignUpScreen -> Child.SignUpScreen(
                 get<SignUpViewModel>(parameters = {
