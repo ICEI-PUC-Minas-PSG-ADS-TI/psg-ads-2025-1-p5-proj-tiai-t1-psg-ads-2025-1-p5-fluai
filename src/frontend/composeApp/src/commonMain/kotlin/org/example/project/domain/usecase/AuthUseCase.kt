@@ -1,7 +1,7 @@
 package org.example.project.domain.usecase
 
-import org.example.project.domain.model.UserLogin
+import org.example.project.domain.model.AuthData
 
 interface AuthUseCase{
-    suspend fun sendUserData(user : UserLogin) : Result<Unit>
+    suspend fun authenticate(email: String, password: String) : Result<AuthData>
 }

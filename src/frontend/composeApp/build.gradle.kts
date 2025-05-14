@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
+    alias(libs.plugins.googleGms)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
@@ -41,6 +42,11 @@ kotlin {
     sourceSets {
 
         androidMain.dependencies {
+            implementation("com.google.firebase:firebase-auth-ktx:22.3.1") {
+                exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-play-services")
+            }
+            implementation(libs.kotlinx.coroutines.play.services)
+            implementation(libs.google.firebase.auth)
             implementation(compose.preview)
             implementation(libs.koin.android)
             implementation(libs.androidx.activity.compose)
@@ -57,6 +63,10 @@ kotlin {
         }
         commonMain.dependencies {
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            implementation(libs.firebase.auth)
+            implementation(libs.firebase.common)
+            implementation(libs.gitlive.firebase.app)
+            implementation(libs.firebase.firestore)
             implementation(libs.decompose)
             implementation(libs.material.icons.extended)
             implementation(libs.room.runtime)

@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import org.example.project.ui.components.textfield.TextFieldComponentGeneric
 import org.example.project.ui.components.textfield.TextFieldState
@@ -33,11 +34,13 @@ data class TextFieldBuilder(
 
 @Composable
 fun TextFieldBuilder.TextFieldGeneric(
+    modifier: Modifier = Modifier,
     label: String,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     trailingIcon: @Composable (() -> Unit)? = null
 ) {
     TextFieldComponentGeneric(
+        modifier = modifier,
         state = this,
         textLabel = label,
         keyboardOptions = keyboardOptions,

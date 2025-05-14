@@ -1,10 +1,10 @@
 package org.example.project.domain.usecase
 
-import org.example.project.domain.model.UserLogin
+import org.example.project.domain.model.AuthData
+import org.example.project.domain.repository.AuthRepository
 
-
-class AuthUseCaseImpl() : AuthUseCase {
-    override suspend fun sendUserData(user: UserLogin): Result<Unit> {
-        TODO("Not yet implemented")
-    }
+class AuthUseCaseImpl(
+    private val authRepository: AuthRepository
+) : AuthUseCase {
+    override suspend fun authenticate(email: String, password: String): Result<AuthData> = authRepository.authenticate(email, password)
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "622497007384",
+    "project_id": "fluai-37ee6",
+    "storage_bucket": "fluai-37ee6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622497007384:android:7af6e3fe1f78d51124406d",
+        "android_client_info": {
+          "package_name": "org.example.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjJFSZgGWS1pHsNYRXgDXPjP17hJIiYcQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

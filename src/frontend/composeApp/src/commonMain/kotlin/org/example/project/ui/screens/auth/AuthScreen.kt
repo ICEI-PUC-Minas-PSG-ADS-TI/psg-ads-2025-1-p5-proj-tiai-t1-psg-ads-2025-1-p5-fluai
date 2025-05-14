@@ -46,7 +46,6 @@ import org.example.project.ui.utils.rememberTextFieldState
 import org.jetbrains.compose.resources.stringResource
 
 
-
 @Composable
 fun AuthScreen(
     viewModel: AuthViewModel
@@ -63,7 +62,6 @@ fun AuthScreen(
 
                 is AuthResult.Success -> {
                     uiState.showCircularProgressBar.value = false
-                    uiState.isDisplaySuccessDialog.value = true
                 }
                 is AuthResult.Error -> {
                     uiState.showCircularProgressBar.value = false
@@ -89,21 +87,21 @@ fun AuthScreen(
             AuthHeader()
             Spacer(modifier = Modifier.height(50.dp))
             LoginForm{ email, password ->
-                viewModel.onEvent(event = AuthScreenEvent.SendUserData(email, password))
+                viewModel.onEvent(event = AuthScreenEvent.SignIn(email, password))
             }
-            AuthFooter(viewModel)
+            AuthFooter {
+                viewModel.onEvent(AuthScreenEvent.GoToSignUp)
+            }
         }
     }
 }
 
 @Composable
-private fun ColumnScope.AuthFooter(component: AuthViewModel) {
+private fun ColumnScope.AuthFooter(onClick : () -> Unit) {
     TextButton(
         modifier = Modifier.padding(top = 24.dp)
             .align(Alignment.CenterHorizontally),
-        onClick = {
-            component.onEvent(AuthScreenEvent.GoToSignUp)
-        }
+        onClick = onClick
     ) {
         Text(
             text = stringResource(Res.string.auth_text_button_signup),

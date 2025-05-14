@@ -8,7 +8,9 @@ import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import org.koin.core.component.get
 import kotlinx.serialization.Serializable
+import org.example.project.domain.model.AuthData
 import org.example.project.ui.screens.auth.AuthViewModel
+import org.example.project.ui.screens.home.HomeViewModel
 import org.example.project.ui.screens.signup.SignUpViewModel
 import org.example.project.ui.screens.splash.SplashViewModel
 import org.koin.core.parameter.parametersOf
@@ -16,7 +18,7 @@ import org.koin.core.component.KoinComponent
 
 class RootComponent(
     componentContext: ComponentContext
-): ComponentContext by componentContext, KoinComponent{
+) : ComponentContext by componentContext, KoinComponent {
 
     private val navigation = StackNavigation<Configuration>()
     val childStack = childStack(
@@ -28,30 +30,51 @@ class RootComponent(
     )
 
     private fun createChild(
-        config : Configuration,
+        config: Configuration,
         context: ComponentContext
-    ): Child{
-        return when(config){
+    ): Child {
+        return when (config) {
             Configuration.SplashScreen -> Child.SplashScreen(
-               SplashViewModel(
-                   componentContext = context,
-                   onNavigateToAuthScreen = {
-                       navigation.pushNew(Configuration.AuthScreen)
-                   },
-                   onNavigateToSignUp = {
-                       navigation.pushNew(Configuration.SignUpScreen)
-                   }
-               )
+                SplashViewModel(
+                    componentContext = context,
+                    onNavigateToAuthScreen = {
+                        navigation.pushNew(Configuration.AuthScreen)
+                    },
+                    onNavigateToSignUp = {
+                        navigation.pushNew(Configuration.SignUpScreen)
+                    }
+                )
             )
+
             is Configuration.AuthScreen -> Child.AuthScreen(
                 get<AuthViewModel>(parameters = {
-                    parametersOf(context, {navigation.pushToFront(Configuration.SignUpScreen)})
+                    parametersOf(
+                        context,
+                        { navigation.pushToFront(Configuration.SignUpScreen) },
+                        { authData: AuthData ->
+                            navigation.replaceCurrent(
+                                Configuration.HomeScreen(authData)
+                            )
+                        })
                 })
             )
+
             is Configuration.SignUpScreen -> Child.SignUpScreen(
                 get<SignUpViewModel>(parameters = {
-                   parametersOf(context, {navigation.pushToFront(Configuration.AuthScreen)}, {navigation.replaceCurrent(Configuration.AuthScreen)})
-               })
+                    parametersOf(
+                        context,
+                        { navigation.pushToFront(Configuration.AuthScreen) },
+                        { navigation.replaceCurrent(Configuration.AuthScreen) })
+                })
+            )
+
+            is Configuration.HomeScreen -> Child.HomeScreen(
+                get<HomeViewModel>(parameters = {
+                    parametersOf(
+                        context,
+                        config.authData
+                    )
+                })
             )
         }
     }
@@ -59,16 +82,23 @@ class RootComponent(
     sealed class Child {
         data class SplashScreen(val component: SplashViewModel) : Child()
         data class AuthScreen(val component: AuthViewModel) : Child()
-        data class SignUpScreen(val component : SignUpViewModel) : Child()
+        data class SignUpScreen(val component: SignUpViewModel) : Child()
+        data class HomeScreen(val component: HomeViewModel) : Child()
+
     }
 
     @Serializable
     sealed class Configuration {
         @Serializable
         data object SplashScreen : Configuration()
+
         @Serializable
-        data object AuthScreen: Configuration()
+        data object AuthScreen : Configuration()
+
         @Serializable
         data object SignUpScreen : Configuration()
+
+        @Serializable
+        data class HomeScreen(val authData: AuthData) : Configuration()
     }
 }
