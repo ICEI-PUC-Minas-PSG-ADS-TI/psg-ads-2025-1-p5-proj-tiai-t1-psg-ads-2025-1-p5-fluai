@@ -40,6 +40,7 @@ def generate_level_test():
         return jsonify({"error": "Erro ao gerar teste com a IA."}), 500
     
     
+    
 @ollama_bp.route("/evaluate-level-test", methods=["POST"])
 def evaluate_level_test():
     data = request.get_json()
@@ -83,3 +84,20 @@ def evaluate_level_test():
         level = "C2"
 
     return jsonify({"level": level})
+
+
+@ollama_bp.route("/generate-custom-activity", methods=["POST"])
+def generate_custom_activity():
+    data = request.get_json()
+    email = data.get("email")
+
+    if not email:
+        return jsonify({"error": "Email é obrigatório"}), 400
+
+    from services.userService import get_user_by_email
+    user = get_user_by_email(email)
+
+    if not user:
+        return jsonify({"error": "Usuário não encontrado"}), 404
+
+    return jsonify({"message": f"Usuário {user.username} encontrado com sucesso!"})
