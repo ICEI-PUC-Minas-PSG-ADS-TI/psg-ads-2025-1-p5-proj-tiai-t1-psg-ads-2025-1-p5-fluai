@@ -85,7 +85,6 @@ def evaluate_level_test():
 
     return jsonify({"level": level})
 
-
 @ollama_bp.route("/generate-custom-activity", methods=["POST"])
 def generate_custom_activity():
     data = request.get_json()
@@ -100,4 +99,21 @@ def generate_custom_activity():
     if not user:
         return jsonify({"error": "Usuário não encontrado"}), 404
 
-    return jsonify({"message": f"Usuário {user.username} encontrado com sucesso!"})
+    user_level = user.level or "A1"
+    progress = user.progress_history or "sem histórico registrado"
+
+    prompt = (
+        f"Crie um JSON com 5 questões de múltipla escolha para o nível {user_level} "
+        f"focadas em tópicos que o usuário tem dificuldade: {progress}. "
+        "O JSON deve ter o formato: "
+        "[{'question': '...', 'options': ['a)...','b)...','c)...','d)...'], 'answer': '...'}]. "
+        "As questões devem cobrir aspectos como: collocations, modals, prepositions, phrasal verbs."
+    )
+
+    from services.ollamaService import generate_text_from_ollama
+    response = generate_text_from_ollama(prompt)
+
+    if not response:
+        return jsonify({"error": "Erro ao gerar questões personalizadas."}), 500
+
+    return jsonify({"response": response})
