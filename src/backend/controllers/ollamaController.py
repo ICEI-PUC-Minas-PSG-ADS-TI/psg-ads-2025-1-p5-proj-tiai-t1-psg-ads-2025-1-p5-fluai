@@ -110,10 +110,24 @@ def generate_custom_activity():
         "As questões devem cobrir aspectos como: collocations, modals, prepositions, phrasal verbs."
     )
 
-    from services.ollamaService import generate_text_from_ollama
+    from services.ollamaService import generate_text_from_ollama, save_lessons
+    import json
+
     response = generate_text_from_ollama(prompt)
 
     if not response:
         return jsonify({"error": "Erro ao gerar questões personalizadas."}), 500
 
-    return jsonify({"response": response})
+    try:
+        questions = json.loads(response)
+        for q in questions:
+            save_lessons(
+                question=q["question"],
+                answer=q["answer"],
+                description="atividade personalizada",
+                options=q["options"]
+            )
+    except Exception as e:
+        return jsonify({"error": f"Erro ao processar resposta da IA: {str(e)}"}), 500
+
+    return jsonify({"questions": questions})
