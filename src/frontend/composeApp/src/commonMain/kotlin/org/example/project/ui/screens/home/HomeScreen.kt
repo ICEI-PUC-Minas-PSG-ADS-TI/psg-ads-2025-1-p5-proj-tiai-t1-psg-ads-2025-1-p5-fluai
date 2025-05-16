@@ -62,6 +62,7 @@ fun HomeScreen(
 ) {
     val selectedIndex = remember { mutableStateOf(1) }
     val scrollState = rememberScrollState()
+    val username = remember { viewModel.getName() }
 
 
     Scaffold(
@@ -72,7 +73,7 @@ fun HomeScreen(
                 title = {
                     Column {
                         Text(
-                            "Olá, ${viewModel.getName()}",
+                            "Olá, $username",
                             style = PoppinsTypography().h5,
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
@@ -107,16 +108,26 @@ fun HomeScreen(
                     LearningCard(
                         modifier = Modifier,
                         title = "O que você quer aprender?",
-                        showButton = true,
                         image = painterResource(Res.drawable.card_image_1),
-                        onButtonClick = {}
-                    )
+                    ){
+                        Button(
+                            onClick = {},
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Orange),
+                            shape = RoundedCornerShape(8.dp),
+                        ) {
+                            Text(
+                                text = "Começar",
+                                style = PoppinsTypography().button,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
                 }
                 item {
                     LearningCard(
                         image = painterResource(Res.drawable.card_image_2),
                         imageAlignment = Alignment.Center,
-                        showButton = false
                     )
                 }
             }
@@ -230,9 +241,8 @@ fun LearningCard(
     modifier: Modifier = Modifier,
     title: String? = null,
     image: Painter,
-    showButton: Boolean,
     imageAlignment: Alignment = Alignment.CenterEnd,
-    onButtonClick: (() -> Unit)? = null
+    content : (@Composable () -> Unit)? = null
 ) {
     Box(
         modifier = Modifier.padding(top = 30.dp, bottom = 40.dp)
@@ -255,21 +265,11 @@ fun LearningCard(
             )
         }
 
-        if (showButton && onButtonClick != null) {
-            Button(
-                modifier = modifier.align(Alignment.BottomStart).padding(8.dp),
-                onClick = {},
-                colors = ButtonDefaults.buttonColors(backgroundColor = Orange),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text(
-                    text = "Começar",
-                    style = PoppinsTypography().button,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+        Box(modifier = Modifier.align(Alignment.BottomStart).padding(8.dp),) {
+            content?.invoke()
         }
+
+
 
     }
 }

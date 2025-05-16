@@ -35,15 +35,15 @@ class RootComponent(
     ): Child {
         return when (config) {
             Configuration.SplashScreen -> Child.SplashScreen(
-                SplashViewModel(
-                    componentContext = context,
-                    onNavigateToAuthScreen = {
-                        navigation.pushNew(Configuration.AuthScreen)
-                    },
-                    onNavigateToSignUp = {
-                        navigation.pushNew(Configuration.SignUpScreen)
-                    }
-                )
+                get<SplashViewModel>(parameters = {
+                    parametersOf(
+                        context,
+                        { navigation.pushNew(Configuration.AuthScreen)},
+                        { navigation.pushNew(Configuration.SignUpScreen)},
+                        {  authData: AuthData ->
+                            navigation.replaceCurrent(Configuration.HomeScreen(authData = authData))}
+                    )
+                })
             )
 
             is Configuration.AuthScreen -> Child.AuthScreen(

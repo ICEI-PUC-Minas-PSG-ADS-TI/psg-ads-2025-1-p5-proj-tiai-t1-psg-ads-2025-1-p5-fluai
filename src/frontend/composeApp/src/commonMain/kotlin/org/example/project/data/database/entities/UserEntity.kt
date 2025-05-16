@@ -9,7 +9,8 @@ data class UserEntity(
     val email : String,
     val uid : String = "",
     val username : String = "Usuário",
-    val authToken : String = ""
+    val authToken : String = "",
+    val isLogged: Boolean = false
 )
 
 

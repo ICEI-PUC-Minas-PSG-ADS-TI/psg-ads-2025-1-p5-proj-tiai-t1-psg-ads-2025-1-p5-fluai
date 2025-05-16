@@ -13,7 +13,6 @@ import org.example.project.ui.screens.home.HomeScreen
 import org.example.project.ui.screens.signup.SignUpScreen
 import org.example.project.ui.screens.splash.SplashScreen
 
-
 @Composable
 fun App(root : RootComponent){
     MaterialTheme {

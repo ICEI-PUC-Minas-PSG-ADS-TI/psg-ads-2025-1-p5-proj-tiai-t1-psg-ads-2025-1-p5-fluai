@@ -49,6 +49,7 @@ actual class AuthDataSourceImpl actual constructor() : AuthDataSource  {
             val user = authResult.user ?: throw Exception("User not found")
             val token = user.getIdToken(false).await()?.token ?: ""
 
+
             AuthData(uuid = user.uid, token = token, email = user.email.orEmpty(), username = "")
         }.fold(
             onSuccess = {Result.success(it)},

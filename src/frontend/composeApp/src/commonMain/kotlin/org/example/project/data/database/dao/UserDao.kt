@@ -17,4 +17,13 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
     suspend fun getUserByEmail(email: String): UserEntity?
 
+    @Query("SELECT * FROM users WHERE isLogged = 1 LIMIT 1")
+    suspend fun getLoggedUser(): UserEntity?
+
+    @Query("UPDATE users SET isLogged = 0")
+    suspend fun clearLoggedStatus()
+
+    @Query("UPDATE users SET isLogged = 1 WHERE email = :email")
+    suspend fun setUserLogged(email: String)
+
 }

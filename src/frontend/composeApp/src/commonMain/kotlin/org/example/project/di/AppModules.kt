@@ -27,6 +27,7 @@ import org.example.project.domain.usecase.SignUpUseCaseImpl
 import org.example.project.ui.screens.auth.AuthViewModel
 import org.example.project.ui.screens.home.HomeViewModel
 import org.example.project.ui.screens.signup.SignUpViewModel
+import org.example.project.ui.screens.splash.SplashViewModel
 import org.koin.dsl.module
 
 
@@ -39,12 +40,13 @@ val dataModules = module {
     single { get<AppDatabase>().userDao() }
     single<UserLocalDataSource> { UserLocalDataSourceImpl(get()) }
 
+
     single<SignUpNetworking> { SignUpNetworkingImpl(httpClient = KtorApiClient.getClient("")) }
     single<SignUpRepository> { SignUpRepositoryImpl(get(), get()) }
     single<SignUpUseCase> { SignUpUseCaseImpl(get()) }
 
     single<AuthUseCase> {AuthUseCaseImpl(get())}
-    single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
 
     factory { (componentContext: ComponentContext, onNavigateToAuth: () -> Unit, onNavigateToAuthBySignUp: () -> Unit) ->
         SignUpViewModel(
@@ -53,6 +55,17 @@ val dataModules = module {
             onNavigateToAuthBySignUp = onNavigateToAuthBySignUp,
             onNavigateToAuth = onNavigateToAuth
         )
+    }
+
+
+    factory { (componentContext: ComponentContext, onNavigateToAuth: () -> Unit, onNavigateToSignUp: () -> Unit, onNavigateToHome: (AuthData) -> Unit) ->
+        SplashViewModel(
+            componentContext = componentContext,
+            onNavigateToSignUp = onNavigateToSignUp,
+            onNavigateToAuthScreen = onNavigateToAuth,
+            onNavigateToHome = onNavigateToHome,
+            authRepository = get()
+            )
     }
 
     factory { (componentContext: ComponentContext, onNavigateToSignUp: () -> Unit, onNavigateToHome: (AuthData) -> Unit) ->

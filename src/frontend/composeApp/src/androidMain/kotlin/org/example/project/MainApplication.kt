@@ -20,8 +20,8 @@ class MainApplication : Application() {
         super.onCreate()
         appContext = this
         runBlocking {
-            FirebaseApp.initializeApp(this@MainApplication) // Android SDK
-            Firebase.initialize(this@MainApplication) // KMP
+            FirebaseApp.initializeApp(this@MainApplication)
+            Firebase.initialize(this@MainApplication)
         }
 
         startKoin {

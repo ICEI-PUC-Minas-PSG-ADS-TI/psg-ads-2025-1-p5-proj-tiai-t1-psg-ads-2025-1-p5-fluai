@@ -42,9 +42,7 @@ kotlin {
     sourceSets {
 
         androidMain.dependencies {
-            implementation("com.google.firebase:firebase-auth-ktx:22.3.1") {
-                exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-play-services")
-            }
+            implementation(libs.firebase.auth.ktx)
             implementation(libs.kotlinx.coroutines.play.services)
             implementation(libs.google.firebase.auth)
             implementation(compose.preview)

@@ -18,5 +18,16 @@ class UserLocalDataSourceImpl(
         return userDao.getUserByEmail(email)
     }
 
+    override suspend fun getLoggedUser(): UserEntity? {
+        return userDao.getLoggedUser()
+    }
+
+    override suspend fun clearLoggedStatus() {
+        userDao.clearLoggedStatus()
+    }
+
+    override suspend fun setUserLogged(email: String) {
+         userDao.setUserLogged(email)
+    }
 
 }

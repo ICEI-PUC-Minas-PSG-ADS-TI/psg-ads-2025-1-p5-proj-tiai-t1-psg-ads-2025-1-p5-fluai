@@ -35,8 +35,6 @@ internal actual object DatabaseProvider {
     }
 }
 
-
-
 actual class AuthDataSourceImpl actual constructor() : AuthDataSource {
     actual override suspend fun authenticate(
         email: String,

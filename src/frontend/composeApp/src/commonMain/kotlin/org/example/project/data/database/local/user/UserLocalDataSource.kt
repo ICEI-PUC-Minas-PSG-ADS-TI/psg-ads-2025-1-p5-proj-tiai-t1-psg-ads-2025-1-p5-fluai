@@ -6,4 +6,7 @@ interface UserLocalDataSource {
     suspend fun saveUser(user : UserEntity)
     suspend fun getCurrentUser() : UserEntity?
     suspend fun getUsername(email : String): UserEntity?
+    suspend fun getLoggedUser(): UserEntity?
+    suspend fun clearLoggedStatus()
+    suspend fun setUserLogged(email: String)
 }
