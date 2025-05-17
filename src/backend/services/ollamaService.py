@@ -1,4 +1,7 @@
 import requests
+from data.dataConfig import db
+from models.lessonModel import Lesson
+import json
 
 OLLAMA_URL = "http://ollama:11434/api/generate"
 
@@ -20,3 +23,15 @@ def generate_text_from_ollama(prompt):
         return response.json()["response"]
     else:
         return None
+
+def save_lessons(question, answer, description, options):
+    lesson = Lesson(
+    question=question,
+    answer=answer,
+    description=description,
+    options=json.dumps(options) 
+)
+
+    db.session.add(lesson)
+    db.session.commit()
+    return lesson
