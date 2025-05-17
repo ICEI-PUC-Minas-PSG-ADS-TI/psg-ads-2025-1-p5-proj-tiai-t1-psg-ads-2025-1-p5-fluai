@@ -28,6 +28,7 @@ import org.example.project.ui.screens.auth.AuthViewModel
 import org.example.project.ui.screens.home.HomeViewModel
 import org.example.project.ui.screens.signup.SignUpViewModel
 import org.example.project.ui.screens.splash.SplashViewModel
+import org.example.project.ui.screens.useraccount.UserAccountViewModel
 import org.koin.dsl.module
 
 
@@ -80,7 +81,13 @@ val dataModules = module {
     factory { (componentContext: ComponentContext, authData : AuthData) ->
         HomeViewModel(
             componentContext = componentContext,
-            authData = authData
+            authData = authData,
+        )
+    }
+
+    factory { (componentContext: ComponentContext) ->
+        UserAccountViewModel(
+            componentContext = componentContext,
         )
     }
 }

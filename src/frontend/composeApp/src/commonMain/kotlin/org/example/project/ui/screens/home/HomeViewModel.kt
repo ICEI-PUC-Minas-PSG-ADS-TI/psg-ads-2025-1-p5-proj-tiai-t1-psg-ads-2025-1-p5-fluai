@@ -5,8 +5,8 @@ import org.example.project.domain.model.AuthData
 
 class HomeViewModel(
     componentContext: ComponentContext,
-    private val authData: AuthData
-    ) : ComponentContext by componentContext {
+    private val authData: AuthData,
+) : ComponentContext by componentContext {
 
-        fun getName() : String = authData.username
+    fun getName(): String = authData.username
 }
