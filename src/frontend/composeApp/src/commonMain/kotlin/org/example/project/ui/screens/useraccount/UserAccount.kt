@@ -24,7 +24,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun UserAccount(
-    userAccountViewModel: UserAccountViewModel
+    viewModel: UserAccountViewModel
 ){
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -38,7 +38,7 @@ fun UserAccount(
             Spacer(modifier = Modifier.size(30.dp))
             TextButton(onClick = {}){ Text(text = "Editar perfil", style = PoppinsTypography().subtitle1, fontWeight = FontWeight.SemiBold,  color = Color.Black, modifier = Modifier.fillMaxWidth()) }
             Spacer(modifier = Modifier.size(16.dp))
-            TextButton(onClick = {}){ Text(text = "Sair", style = PoppinsTypography().subtitle1, fontWeight = FontWeight.SemiBold, color = Color.Black, modifier = Modifier.fillMaxWidth()) }
+            TextButton(onClick = {viewModel.onEvent(UserAccountEvent.Logout)}){ Text(text = "Sair", style = PoppinsTypography().subtitle1, fontWeight = FontWeight.SemiBold, color = Color.Black, modifier = Modifier.fillMaxWidth()) }
         }
     }
 }

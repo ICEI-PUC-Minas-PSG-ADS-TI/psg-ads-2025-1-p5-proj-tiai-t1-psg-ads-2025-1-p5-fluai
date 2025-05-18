@@ -10,10 +10,6 @@ class UserLocalDataSourceImpl(
         userDao.insertUser(user)
     }
 
-    override suspend fun getCurrentUser(): UserEntity? {
-        return userDao.getCurrentUser()
-    }
-
     override suspend fun getUsername(email : String): UserEntity? {
         return userDao.getUserByEmail(email)
     }

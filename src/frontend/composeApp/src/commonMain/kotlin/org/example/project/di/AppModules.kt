@@ -15,9 +15,11 @@ import org.example.project.data.database.local.user.UserLocalDataSourceImpl
 import org.example.project.data.networking.SignUpNetworking
 import org.example.project.data.networking.SignUpNetworkingImpl
 import org.example.project.data.repository.AuthRepositoryImpl
+import org.example.project.data.repository.SessionRepositoryImpl
 import org.example.project.data.repository.SignUpRepositoryImpl
 import org.example.project.domain.model.AuthData
 import org.example.project.domain.repository.AuthRepository
+import org.example.project.domain.repository.SessionRepository
 import org.example.project.domain.repository.SignUpRepository
 import org.example.project.domain.service.KtorApiClient
 import org.example.project.domain.usecase.AuthUseCase
@@ -46,8 +48,11 @@ val dataModules = module {
     single<SignUpRepository> { SignUpRepositoryImpl(get(), get()) }
     single<SignUpUseCase> { SignUpUseCaseImpl(get()) }
 
+    single<SessionRepository> { SessionRepositoryImpl(get(), get()) }
+
+
     single<AuthUseCase> {AuthUseCaseImpl(get())}
-    single<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
 
     factory { (componentContext: ComponentContext, onNavigateToAuth: () -> Unit, onNavigateToAuthBySignUp: () -> Unit) ->
         SignUpViewModel(
@@ -65,7 +70,7 @@ val dataModules = module {
             onNavigateToSignUp = onNavigateToSignUp,
             onNavigateToAuthScreen = onNavigateToAuth,
             onNavigateToHome = onNavigateToHome,
-            authRepository = get()
+            sessionRepository = get()
             )
     }
 
@@ -85,9 +90,11 @@ val dataModules = module {
         )
     }
 
-    factory { (componentContext: ComponentContext) ->
+    factory { (componentContext: ComponentContext, onNavigateToSplashScreen : () -> Unit) ->
         UserAccountViewModel(
             componentContext = componentContext,
+            onLogout = onNavigateToSplashScreen,
+            sessionRepository = get()
         )
     }
 }

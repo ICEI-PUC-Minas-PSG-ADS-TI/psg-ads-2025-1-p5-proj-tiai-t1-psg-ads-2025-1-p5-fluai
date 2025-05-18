@@ -3,6 +3,7 @@ package org.example.project.ui.navigation
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.router.stack.replaceCurrent
@@ -29,6 +30,13 @@ class RootComponent(
         handleBackButton = true,
         childFactory = ::createChild
     )
+
+    private fun logout(){
+        navigation.navigate { listOf(Configuration.SplashScreen) }
+        currentAuthData = null
+        bottomBarController.select(1)
+    }
+
 
     private var currentAuthData: AuthData? = null
 
@@ -76,7 +84,6 @@ class RootComponent(
             )
 
             is Configuration.HomeScreen ->
-
                 Child.HomeScreen(
                 get<HomeViewModel>(parameters = {
                     parametersOf(
@@ -87,10 +94,16 @@ class RootComponent(
             )
 
             is Configuration.UserAccount -> Child.UserAccount(
-                UserAccountViewModel(context)
+                get<UserAccountViewModel>(parameters = {
+                    parametersOf(
+                        context,
+                        ::logout
+                    )
+                })
             )
         }
     }
+
 
 
     fun navigateTo(index: Int){
