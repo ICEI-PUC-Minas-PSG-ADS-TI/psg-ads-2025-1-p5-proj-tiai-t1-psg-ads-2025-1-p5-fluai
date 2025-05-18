@@ -1,6 +1,7 @@
 package org.example.project
 
 import org.example.project.data.database.AppDatabase
+import org.example.project.domain.model.AuthData
 
 interface Platform {
     val name: String?
@@ -11,6 +12,15 @@ interface Platform {
 
 expect fun getPlatform(): Platform
 
+expect class AuthDataSourceImpl() : AuthDataSource{
+    override suspend fun authenticate(email : String, password: String): Result<AuthData>
+
+}
+
+interface AuthDataSource{
+    suspend fun authenticate(email : String, password: String) : Result<AuthData>
+}
+
 internal expect object DatabaseProvider {
-    fun createDatabase(platformContext: Any): AppDatabase
+    fun createDatabase(): AppDatabase
 }
