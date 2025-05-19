@@ -51,10 +51,10 @@ fun LearningPath(
 ){
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Text(text = stringResource(Res.string.learning_path_title), style = PoppinsTypography().h5, fontWeight = FontWeight.SemiBold, modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp))
-            Spacer(modifier = Modifier.height(24.dp))
+            Text(text = stringResource(Res.string.learning_path_title), style = PoppinsTypography().h5, fontWeight = FontWeight.SemiBold, modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             LearningPathBanner(modifier = Modifier.align(Alignment.CenterHorizontally))
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                 TestCards(color = Yellow, title = stringResource(Res.string.learning_path_test_smart_challenges))
                 Spacer(modifier = Modifier.width(16.dp))
