@@ -12,6 +12,7 @@ import kotlinx.serialization.Serializable
 import org.example.project.domain.model.AuthData
 import org.example.project.ui.screens.auth.AuthViewModel
 import org.example.project.ui.screens.home.HomeViewModel
+import org.example.project.ui.screens.learningpath.LearningPathViewModel
 import org.example.project.ui.screens.signup.SignUpViewModel
 import org.example.project.ui.screens.splash.SplashViewModel
 import org.example.project.ui.screens.useraccount.UserAccountViewModel
@@ -101,6 +102,14 @@ class RootComponent(
                     )
                 })
             )
+
+            is Configuration.LearningPath -> Child.LearningPath(
+                get<LearningPathViewModel>(parameters = {
+                    parametersOf(
+                        context
+                    )
+                })
+            )
         }
     }
 
@@ -109,6 +118,7 @@ class RootComponent(
     fun navigateTo(index: Int){
         bottomBarController.select(index)
         when(index){
+            0 -> navigation.replaceCurrent(Configuration.LearningPath)
             1 ->  navigation.replaceCurrent(Configuration.HomeScreen(authData = currentAuthData!!))
             2 -> navigation.replaceCurrent(Configuration.UserAccount)
         }
@@ -122,6 +132,7 @@ class RootComponent(
         data class SignUpScreen(val component: SignUpViewModel) : Child()
         data class HomeScreen(val component: HomeViewModel) : Child()
         data class UserAccount(val component: UserAccountViewModel) : Child()
+        data class LearningPath(val component : LearningPathViewModel): Child()
 
     }
 
@@ -141,5 +152,8 @@ class RootComponent(
 
         @Serializable
         data object UserAccount : Configuration()
+
+        @Serializable
+        data object LearningPath : Configuration()
     }
 }

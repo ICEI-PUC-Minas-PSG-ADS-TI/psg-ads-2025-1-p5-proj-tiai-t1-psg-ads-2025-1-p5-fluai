@@ -28,6 +28,7 @@ import org.example.project.domain.usecase.SignUpUseCase
 import org.example.project.domain.usecase.SignUpUseCaseImpl
 import org.example.project.ui.screens.auth.AuthViewModel
 import org.example.project.ui.screens.home.HomeViewModel
+import org.example.project.ui.screens.learningpath.LearningPathViewModel
 import org.example.project.ui.screens.signup.SignUpViewModel
 import org.example.project.ui.screens.splash.SplashViewModel
 import org.example.project.ui.screens.useraccount.UserAccountViewModel
@@ -95,6 +96,12 @@ val dataModules = module {
             componentContext = componentContext,
             onLogout = onNavigateToSplashScreen,
             sessionRepository = get()
+        )
+    }
+
+    factory { (componentContext: ComponentContext) ->
+        LearningPathViewModel(
+            componentContext = componentContext,
         )
     }
 }

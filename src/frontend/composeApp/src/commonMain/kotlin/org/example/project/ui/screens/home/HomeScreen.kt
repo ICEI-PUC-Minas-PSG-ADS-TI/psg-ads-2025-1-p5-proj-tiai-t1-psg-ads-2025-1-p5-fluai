@@ -39,6 +39,13 @@ import frontend.composeapp.generated.resources.Res
 import frontend.composeapp.generated.resources.card_image_1
 import frontend.composeapp.generated.resources.card_image_2
 import frontend.composeapp.generated.resources.default_avatar
+import frontend.composeapp.generated.resources.home_banner_subtitle
+import frontend.composeapp.generated.resources.home_banner_title
+import frontend.composeapp.generated.resources.home_learning_card_button
+import frontend.composeapp.generated.resources.home_learning_card_title
+import frontend.composeapp.generated.resources.home_learning_progress_text
+import frontend.composeapp.generated.resources.home_study_plan_title
+import frontend.composeapp.generated.resources.home_subtitle_label
 import frontend.composeapp.generated.resources.meetup_image
 import org.example.project.theme.Blue
 import org.example.project.theme.Cyan
@@ -47,6 +54,7 @@ import org.example.project.theme.Orange
 import org.example.project.theme.Purple
 import org.example.project.ui.theme.PoppinsTypography
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun HomeScreen(
@@ -71,7 +79,7 @@ fun HomeScreen(
                         modifier = Modifier.padding(bottom = 6.dp)
                     )
                     Text(
-                        "Vamos começar!",
+                        text = stringResource(Res.string.home_subtitle_label),
                         style = PoppinsTypography().subtitle1,
                         color = Color.White
                     )
@@ -95,7 +103,7 @@ fun HomeScreen(
             item {
                 LearningCard(
                     modifier = Modifier,
-                    title = "O que você quer aprender?",
+                    title = stringResource(Res.string.home_learning_card_title),
                     image = painterResource(Res.drawable.card_image_1),
                 ) {
                     Button(
@@ -104,7 +112,7 @@ fun HomeScreen(
                         shape = RoundedCornerShape(8.dp),
                     ) {
                         Text(
-                            text = "Começar",
+                            text = stringResource(Res.string.home_learning_card_button),
                             style = PoppinsTypography().button,
                             color = Color.White,
                             fontWeight = FontWeight.Bold
@@ -123,53 +131,58 @@ fun HomeScreen(
             modifier = Modifier.padding(horizontal = 18.dp),
             color = Color.Black,
             fontWeight = FontWeight.Medium,
-            text = "Plano de estudo",
+            text = stringResource(Res.string.home_study_plan_title),
             style = PoppinsTypography().h6,
         )
 
         Spacer(modifier = Modifier.height(30.dp))
         LearningProgress()
         Spacer(modifier = Modifier.height(30.dp))
-        Box(
-            modifier = Modifier.fillMaxWidth().height(130.dp).padding(horizontal = 18.dp)
-        ) {
-            Card(
-                modifier = Modifier.fillMaxSize(),
-                backgroundColor = Color(Light_Purple),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Row(modifier = Modifier.fillMaxSize()) {
-                    Box(modifier = Modifier.weight(0.7f)) {
-                        Column(
-                            modifier = Modifier.fillMaxSize()
-                                .padding(horizontal = 16.dp, vertical = 24.dp)
-                        ) {
-                            Text(
-                                text = "FluAI",
-                                color = Color(Purple),
-                                style = PoppinsTypography().h4,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            Text(
-                                text = "Domine o inglês com IA!",
-                                color = Color(Purple),
-                                style = PoppinsTypography().body2,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    }
-                    Image(
-                        modifier = Modifier.weight(0.3f)
-                            .padding(top = 24.dp, bottom = 24.dp, end = 16.dp),
-                        painter = painterResource(Res.drawable.meetup_image),
-                        contentDescription = "",
-                    )
-                }
-            }
-        }
+        HomeBanner()
         Spacer(modifier = Modifier.height(16.dp))
     }
 
+}
+
+@Composable
+private fun HomeBanner() {
+    Box(
+        modifier = Modifier.fillMaxWidth().height(130.dp).padding(horizontal = 18.dp)
+    ) {
+        Card(
+            modifier = Modifier.fillMaxSize(),
+            backgroundColor = Light_Purple,
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Row(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier.weight(0.7f)) {
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 24.dp)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.home_banner_title),
+                            color = Purple,
+                            style = PoppinsTypography().h4,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = stringResource(Res.string.home_banner_subtitle),
+                            color = Purple,
+                            style = PoppinsTypography().body2,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+                Image(
+                    modifier = Modifier.weight(0.3f)
+                        .padding(top = 24.dp, bottom = 24.dp, end = 16.dp),
+                    painter = painterResource(Res.drawable.meetup_image),
+                    contentDescription = "",
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -186,7 +199,7 @@ fun LearningProgress(minutes: Int = 0, goalMinutes: Int = 0) {
             modifier = Modifier.fillMaxWidth().padding(16.dp).background(Color.White)
         ) {
             Text(
-                text = "Aprendizado de hoje",
+                text = stringResource(Res.string.home_learning_progress_text),
                 style = PoppinsTypography().body2,
                 color = Color.Gray,
                 modifier = Modifier
@@ -252,7 +265,5 @@ fun LearningCard(
         Box(modifier = Modifier.align(Alignment.BottomStart).padding(8.dp)) {
             content?.invoke()
         }
-
-
     }
 }
