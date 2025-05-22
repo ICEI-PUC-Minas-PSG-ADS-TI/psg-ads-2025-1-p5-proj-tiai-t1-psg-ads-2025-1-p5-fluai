@@ -4,8 +4,8 @@ from models.lessonModel import Lesson
 import json
 import re
 
-# OLLAMA_URL = "http://ollama:11434/api/generate"
-OLLAMA_URL = "http://localhost:11434/api/generate"
+OLLAMA_URL = "http://ollama:11434/api/generate"  # URL para o Docker
+# OLLAMA_URL = "http://localhost:11434/api/generate" # URL para o localhost
 
 
 def generate_text_from_ollama(prompt):
