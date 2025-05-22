@@ -19,3 +19,12 @@ def get_user_by_email(email):
 def create_user_firebase(email, password):
     user = auth.create_user(email=email, password=password)
     return user
+
+
+def update_user_english_level(english_level, user_id):
+    user = Users.query.get(user_id)
+    if user:
+        user.level = english_level
+        db.session.commit()
+        return user
+    return None
