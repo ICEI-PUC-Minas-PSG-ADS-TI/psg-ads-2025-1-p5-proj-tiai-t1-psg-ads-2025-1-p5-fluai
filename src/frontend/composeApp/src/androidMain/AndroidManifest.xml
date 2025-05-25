@@ -10,7 +10,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/fluai_logo"
         android:label="FluAI"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/fluai_logo"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar"
         android:usesCleartextTraffic="true"
