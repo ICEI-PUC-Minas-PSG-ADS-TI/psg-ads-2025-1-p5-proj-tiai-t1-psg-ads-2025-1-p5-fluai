@@ -12,14 +12,14 @@ def generate_text():
     prompt = data.get("prompt")
 
     if not prompt:
-        return jsonify({"error": "Prompt is required"}), 400
+        return jsonify({"error": "O prompt é obrigatório."}), 400
 
     response = generate_text_from_ollama(prompt)
 
     if response:
         return jsonify({"response": response})
     else:
-        return jsonify({"error": "Failed to generate text"}), 500
+        return jsonify({"error": "Erro ao gerar o texto."}), 500
 
 
 @ollama_bp.route("/generate-level-test", methods=["GET"])
