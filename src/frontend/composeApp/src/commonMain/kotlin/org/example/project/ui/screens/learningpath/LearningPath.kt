@@ -56,7 +56,9 @@ fun LearningPath(
             LearningPathBanner(modifier = Modifier.align(Alignment.CenterHorizontally))
             Spacer(modifier = Modifier.height(32.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                TestCards(color = Yellow, title = stringResource(Res.string.learning_path_test_smart_challenges))
+                TestCards(color = Yellow, title = stringResource(Res.string.learning_path_test_smart_challenges)){
+                    viewModel.onEvent(LearningPathEvent.GoToLevelingTest)
+                }
                 Spacer(modifier = Modifier.width(16.dp))
                 TestCards(color = Light_Blue, title = stringResource(Res.string.learning_path_test_fluency_boost))
             }
@@ -66,7 +68,7 @@ fun LearningPath(
 }
 
 @Composable
-fun TestCards(color: Color, title : String, completed : Int? = 0){
+fun TestCards(color: Color, title: String, completed: Int? = 0, onClick: (() -> Unit?)? = null){
     Box(
         modifier = Modifier.height(190.dp).width(160.dp)
             .background(color, shape = RoundedCornerShape(12.dp))
@@ -90,7 +92,7 @@ fun TestCards(color: Color, title : String, completed : Int? = 0){
             modifier = Modifier.align(Alignment.BottomEnd).padding(12.dp).size(40.dp).clip(CircleShape).background(Blue),
             contentAlignment = Alignment.Center
         ) {
-            IconButton(onClick = {}){
+            IconButton(onClick = {onClick?.invoke()}){
                 Icon(
                     imageVector = Icons.Filled.PlayArrow,
                     contentDescription = "Play",

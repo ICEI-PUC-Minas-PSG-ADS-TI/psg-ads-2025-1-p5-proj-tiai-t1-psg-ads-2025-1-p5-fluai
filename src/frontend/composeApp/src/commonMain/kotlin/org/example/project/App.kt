@@ -17,6 +17,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import org.example.project.ui.screens.auth.AuthScreen
 import org.example.project.ui.screens.home.HomeScreen
 import org.example.project.ui.screens.learningpath.LearningPath
+import org.example.project.ui.screens.levelingtest.LevelingTest
 import org.example.project.ui.screens.signup.SignUpScreen
 import org.example.project.ui.screens.splash.SplashScreen
 import org.example.project.ui.screens.useraccount.UserAccount
@@ -58,6 +59,7 @@ fun App(rootComponent: RootComponent){
                     is RootComponent.Child.HomeScreen -> HomeScreen(targetChild.component)
                     is RootComponent.Child.UserAccount -> UserAccount(targetChild.component)
                     is RootComponent.Child.LearningPath -> LearningPath(targetChild.component)
+                    is RootComponent.Child.LevelingTest -> LevelingTest(targetChild.component)
                 }
             }
 

@@ -13,6 +13,7 @@ import org.example.project.domain.model.AuthData
 import org.example.project.ui.screens.auth.AuthViewModel
 import org.example.project.ui.screens.home.HomeViewModel
 import org.example.project.ui.screens.learningpath.LearningPathViewModel
+import org.example.project.ui.screens.levelingtest.LevelingTestViewModel
 import org.example.project.ui.screens.signup.SignUpViewModel
 import org.example.project.ui.screens.splash.SplashViewModel
 import org.example.project.ui.screens.useraccount.UserAccountViewModel
@@ -106,6 +107,15 @@ class RootComponent(
             is Configuration.LearningPath -> Child.LearningPath(
                 get<LearningPathViewModel>(parameters = {
                     parametersOf(
+                        context,
+                        { navigation.pushToFront(Configuration.LevelingTest) }
+                    )
+                })
+            )
+
+            is Configuration.LevelingTest -> Child.LevelingTest(
+                get<LevelingTestViewModel>(parameters = {
+                    parametersOf(
                         context
                     )
                 })
@@ -133,7 +143,7 @@ class RootComponent(
         data class HomeScreen(val component: HomeViewModel) : Child()
         data class UserAccount(val component: UserAccountViewModel) : Child()
         data class LearningPath(val component : LearningPathViewModel): Child()
-
+        data class LevelingTest(val component: LevelingTestViewModel): Child()
     }
 
     @Serializable
@@ -155,5 +165,8 @@ class RootComponent(
 
         @Serializable
         data object LearningPath : Configuration()
+
+        @Serializable
+        data object LevelingTest : Configuration()
     }
 }

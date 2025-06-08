@@ -23,6 +23,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,69 +34,144 @@ import androidx.compose.ui.unit.dp
 import frontend.composeapp.generated.resources.Res
 import frontend.composeapp.generated.resources.educator
 import org.example.project.theme.Blue
+import org.example.project.ui.components.dialog.showErrorDialog
+import org.example.project.ui.components.loading.LoadingComponent
+import org.example.project.ui.screens.signup.SignUpResult
+import org.example.project.ui.state.rememberUiCommonState
 import org.example.project.ui.theme.PoppinsTypography
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun LevelingTest() {
+fun LevelingTest(
+    viewModel: LevelingTestViewModel
+) {
+
+    val uiState = rememberUiCommonState()
+
+
+    LaunchedEffect(Unit){
+        viewModel.getQuestion()
+    }
+
+    val currentQuestion = viewModel.questions[viewModel.currentQuestionIndex]
+
+    LaunchedEffect(viewModel.levelingTestResult){
+        viewModel.levelingTestResult.collect { result ->
+            when(result){
+                is LevelingTestResult.Success -> {
+                    uiState.showCircularProgressBar.value = false
+                }
+
+                is LevelingTestResult.Loading -> uiState.showCircularProgressBar.value = true
+
+                is LevelingTestResult.Error -> {
+                    uiState.showCircularProgressBar.value = false
+                    uiState.isDisplayDialogError.value = true
+                    uiState.errorMessage.value = result.message
+                }
+            }
+        }
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar()
+            if (viewModel.questions.isNotEmpty()){
+                TopAppBar(currentQuestions = viewModel.currentQuestionIndex + 1 , viewModel.questions.size)
+            }else{
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White)
+                        .padding(vertical = 12.dp)
+                ) {
+                    ProgressBar(
+                        currentQuestion = 0,
+                        totalQuestions = 0,
+                        onClose = {}
+                    )
+                }
+            }
         }
     ) { paddingValues ->
+        showErrorDialog(isDisplayDialogError = uiState.isDisplayDialogError, errorMessage = uiState.errorMessage.value)
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            val answers = listOf("on vacation", "in vacation")
-
             Spacer(modifier = Modifier.height(60.dp))
             LevelingTestImage()
             Spacer(modifier = Modifier.height(32.dp))
-            LevelingTestQuestion(question = "Did you know that in the USA people say “____________”, but in the UK people normally say “on holiday”?", answers = answers, {})
+            LevelingTestQuestion(question = currentQuestion.question, options = currentQuestion.options) { formattedAnswer ->
+                viewModel.onEvent(LevelingTestEvent.SubmitAnswer(formattedAnswer))
+            }
         }
+        LoadingComponent(uiState.showCircularProgressBar.value)
     }
 }
 
 
 @Composable
-fun LevelingTestQuestion(question: String, answers : List<String>, onOptionSelected : (String) -> Unit){
+fun LevelingTestQuestion(question: String, options : List<String>, onOptionSelected : (String) -> Unit){
     Text(text = question, style = PoppinsTypography().h6, color = Color.Black, fontWeight = FontWeight.Normal, modifier = Modifier.padding(horizontal = 16.dp))
     Spacer(modifier = Modifier.height(24.dp))
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-        answers.forEach {
-            AnswerButton(text = it, onClick = {})
+        options.forEachIndexed { index, answer ->
+            AnswerButton(
+                text = answer,
+                letter = ('a' + index).toString(),
+                onClick = {
+                    val formated = formatAnswer(question, answer, index)
+                    onOptionSelected(formated)
+            })
         }
     }
 }
 
+fun formatAnswer(question: String, answer: String, index : Int) : String{
+    val completedQuestion = question.replace("____", answer)
+
+    val optionLetter = "(${('a' + index)})"
+
+    return "$completedQuestion → $optionLetter $answer"
+}
+
 @Composable
-fun AnswerButton(text : String, onClick : () -> Unit){
+fun AnswerButton(text : String, letter : String, onClick : () -> Unit){
     Box(
         modifier = Modifier
         .clip(RoundedCornerShape(50))
         .background(Color(0xFFEFEFFF))
         .border(1.dp, Color(0xFF8888AA), RoundedCornerShape(50))
         .padding(horizontal = 20.dp, vertical = 12.dp)
-        .clickable {
-            onClick()
-        }
+        .clickable(onClick = onClick)
     ){
-        Text(text = text, color = Color.Black, style = PoppinsTypography().button)
+        Row{
+            Text(
+                text = "$letter)",
+                color = Color.Black,
+                style = PoppinsTypography().button,
+                modifier = Modifier.padding(end = 4.dp)
+            )
+            Text(
+                text = text,
+                color = Color.Black,
+                style = PoppinsTypography().button
+            )
+        }
     }
 }
 
 @Composable
-fun TopAppBar() {
+fun TopAppBar(currentQuestions: Int, totalQuestions: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        ProgressBar(currentQuestion = 0, totalQuestions = 0, onClose = {})
+        ProgressBar(currentQuestion = currentQuestions, totalQuestions = totalQuestions, onClose = {})
 
         Spacer(
             modifier = Modifier

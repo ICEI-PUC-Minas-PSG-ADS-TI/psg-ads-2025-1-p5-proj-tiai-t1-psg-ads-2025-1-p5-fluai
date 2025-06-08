@@ -12,23 +12,30 @@ import org.example.project.DatabaseProvider
 import org.example.project.data.database.AppDatabase
 import org.example.project.data.database.local.user.UserLocalDataSource
 import org.example.project.data.database.local.user.UserLocalDataSourceImpl
+import org.example.project.data.networking.LevelingTestNetworking
+import org.example.project.data.networking.LevelingTestNetworkingImpl
 import org.example.project.data.networking.SignUpNetworking
 import org.example.project.data.networking.SignUpNetworkingImpl
 import org.example.project.data.repository.AuthRepositoryImpl
+import org.example.project.data.repository.LevelingTestRepositoryImpl
 import org.example.project.data.repository.SessionRepositoryImpl
 import org.example.project.data.repository.SignUpRepositoryImpl
 import org.example.project.domain.model.AuthData
 import org.example.project.domain.repository.AuthRepository
+import org.example.project.domain.repository.LevelingTestRepository
 import org.example.project.domain.repository.SessionRepository
 import org.example.project.domain.repository.SignUpRepository
 import org.example.project.domain.service.KtorApiClient
 import org.example.project.domain.usecase.AuthUseCase
 import org.example.project.domain.usecase.AuthUseCaseImpl
+import org.example.project.domain.usecase.LevelingTestUseCase
+import org.example.project.domain.usecase.LevelingTestUseCaseImpl
 import org.example.project.domain.usecase.SignUpUseCase
 import org.example.project.domain.usecase.SignUpUseCaseImpl
 import org.example.project.ui.screens.auth.AuthViewModel
 import org.example.project.ui.screens.home.HomeViewModel
 import org.example.project.ui.screens.learningpath.LearningPathViewModel
+import org.example.project.ui.screens.levelingtest.LevelingTestViewModel
 import org.example.project.ui.screens.signup.SignUpViewModel
 import org.example.project.ui.screens.splash.SplashViewModel
 import org.example.project.ui.screens.useraccount.UserAccountViewModel
@@ -54,6 +61,11 @@ val dataModules = module {
 
     single<AuthUseCase> {AuthUseCaseImpl(get())}
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
+
+    single<LevelingTestUseCase> {LevelingTestUseCaseImpl(get())}
+    single<LevelingTestRepository> {LevelingTestRepositoryImpl(get())}
+    single<LevelingTestNetworking> {LevelingTestNetworkingImpl(httpClient = KtorApiClient.getClient(""))}
+
 
     factory { (componentContext: ComponentContext, onNavigateToAuth: () -> Unit, onNavigateToAuthBySignUp: () -> Unit) ->
         SignUpViewModel(
@@ -99,9 +111,17 @@ val dataModules = module {
         )
     }
 
-    factory { (componentContext: ComponentContext) ->
+    factory { (componentContext: ComponentContext, onNavigateToLevelingTest : () -> Unit) ->
         LearningPathViewModel(
             componentContext = componentContext,
+            onNavigateToLevelingTest = onNavigateToLevelingTest
+        )
+    }
+
+    factory { (componentContext: ComponentContext) ->
+        LevelingTestViewModel(
+            componentContext = componentContext,
+            levelingTestUseCase = get()
         )
     }
 }
