@@ -118,7 +118,9 @@ private fun ColumnScope.LoginForm(
         onChange = viewModel::onTextPasswordChange
     )
 
-    TextButton(modifier = Modifier.Companion.align(Alignment.End), onClick = {}) {
+    TextButton(modifier = Modifier.Companion.align(Alignment.End), onClick = {
+        viewModel.onEvent(AuthScreenEvent.GoToForgotPassword)
+    }) {
         Text(
             text = stringResource(Res.string.auth_text_button_forget_password),
             fontWeight = FontWeight.W400,

@@ -23,7 +23,8 @@ sealed class AuthResult(message: String) {
 
 class AuthViewModel(
     componentContext: ComponentContext,
-    private val onNavigateToSignUp : () -> Unit
+    private val onNavigateToSignUp : () -> Unit,
+    private val onNavigateToForgotPassword : () -> Unit
 ) : ComponentContext by componentContext{
 
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -53,6 +54,7 @@ class AuthViewModel(
     fun onEvent(event : AuthScreenEvent){
         when(event){
             AuthScreenEvent.GoToSignUp -> onNavigateToSignUp()
+            AuthScreenEvent.GoToForgotPassword -> onNavigateToForgotPassword()
         }
     }
 }
@@ -68,4 +70,5 @@ private fun isValidPassword(password: String): Boolean {
 
 sealed interface AuthScreenEvent {
     data object GoToSignUp : AuthScreenEvent
+    data object GoToForgotPassword : AuthScreenEvent
 }

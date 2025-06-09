@@ -9,6 +9,7 @@ import com.arkivanov.decompose.router.stack.replaceCurrent
 import org.koin.core.component.get
 import kotlinx.serialization.Serializable
 import org.example.project.ui.screens.auth.AuthViewModel
+import org.example.project.ui.screens.forgotpassword.ForgotPasswordViewModel
 import org.example.project.ui.screens.signup.SignUpViewModel
 import org.example.project.ui.screens.splash.SplashViewModel
 import org.koin.core.parameter.parametersOf
@@ -49,12 +50,25 @@ class RootComponent(
                     onNavigateToSignUp = {
                         navigation.pushToFront(Configuration.SignUpScreen)
                     }
+                    ,
+                    onNavigateToForgotPassword = {
+                        navigation.pushToFront(Configuration.ForgotPasswordScreen)
+                    }
                 )
             )
             is Configuration.SignUpScreen -> Child.SignUpScreen(
                 get<SignUpViewModel>(parameters = {
                    parametersOf(context, {navigation.pushToFront(Configuration.AuthScreen)}, {navigation.replaceCurrent(Configuration.AuthScreen)})
                })
+            )
+
+            Configuration.ForgotPasswordScreen -> Child.ForgotPasswordScreen(
+                get<ForgotPasswordViewModel>(parameters = {
+                    parametersOf(
+                        context,
+                        { navigation.replaceCurrent(Configuration.AuthScreen) }
+                    )
+                })
             )
         }
     }
@@ -63,6 +77,7 @@ class RootComponent(
         data class SplashScreen(val component: SplashViewModel) : Child()
         data class AuthScreen(val component: AuthViewModel) : Child()
         data class SignUpScreen(val component : SignUpViewModel) : Child()
+        data class ForgotPasswordScreen(val component : ForgotPasswordViewModel) : Child()
     }
 
     @Serializable
@@ -73,5 +88,7 @@ class RootComponent(
         data object AuthScreen: Configuration()
         @Serializable
         data object SignUpScreen : Configuration()
+        @Serializable
+        data object ForgotPasswordScreen : Configuration()
     }
 }
