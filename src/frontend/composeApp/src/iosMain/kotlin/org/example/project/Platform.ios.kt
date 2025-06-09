@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.sqlite.driver.NativeSQLiteDriver
 import kotlinx.coroutines.Dispatchers
 import org.example.project.data.database.AppDatabase
+import org.example.project.domain.model.AuthData
 
 class IOSPlatform(
     override val isDebug: Boolean? = null,
@@ -21,7 +22,7 @@ actual fun getPlatform(): Platform = IOSPlatform()
 internal actual object DatabaseProvider {
     private const val DB_NAME = "app_database.db"
 
-    actual fun createDatabase(platformContext: Any): AppDatabase {
+    actual fun createDatabase(): AppDatabase {
         val dbPath = platformContext as String
 
         return Room.databaseBuilder<AppDatabase>(
@@ -34,3 +35,11 @@ internal actual object DatabaseProvider {
     }
 }
 
+actual class AuthDataSourceImpl actual constructor() : AuthDataSource {
+    actual override suspend fun authenticate(
+        email: String,
+        password: String
+    ): Result<AuthData> {
+        TODO("Not yet implemented")
+    }
+}

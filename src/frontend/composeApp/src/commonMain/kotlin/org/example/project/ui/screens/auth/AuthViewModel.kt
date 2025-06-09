@@ -1,71 +1,49 @@
 package org.example.project.ui.screens.auth
 
 import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-
-data class AuthUiState(
-    val isLoading: Boolean = false,
-    val textEmail: String = "",
-    val textPassword: String = "",
-    val isErrorEmail: Boolean = false,
-    val isErrorPassword: Boolean = false,
-    val loginResult: AuthResult? = null,
-    val goToHome: Boolean = false
-)
-
-sealed class AuthResult(message: String) {
-    data object Success : AuthResult(message = "Sucesso!")
-    data object Error : AuthResult(message = "Error")
-}
+import kotlinx.coroutines.launch
+import org.example.project.domain.usecase.AuthUseCase
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import org.example.project.domain.model.AuthData
+import org.example.project.ui.extensions.coroutineScope
 
 
 class AuthViewModel(
     componentContext: ComponentContext,
-    private val onNavigateToSignUp : () -> Unit
-) : ComponentContext by componentContext{
+    private val authUseCase: AuthUseCase,
+    private val onNavigateToSignUp: () -> Unit,
+    private val onNavigationToHome: (AuthData) -> Unit
+) : ComponentContext by componentContext {
 
-    private val _uiState = MutableStateFlow(AuthUiState())
-    val uiState = _uiState.asStateFlow()
+    private val _authStateResult = MutableSharedFlow<AuthResult>()
+    val authStateResult = _authStateResult.asSharedFlow()
 
-    fun onTextPasswordChange(password : String){
-        val isPasswordValid = isValidPassword(password)
-        _uiState.update{
-            it.copy(
-                textPassword = password,
-                isErrorPassword = isPasswordValid.not()
-            )
-        }
+
+    private suspend fun sendUserData(email: String, password: String) {
+        _authStateResult.emit(AuthResult.Loading)
+        val result = authUseCase.authenticate(email = email, password = password)
+        result
+            .onSuccess {
+                _authStateResult.emit(AuthResult.Success(it))
+                onNavigationToHome.invoke(it)
+            }
+            .onFailure {
+                _authStateResult.emit(AuthResult.Error(message = it.message ?: "Erro Desconhecido"))
+            }
     }
 
-    fun onTextEmailChange(email: String) {
-        val isEmailValid = isValidEmail(email)
-        _uiState.update {
-            it.copy(
-                textEmail = email,
-                isErrorEmail = isEmailValid.not()
-            )
-        }
+    private val scope = coroutineScope
 
-    }
-
-    fun onEvent(event : AuthScreenEvent){
-        when(event){
-            AuthScreenEvent.GoToSignUp -> onNavigateToSignUp()
+    fun onEvent(event: AuthScreenEvent) {
+        when (event) {
+            is AuthScreenEvent.GoToSignUp -> onNavigateToSignUp()
+            is AuthScreenEvent.GoToHome -> onNavigateToSignUp()
+            is AuthScreenEvent.SignIn -> {
+                scope.launch {
+                    sendUserData(email = event.email, password = event.password)
+                }
+            }
         }
     }
-}
-
-private fun isValidEmail(email: String): Boolean {
-    val emailRegex = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+".toRegex()
-    return email.matches(emailRegex)
-}
-
-private fun isValidPassword(password: String): Boolean {
-    return password.length > 3
-}
-
-sealed interface AuthScreenEvent {
-    data object GoToSignUp : AuthScreenEvent
 }

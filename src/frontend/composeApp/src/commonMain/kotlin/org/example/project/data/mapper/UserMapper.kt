@@ -2,6 +2,7 @@ package org.example.project.data.mapper
 
 import org.example.project.data.database.entities.UserEntity
 import org.example.project.data.dto.UserRequestDto
+import org.example.project.domain.model.AuthData
 import org.example.project.domain.model.User
 
 fun User.toDto(): UserRequestDto {
@@ -20,10 +21,13 @@ fun UserRequestDto.toDomain(): User {
     )
 }
 
-fun User.toEntity(): UserEntity{
-    return UserEntity(
+fun UserEntity.toAuthData(): AuthData{
+    return AuthData(
+        email = email,
+        uuid = uid,
         username = username,
-        password = password,
-        email = email
+        token = authToken,
+        isLogged = isLogged
     )
 }
+
