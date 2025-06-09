@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
-from services.userService import update_user_english_level
-from services.ollamaService import generate_text_from_ollama, save_lessons, clean_and_parse_json
+import re
+from services.userService import update_user_english_level, get_user_by_email
+from services.ollamaService import generate_text_from_ollama, save_lessons, clean_and_parse_json, save_test_lessons
 import json
 
 ollama_bp = Blueprint("ollama", __name__)
@@ -34,14 +35,9 @@ def generate_level_test():
                 question = q["question"]
                 answer = q["answer"]
                 options = q["options"]
-                save_lessons(question, answer, "leveling test", options)
+                save_test_lessons(question, answer, "leveling test", options)
             except KeyError:
                 continue
-
-    if response:
-        return jsonify({"questions": response})
-    else:
-        return jsonify({"error": "Erro ao gerar teste com a IA."}), 500
 
         if response:
             return jsonify({"response": "Teste de nivelamento gerado com sucesso."}), 200
@@ -49,30 +45,6 @@ def generate_level_test():
             return jsonify({"error": "Erro ao gerar teste com a IA."}), 500
     except json.JSONDecodeError:
         return jsonify({"error": "Resposta inválida da IA."}), 500
-
-
-@ollama_bp.route("/define-user-english-level", methods=["GET"])
-def define_user_english_level():
-    try:
-        data = request.get_json()
-        user_id = data.get("user_id")
-        questions = data.get("questions")
-        prompt = f"Você é um avaliador de proficiência em inglês. Baseado nas respostas do usuário nas perguntas abaixo, classifique diretamente o nível de inglês do usuário segundo o Quadro Europeu Comum de Referência para Línguas (A1, A2, B1, B2, C1 ou C2). Apenas retorne o nível, sem qualquer explicação, comentário ou texto adicional. Perguntas e respostas do usuário: {questions}. Responda apenas com apenas UM dos seguintes níveis: A1, A2, B1, B2, C1 ou C2"
-
-        response = generate_text_from_ollama(prompt)
-
-        if not response:
-            return jsonify({"error": "Erro ao definir nível de inglês com a IA."}), 400
-
-        user = update_user_english_level(response, user_id)
-
-        if not user:
-            return jsonify({"error": "Erro ao definir nível de inglês."}), 400
-
-        return jsonify({"response": f"Nível de inglês definido como {user.level}."}), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 
 @ollama_bp.route("/evaluate-level-test", methods=["POST"])
@@ -128,7 +100,6 @@ def generate_custom_activity():
     if not email:
         return jsonify({"error": "Email é obrigatório"}), 400
 
-    from services.userService import get_user_by_email
     user = get_user_by_email(email)
 
     if not user:
@@ -137,31 +108,35 @@ def generate_custom_activity():
     user_level = user.level or "A1"
     progress = user.progress_history or "sem histórico registrado"
 
-    prompt = (
-        f"Crie um JSON com 5 questões de múltipla escolha para o nível {user_level} "
-        f"focadas em tópicos que o usuário tem dificuldade: {progress}. "
-        "O JSON deve ter o formato: "
-        "[{'question': '...', 'options': ['a)...','b)...','c)...','d)...'], 'answer': '...'}]. "
-        "As questões devem cobrir aspectos como: collocations, modals, prepositions, phrasal verbs."
-    )
+    print(f"Nível do usuário: {user_level}")
+    print(f"Histórico de progresso: {progress}")
 
-    from services.ollamaService import generate_text_from_ollama, save_lessons
-    import json
+    prompt = (
+        f"Crie um array JSON com exatamente 5 objetos. Cada objeto representa uma questão de múltipla escolha de preenchimento de lacunas, adequada ao nível {user_level}, com base nos tópicos: {progress}. "
+        "Cada objeto deve conter: "
+        "\"question\": uma frase com lacuna, "
+        "\"options\": um array com 4 alternativas no formato ['a) ...', 'b) ...', 'c) ...', 'd) ...'], "
+        "\"answer\": a alternativa correta exatamente como em options, como 'b) take'. "
+        "Os temas devem incluir verb patterns, collocations, phrasal verbs, prepositions e modal verbs. "
+        "Responda com um único array JSON válido e compacto, sem explicações, sem marcações como <think>, sem comentários, sem formatação Markdown ou código. Apenas o JSON puro, em uma única linha."
+    )
 
     response = generate_text_from_ollama(prompt)
 
-    if not response:
-        return jsonify({"error": "Erro ao gerar questões personalizadas."}), 500
+    match = re.search(r"\[.*\]", response, re.DOTALL)
+    if not match:
+        return jsonify({"error": "Resposta da IA não contém um JSON válido."}), 500
+
+    json_text = match.group(0)
 
     try:
-        questions = json.loads(response)
+        questions = json.loads(json_text)
         for q in questions:
-            save_lessons(
-                question=q["question"],
-                answer=q["answer"],
-                description="atividade personalizada",
-                options=q["options"]
-            )
+            question = q["question"]
+            answer = q["answer"]
+            options = q["options"]
+            save_lessons(question, answer, "custom activity",
+                         user_level, options)
     except Exception as e:
         return jsonify({"error": f"Erro ao processar resposta da IA: {str(e)}"}), 500
 
