@@ -38,7 +38,11 @@ class HomeViewModel(
             val emailRequest = Email(authData.email)
             val response = homeUseCase.verifyLevelingTest(emailRequest)
             response.onSuccess {
-                _showTestDialog.value = true
+                if (it){
+                    _showTestDialog.value = true
+                }else{
+                    _showTestDialog.value = false
+                }
             }
         }
     }
