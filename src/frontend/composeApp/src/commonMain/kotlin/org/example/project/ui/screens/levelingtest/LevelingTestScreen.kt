@@ -90,7 +90,9 @@ fun LevelingTest(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             if (viewModel.questions.isNotEmpty()){
-                TopAppBar(currentQuestions = viewModel.currentQuestionIndex + 1 , viewModel.questions.size)
+                TopAppBar(currentQuestions = viewModel.currentQuestionIndex + 1 , viewModel.questions.size){
+                    viewModel.onEvent(LevelingTestEvent.GoToHome)
+                }
             }else{
                 Column(
                     modifier = Modifier
@@ -101,8 +103,8 @@ fun LevelingTest(
                     ProgressBar(
                         currentQuestion = 0,
                         totalQuestions = 0,
-                        onClose = {
-                            viewModel.onEvent(LevelingTestEvent.GoToHome)
+                        {
+
                         }
                     )
                 }
@@ -212,14 +214,14 @@ fun AnswerButton(text : String, onClick : () -> Unit){
 }
 
 @Composable
-fun TopAppBar(currentQuestions: Int, totalQuestions: Int) {
+fun TopAppBar(currentQuestions: Int, totalQuestions: Int, onClose : () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        ProgressBar(currentQuestion = currentQuestions, totalQuestions = totalQuestions, onClose = {})
+        ProgressBar(currentQuestion = currentQuestions, totalQuestions = totalQuestions, onClose = onClose)
 
         Spacer(
             modifier = Modifier

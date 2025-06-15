@@ -25,7 +25,7 @@ class LevelingTestNetworkingImpl(
     override suspend fun submitAnswer(answer : LevelingTestAnswers): Result<String> {
         println(answer)
        return safeApiCall {
-           httpClient.get(urlString = "http://10.0.2.2:5050/ollama/define-user-english-level"){
+           httpClient.post(urlString = "http://10.0.2.2:5050/ollama/define-user-english-level"){
                contentType(ContentType.Application.Json)
                setBody(answer)
            }.body()
