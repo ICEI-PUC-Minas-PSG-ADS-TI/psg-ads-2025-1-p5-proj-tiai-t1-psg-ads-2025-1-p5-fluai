@@ -111,18 +111,20 @@ val dataModules = module {
         )
     }
 
-    factory { (componentContext: ComponentContext, onNavigateToLevelingTest : () -> Unit) ->
+    factory { (componentContext: ComponentContext, authData: AuthData, onNavigateToLevelingTest : (AuthData) -> Unit) ->
         LearningPathViewModel(
             componentContext = componentContext,
+            authData = authData,
             onNavigateToLevelingTest = onNavigateToLevelingTest
         )
     }
 
-    factory { (componentContext: ComponentContext) ->
+    factory { (componentContext: ComponentContext, authData: AuthData, onNavigateToHome : (AuthData) -> Unit) ->
         LevelingTestViewModel(
             componentContext = componentContext,
-            levelingTestUseCase = get()
+            levelingTestUseCase = get(),
+            authData = authData,
+            onNavigateToHome = onNavigateToHome
         )
     }
 }
-

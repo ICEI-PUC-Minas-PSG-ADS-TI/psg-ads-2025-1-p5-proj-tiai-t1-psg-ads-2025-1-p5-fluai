@@ -24,6 +24,7 @@ class RootComponent(
     componentContext: ComponentContext
 ) : ComponentContext by componentContext, KoinComponent {
 
+
     private val navigation = StackNavigation<Configuration>()
     val childStack = childStack(
         source = navigation,
@@ -32,6 +33,8 @@ class RootComponent(
         handleBackButton = true,
         childFactory = ::createChild
     )
+
+    val currentConfig = childStack.value.active.configuration
 
     private fun logout(){
         navigation.navigate { listOf(Configuration.SplashScreen) }
@@ -108,7 +111,11 @@ class RootComponent(
                 get<LearningPathViewModel>(parameters = {
                     parametersOf(
                         context,
-                        { navigation.pushToFront(Configuration.LevelingTest) }
+                        config.authData,
+                        { authData : AuthData ->
+                            currentAuthData = authData
+                            navigation.replaceCurrent(Configuration.LevelingTest(authData = authData ))
+                        }
                     )
                 })
             )
@@ -116,7 +123,13 @@ class RootComponent(
             is Configuration.LevelingTest -> Child.LevelingTest(
                 get<LevelingTestViewModel>(parameters = {
                     parametersOf(
-                        context
+                        context,
+                        config.authData,
+                        { authData : AuthData ->
+                            currentAuthData = authData
+                            bottomBarController.select(1)
+                            navigation.replaceCurrent(Configuration.HomeScreen(authData = authData))
+                        }
                     )
                 })
             )
@@ -128,7 +141,7 @@ class RootComponent(
     fun navigateTo(index: Int){
         bottomBarController.select(index)
         when(index){
-            0 -> navigation.replaceCurrent(Configuration.LearningPath)
+            0 -> navigation.replaceCurrent(Configuration.LearningPath(authData = currentAuthData!!))
             1 ->  navigation.replaceCurrent(Configuration.HomeScreen(authData = currentAuthData!!))
             2 -> navigation.replaceCurrent(Configuration.UserAccount)
         }
@@ -164,9 +177,9 @@ class RootComponent(
         data object UserAccount : Configuration()
 
         @Serializable
-        data object LearningPath : Configuration()
+        data class LearningPath(val authData: AuthData) : Configuration()
 
         @Serializable
-        data object LevelingTest : Configuration()
+        data class LevelingTest(val authData: AuthData) : Configuration()
     }
 }

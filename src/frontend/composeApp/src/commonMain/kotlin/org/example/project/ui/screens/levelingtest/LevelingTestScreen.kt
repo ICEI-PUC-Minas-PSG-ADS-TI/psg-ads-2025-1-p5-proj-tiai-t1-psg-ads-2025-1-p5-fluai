@@ -7,6 +7,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -24,6 +27,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +40,7 @@ import frontend.composeapp.generated.resources.Res
 import frontend.composeapp.generated.resources.educator
 import org.example.project.theme.Blue
 import org.example.project.ui.components.dialog.showErrorDialog
+import org.example.project.ui.components.dialog.showSuccessDialog
 import org.example.project.ui.components.loading.LoadingComponent
 import org.example.project.ui.screens.signup.SignUpResult
 import org.example.project.ui.state.rememberUiCommonState
@@ -53,9 +59,10 @@ fun LevelingTest(
         viewModel.getQuestion()
     }
 
-    val currentQuestion = viewModel.questions[viewModel.currentQuestionIndex]
+    val message = remember { mutableStateOf<String>("") }
 
-    LaunchedEffect(viewModel.levelingTestResult){
+
+    LaunchedEffect(Unit){
         viewModel.levelingTestResult.collect { result ->
             when(result){
                 is LevelingTestResult.Success -> {
@@ -69,6 +76,12 @@ fun LevelingTest(
                     uiState.isDisplayDialogError.value = true
                     uiState.errorMessage.value = result.message
                 }
+
+                is LevelingTestResult.Completed -> {
+                    message.value = result.message
+                    uiState.isDisplaySuccessDialog.value = true
+                }
+                else -> Unit
             }
         }
     }
@@ -88,75 +101,110 @@ fun LevelingTest(
                     ProgressBar(
                         currentQuestion = 0,
                         totalQuestions = 0,
-                        onClose = {}
+                        onClose = {
+                            viewModel.onEvent(LevelingTestEvent.GoToHome)
+                        }
                     )
                 }
             }
         }
     ) { paddingValues ->
         showErrorDialog(isDisplayDialogError = uiState.isDisplayDialogError, errorMessage = uiState.errorMessage.value)
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Spacer(modifier = Modifier.height(60.dp))
-            LevelingTestImage()
-            Spacer(modifier = Modifier.height(32.dp))
-            LevelingTestQuestion(question = currentQuestion.question, options = currentQuestion.options) { formattedAnswer ->
-                viewModel.onEvent(LevelingTestEvent.SubmitAnswer(formattedAnswer))
-            }
+        showSuccessDialog(isDisplaySuccessDialog = uiState.isDisplaySuccessDialog, message = message.value){
+            viewModel.onEvent(LevelingTestEvent.GoToHome)
         }
         LoadingComponent(uiState.showCircularProgressBar.value)
+        if (!uiState.showCircularProgressBar.value && viewModel.questions.isNotEmpty()){
+            val currentQuestion = viewModel.questions[viewModel.currentQuestionIndex]
+            QuestionContent(
+                question = currentQuestion.question,
+                options = currentQuestion.optionList(),
+                onOptionSelected = { formattedAnswer ->
+                    viewModel.onEvent(LevelingTestEvent.SubmitAnswer(formattedAnswer))
+                },
+                paddingValues = paddingValues
+            )
+        }
     }
 }
 
 
+@Composable
+fun QuestionContent(
+    question: String,
+    options: List<String>,
+    onOptionSelected: (String) -> Unit,
+    paddingValues: PaddingValues
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
+        Spacer(modifier = Modifier.height(60.dp))
+        LevelingTestImage()
+        Spacer(modifier = Modifier.height(32.dp))
+        LevelingTestQuestion(
+            question = question,
+            options = options,
+            onOptionSelected = onOptionSelected
+        )
+    }
+}
+
+
+@Composable
+fun EmptyState() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text("No questions available")
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LevelingTestQuestion(question: String, options : List<String>, onOptionSelected : (String) -> Unit){
     Text(text = question, style = PoppinsTypography().h6, color = Color.Black, fontWeight = FontWeight.Normal, modifier = Modifier.padding(horizontal = 16.dp))
     Spacer(modifier = Modifier.height(24.dp))
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+    FlowRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         options.forEachIndexed { index, answer ->
             AnswerButton(
                 text = answer,
-                letter = ('a' + index).toString(),
                 onClick = {
-                    val formated = formatAnswer(question, answer, index)
+                    val formated = formatAnswer(question, answer)
                     onOptionSelected(formated)
-            })
+                })
         }
     }
 }
 
-fun formatAnswer(question: String, answer: String, index : Int) : String{
-    val completedQuestion = question.replace("____", answer)
-
-    val optionLetter = "(${('a' + index)})"
-
-    return "$completedQuestion → $optionLetter $answer"
+fun formatAnswer(question: String, answer: String) : String{
+    return "$question → $answer"
 }
 
 @Composable
-fun AnswerButton(text : String, letter : String, onClick : () -> Unit){
+fun AnswerButton(text : String, onClick : () -> Unit){
     Box(
         modifier = Modifier
-        .clip(RoundedCornerShape(50))
+        .clip(RoundedCornerShape(22))
         .background(Color(0xFFEFEFFF))
-        .border(1.dp, Color(0xFF8888AA), RoundedCornerShape(50))
+        .border(1.dp, Color(0xFF8888AA), RoundedCornerShape(22))
         .padding(horizontal = 20.dp, vertical = 12.dp)
         .clickable(onClick = onClick)
     ){
         Row{
             Text(
-                text = "$letter)",
-                color = Color.Black,
-                style = PoppinsTypography().button,
-                modifier = Modifier.padding(end = 4.dp)
-            )
-            Text(
                 text = text,
                 color = Color.Black,
+                fontWeight = FontWeight.Bold,
                 style = PoppinsTypography().button
             )
         }
@@ -223,7 +271,7 @@ fun ProgressBar(
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = {}){
+        IconButton(onClick = onClose){
             Icon(Icons.Default.Close, contentDescription = "Fechar", tint = Color.Black)
         }
         Spacer(modifier = Modifier.width(8.dp))

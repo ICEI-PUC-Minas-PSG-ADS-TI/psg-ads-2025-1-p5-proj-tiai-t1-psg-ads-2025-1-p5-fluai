@@ -3,8 +3,11 @@ package org.example.project.data.networking
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import org.example.project.domain.model.LevelingTestAnswers
 import org.example.project.domain.model.Questions
 import org.example.project.domain.service.safeApiCall
 
@@ -13,13 +16,19 @@ class LevelingTestNetworkingImpl(
 ) : LevelingTestNetworking {
     override suspend fun fetchApiQuestions(): Result<List<Questions>> {
         return safeApiCall {
-            httpClient.get(urlString = "http://127.0.0.1:5050/generate-level-test") {
+            httpClient.get(urlString = "http://10.0.2.2:5050/lessons/leveling-tests") {
                 contentType(ContentType.Application.Json)
             }.body<List<Questions>>()
         }
     }
 
-    override suspend fun submitAnswer() {
-        TODO("Not yet implemented")
+    override suspend fun submitAnswer(answer : LevelingTestAnswers): Result<String> {
+        println(answer)
+       return safeApiCall {
+           httpClient.get(urlString = "http://10.0.2.2:5050/ollama/define-user-english-level"){
+               contentType(ContentType.Application.Json)
+               setBody(answer)
+           }.body()
+       }
     }
 }
