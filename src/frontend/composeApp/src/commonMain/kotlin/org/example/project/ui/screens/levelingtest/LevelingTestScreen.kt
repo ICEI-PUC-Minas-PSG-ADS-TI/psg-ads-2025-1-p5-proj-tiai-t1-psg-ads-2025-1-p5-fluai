@@ -78,6 +78,7 @@ fun LevelingTest(
                 }
 
                 is LevelingTestResult.Completed -> {
+                    uiState.showCircularProgressBar.value = false
                     message.value = result.message
                     uiState.isDisplaySuccessDialog.value = true
                 }

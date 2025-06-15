@@ -2,6 +2,7 @@ package org.example.project.data.networking
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.timeout
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -9,6 +10,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import org.example.project.domain.model.LevelingTestAnswers
 import org.example.project.domain.model.Questions
+import org.example.project.domain.model.Response
 import org.example.project.domain.service.safeApiCall
 
 class LevelingTestNetworkingImpl(
@@ -22,12 +24,15 @@ class LevelingTestNetworkingImpl(
         }
     }
 
-    override suspend fun submitAnswer(answer : LevelingTestAnswers): Result<String> {
+    override suspend fun submitAnswer(answer : LevelingTestAnswers): Result<Response> {
         println(answer)
        return safeApiCall {
            httpClient.post(urlString = "http://10.0.2.2:5050/ollama/define-user-english-level"){
                contentType(ContentType.Application.Json)
                setBody(answer)
+               timeout {
+                   requestTimeoutMillis = 300000
+               }
            }.body()
        }
     }

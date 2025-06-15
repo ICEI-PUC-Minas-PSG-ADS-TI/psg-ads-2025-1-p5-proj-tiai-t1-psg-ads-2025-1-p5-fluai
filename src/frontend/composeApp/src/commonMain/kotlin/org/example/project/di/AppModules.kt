@@ -12,22 +12,28 @@ import org.example.project.DatabaseProvider
 import org.example.project.data.database.AppDatabase
 import org.example.project.data.database.local.user.UserLocalDataSource
 import org.example.project.data.database.local.user.UserLocalDataSourceImpl
+import org.example.project.data.networking.HomeNetworking
+import org.example.project.data.networking.HomeNetworkingImpl
 import org.example.project.data.networking.LevelingTestNetworking
 import org.example.project.data.networking.LevelingTestNetworkingImpl
 import org.example.project.data.networking.SignUpNetworking
 import org.example.project.data.networking.SignUpNetworkingImpl
 import org.example.project.data.repository.AuthRepositoryImpl
+import org.example.project.data.repository.HomeRepositoryImpl
 import org.example.project.data.repository.LevelingTestRepositoryImpl
 import org.example.project.data.repository.SessionRepositoryImpl
 import org.example.project.data.repository.SignUpRepositoryImpl
 import org.example.project.domain.model.AuthData
 import org.example.project.domain.repository.AuthRepository
+import org.example.project.domain.repository.HomeRepository
 import org.example.project.domain.repository.LevelingTestRepository
 import org.example.project.domain.repository.SessionRepository
 import org.example.project.domain.repository.SignUpRepository
 import org.example.project.domain.service.KtorApiClient
 import org.example.project.domain.usecase.AuthUseCase
 import org.example.project.domain.usecase.AuthUseCaseImpl
+import org.example.project.domain.usecase.HomeUseCase
+import org.example.project.domain.usecase.HomeUseCaseImpl
 import org.example.project.domain.usecase.LevelingTestUseCase
 import org.example.project.domain.usecase.LevelingTestUseCaseImpl
 import org.example.project.domain.usecase.SignUpUseCase
@@ -50,6 +56,11 @@ val dataModules = module {
     single<AppDatabase> { DatabaseProvider.createDatabase()}
     single { get<AppDatabase>().userDao() }
     single<UserLocalDataSource> { UserLocalDataSourceImpl(get()) }
+
+    single<HomeNetworking> { HomeNetworkingImpl(httpClient = KtorApiClient.getClient("")) }
+    single<HomeRepository> { HomeRepositoryImpl(get()) }
+    single<HomeUseCase> { HomeUseCaseImpl(get()) }
+
 
 
     single<SignUpNetworking> { SignUpNetworkingImpl(httpClient = KtorApiClient.getClient("")) }
@@ -96,10 +107,12 @@ val dataModules = module {
         )
     }
 
-    factory { (componentContext: ComponentContext, authData : AuthData) ->
+    factory { (componentContext: ComponentContext, authData : AuthData, navigateToLevelingTest : (AuthData) -> Unit) ->
         HomeViewModel(
             componentContext = componentContext,
+            homeUseCase = get(),
             authData = authData,
+            navigateToLevelingTest = navigateToLevelingTest,
         )
     }
 

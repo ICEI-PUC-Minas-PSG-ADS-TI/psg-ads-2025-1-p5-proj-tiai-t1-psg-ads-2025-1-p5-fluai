@@ -56,10 +56,11 @@ class LevelingTestViewModel(
         if (_currentQuestionIndex.value < _questions.size - 1){
             _currentQuestionIndex.value += 1
         }else{
+            _levelingTestResult.emit(LevelingTestResult.Loading)
             val formattedAnswer = LevelingTestAnswers(email = authData.email, questions = _answers)
             val response = levelingTestUseCase.submitAnswer(formattedAnswer)
             response.onSuccess {
-                _levelingTestResult.emit(LevelingTestResult.Completed(it))
+                _levelingTestResult.emit(LevelingTestResult.Completed(it.response))
             }.onFailure {
                 _levelingTestResult.emit(LevelingTestResult.Error(it.message ?: "Erro desconhecido"))
             }

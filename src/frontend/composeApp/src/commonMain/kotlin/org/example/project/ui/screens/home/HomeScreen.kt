@@ -52,6 +52,7 @@ import org.example.project.theme.Cyan
 import org.example.project.theme.Light_Purple
 import org.example.project.theme.Orange
 import org.example.project.theme.Purple
+import org.example.project.ui.components.dialog.SuccessDialog
 import org.example.project.ui.theme.PoppinsTypography
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -96,6 +97,13 @@ fun HomeScreen(
                 }
             }
         )
+
+        if (viewModel.showTestDialog.value){
+            SuccessDialog(text = "Você precisa completar o teste de nivelamento para continuar", onClick = {
+                viewModel.onEvent(HomeEvent.GoToLevelingTest)
+            })
+        }
+
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp)

@@ -3,6 +3,7 @@ package org.example.project.domain.service
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -24,6 +25,13 @@ internal object KtorApiClient {
                 logger = Logger.SIMPLE
                 level = LogLevel.ALL
             }
+
+            install(HttpTimeout) {
+                requestTimeoutMillis = 300000L
+                connectTimeoutMillis = 30000L
+                socketTimeoutMillis = 300000L
+            }
+
 
             HttpResponseValidator {
                 validateResponse { response ->

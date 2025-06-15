@@ -94,6 +94,10 @@ class RootComponent(
                     parametersOf(
                         context,
                         config.authData,
+                        { authData : AuthData ->
+                            currentAuthData = authData
+                            navigation.replaceCurrent(Configuration.LearningPath(authData))
+                        },
                     )
                 })
             )
