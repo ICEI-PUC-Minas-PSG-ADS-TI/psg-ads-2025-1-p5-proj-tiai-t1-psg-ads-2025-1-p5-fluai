@@ -3,148 +3,120 @@
 <span style="color:red">Pré-requisitos: <a href="03-Modelagem do Processo de Negocio.md"> Modelagem do Processo de Negocio</a></span>
 
 ## 4.1. Arquitetura da solução
+A arquitetura do FluAI foi desenhada para garantir escalabilidade, performance e uma experiência fluida ao usuário. A solução segue uma abordagem modular, dividida em três camadas principais: aplicativo móvel (frontend), servidor de aplicação (backend) e bancos de dados (armazenamento).
 
+#### Componentes da Arquitetura
+Aplicativo Móvel (Frontend – Kotlin)
+Desenvolvido em Kotlin, o aplicativo é responsável por toda a interação com o usuário. Ele oferece uma interface moderna, responsiva e intuitiva, permitindo que o usuário realize o teste de nivelamento, acesse os exercícios personalizados, visualize seu progresso e receba feedback em tempo real.
 
-......  COLOQUE AQUI O SEU TEXTO E O DIAGRAMA DE ARQUITETURA .......
+#### Servidor de Aplicação (Backend – Python)
+O backend, desenvolvido em Python, é responsável pelo processamento da lógica de negócio, análise de desempenho dos usuários e adaptação dos conteúdos com base nos resultados. Ele também integra as bibliotecas de Inteligência Artificial para ajustar os exercícios e enviar feedbacks personalizados ao app.
 
- Inclua um diagrama da solução e descreva os módulos e as tecnologias
- que fazem parte da solução. Discorra sobre o diagrama.
+#### Banco de Dados
+
+Firebase: Utilizado para autenticação de usuários.
+
+PostgreSQL: Gerencia dados relacionais como histórico de desempenho, respostas dos testes e progresso individual, com alta confiabilidade e segurança.
+
+🔁Fluxo de Funcionamento
+- O usuário acessa o app e realiza o teste de nivelamento.
+
+- As respostas são enviadas ao backend em Python, que processa os dados e consulta o modelo de IA.
+
+- O backend retorna os exercícios adaptados com base no desempenho do usuário.
+
+- As informações são armazenadas.
+
+- O app exibe o conteúdo personalizado.
  
- **Exemplo do diagrama de Arquitetura**:
- 
- ![Exemplo de Arquitetura](./images/arquitetura-exemplo.png)
+![image](https://github.com/user-attachments/assets/ac068762-39ce-4fa2-a5cc-af50764db57d)
+
  
 
 ### 4.2. Protótipos de telas
 
-Visão geral da interação do usuário pelas telas do sistema e protótipo interativo das telas com as funcionalidades que fazem parte do sistema (wireframes).
-Apresente as principais interfaces da plataforma. Discuta como ela foi elaborada de forma a atender os requisitos funcionais, não funcionais e histórias de usuário abordados nas <a href="02-Especificação do Projeto.md"> Especificação do Projeto</a>.
-A partir das atividades de usuário identificadas na seção anterior, elabore o protótipo de tela de cada uma delas.
-![Exemplo de Wireframe](images/wireframe-example.png)
+Com o objetivo de garantir uma experiência de usuário intuitiva, envolvente e personalizada, foram desenvolvidos protótipos de interface para o aplicativo FluAI. Esses protótipos representam as principais telas do sistema e foram criados com base nos requisitos funcionais, histórias de usuário e nas boas práticas de design de aplicativos.
 
-São protótipos usados em design de interface para sugerir a estrutura de um site web e seu relacionamentos entre suas páginas. Um wireframe web é uma ilustração semelhante do layout de elementos fundamentais na interface.
- 
-> **Links Úteis**:
-> - [Protótipos vs Wireframes](https://www.nngroup.com/videos/prototypes-vs-wireframes-ux-projects/)
-> - [Ferramentas de Wireframes](https://rockcontent.com/blog/wireframes/)
-> - [MarvelApp](https://marvelapp.com/developers/documentation/tutorials/)
-> - [Figma](https://www.figma.com/)
-> - [Adobe XD](https://www.adobe.com/br/products/xd.html#scroll)
-> - [Axure](https://www.axure.com/edu) (Licença Educacional)
-> - [InvisionApp](https://www.invisionapp.com/) (Licença Educacional)
+As telas foram pensadas para serem fáceis de usar, visualmente agradáveis e acessíveis, criando um ambiente leve e motivador para quem está aprendendo inglês. Para deixar tudo mais interativo e interessante, usamos elementos de gamificação e feedback visual, que ajudam o usuário a se manter engajado e entender melhor seu progresso no app.
+
+### Login e Cadastro
+![image](https://github.com/user-attachments/assets/8a5b7c93-f020-48e5-a6db-cf3361b1c171)
+
+### Esqueceu/Redefinir senha
+![image](https://github.com/user-attachments/assets/5c32af54-a29c-4a82-8024-9d2431ca9d5f)
+
+### Conta
+![image](https://github.com/user-attachments/assets/769fe812-0293-493b-b341-dfcef094e5fb)
+
+### Telas do APP
+![image](https://github.com/user-attachments/assets/725cd3af-69e7-4d88-8563-dc167ba70eee)
+![image](https://github.com/user-attachments/assets/f47a8600-ff0a-42c4-811b-7f4f7bdde4f4)
+![image](https://github.com/user-attachments/assets/af356cbf-d84b-4293-90cd-708bb86db90f)
+
+
 
 
 ## Diagrama de Classes
 
-O diagrama de classes ilustra graficamente como será a estrutura do software, e como cada uma das classes da sua estrutura estarão interligadas. Essas classes servem de modelo para materializar os objetos que executarão na memória.
+O diagrama que representa as classes da aplicação é bem simples. Teremos os usuários, que farão uso do aplicativo, e estes terão acesso às atividades geradas por IA.
 
-As referências abaixo irão auxiliá-lo na geração do artefato “Diagrama de Classes”.
+Será necessário apenas realizar uma verificação de nível, garantindo que os usuários avancem de forma condizente com o conhecimento que já possuem.
 
-> - [Diagramas de Classes - Documentação da IBM](https://www.ibm.com/docs/pt-br/rational-soft-arch/9.6.1?topic=diagrams-class)
-> - [O que é um diagrama de classe UML? | Lucidchart](https://www.lucidchart.com/pages/pt/o-que-e-diagrama-de-classe-uml)
+![image](https://github.com/user-attachments/assets/2ae611b8-4761-4005-b115-9f05abb868a4)
+
+
 
 ## Modelo ER
 
-O Modelo ER representa através de um diagrama como as entidades (coisas, objetos) se relacionam entre si na aplicação interativa.]
-
-As referências abaixo irão auxiliá-lo na geração do artefato “Modelo ER”.
-
-> - [Como fazer um diagrama entidade relacionamento | Lucidchart](https://www.lucidchart.com/pages/pt/como-fazer-um-diagrama-entidade-relacionamento)
-
-
 ### 4.3. Modelo de dados
 
-O desenvolvimento da solução proposta requer a existência de bases de dados que permitam efetuar os cadastros de dados e controles associados aos processos identificados, assim como recuperações.
-Utilizando a notação do DER (Diagrama Entidade e Relacionamento), elaborem um modelo, na ferramenta visual indicada na disciplina, que contemple todas as entidades e atributos associados às atividades dos processos identificados. Deve ser gerado um único DER que suporte todos os processos escolhidos, visando, assim, uma base de dados integrada. O modelo deve contemplar, também, o controle de acesso de usuários (partes interessadas dos processos) de acordo com os papéis definidos nos modelos do processo de negócio.
-_Apresente o modelo de dados por meio de um modelo relacional que contemple todos os conceitos e atributos apresentados na modelagem dos processos._
+Projetamos nossos dados para atender às necessidades da aplicação. No nosso caso, não foi necessário criar muitas tabelas nem estabelecer relacionamentos complexos, já que a complexidade da aplicação está na forma como a dinâmica de ensino será implementada.
 
 #### 4.3.1 Modelo ER
 
-O Modelo ER representa através de um diagrama como as entidades (coisas, objetos) se relacionam entre si na aplicação interativa.]
+![image](https://github.com/user-attachments/assets/502c0f34-e87e-4301-8be5-b92b0705a409)
 
-As referências abaixo irão auxiliá-lo na geração do artefato “Modelo ER”.
-
-> - [Como fazer um diagrama entidade relacionamento | Lucidchart](https://www.lucidchart.com/pages/pt/como-fazer-um-diagrama-entidade-relacionamento)
 
 #### 4.3.2 Esquema Relacional
 
-O Esquema Relacional corresponde à representação dos dados em tabelas juntamente com as restrições de integridade e chave primária.
- 
-As referências abaixo irão auxiliá-lo na geração do artefato “Esquema Relacional”.
+![image](https://github.com/user-attachments/assets/725039bb-7a32-4a86-9612-7ad014d21012)
 
-> - [Criando um modelo relacional - Documentação da IBM](https://www.ibm.com/docs/pt-br/cognos-analytics/10.2.2?topic=designer-creating-relational-model)
-
-![Exemplo de um modelo relacional](images/modeloRelacional.png "Exemplo de Modelo Relacional.")
----
 
 
 #### 4.3.3 Modelo Físico
 
-Insira aqui o script de criação das tabelas do banco de dados.
+A parte de criação das tabelas para o gerenciamento de dados da aplicação é feita com a ajuda de um ORM (Mapeamento Objeto-Relacional). Dessa forma, os desenvolvedores não precisam se preocupar em escrever comandos SQL diretamente, podendo realizar essa tarefa por meio do código da aplicação. Isso permite manter o foco no desenvolvimento das funcionalidades.
 
-> **OBS:** Se o aluno utilizar BD NoSQL, ele derá incluir o script aqui também. 
+O ORM utilizado em nosso projeto foi o SQLAlchemy, uma biblioteca voltada para a linguagem Python.
 
-Veja um exemplo:
+##### Backend
 
-<code>
+![image](https://github.com/user-attachments/assets/7d47b402-1ada-4fc4-8731-31e636f76d3b)
 
- -- Criação da tabela Médico
-CREATE TABLE Medico (
-    MedCodigo INTEGER PRIMARY KEY,
-    MedNome VARCHAR(100)
-);
+No exemplo acima, estamos criando a tabela de usuários e especificando as informações que devem ser armazenadas.
 
+##### Banco de dados 
 
--- Criação da tabela Paciente
-CREATE TABLE Paciente (
-    PacCodigo INTEGER PRIMARY KEY,
-    PacNome VARCHAR(100)
-);
+![image](https://github.com/user-attachments/assets/310ff64e-953f-4eed-8676-6a78f0ede60f)
 
--- Criação da tabela Consulta
-CREATE TABLE Consulta (
-    ConCodigo INTEGER PRIMARY KEY,
-    MedCodigo INTEGER,
-    PacCodigo INTEGER,
-    Data DATE,
-    FOREIGN KEY (MedCodigo) REFERENCES Medico(MedCodigo),
-    FOREIGN KEY (PacCodigo) REFERENCES Paciente(PacCodigo)
-);
+No banco de dados, conseguimos visualizar as informações conforme foram definidas no backend.
 
--- Criação da tabela Medicamento
-CREATE TABLE Medicamento (
-    MdcCodigo INTEGER PRIMARY KEY,
-    MdcNome VARCHAR(100)
-);
+##### Criação Automática das Tabelas
 
--- Criação da tabela Prescricao
-CREATE TABLE Prescricao (
-    ConCodigo INTEGER,
-    MdcCodigo INTEGER,
-    Posologia VARCHAR(200),
-    PRIMARY KEY (ConCodigo, MdcCodigo),
-    FOREIGN KEY (ConCodigo) REFERENCES Consulta(ConCodigo),
-    FOREIGN KEY (MdcCodigo) REFERENCES Medicamento(MdcCodigo)
-);
+Para criar as tabelas, é necessário apenas executar um único comando e a criação é feita automaticamente.
 
-</code>
-
-Este script deverá ser incluído em um arquivo .sql na pasta src\bd.
-
-
+![image](https://github.com/user-attachments/assets/6e9b7269-da46-4c2b-8842-bf001a06f3fb)
 
 
 ### 4.4. Tecnologias
 
-_Descreva qual(is) tecnologias você vai usar para resolver o seu problema, ou seja, implementar a sua solução. Liste todas as tecnologias envolvidas, linguagens a serem utilizadas, serviços web, frameworks, bibliotecas, IDEs de desenvolvimento, e ferramentas._
-
-Apresente também uma figura explicando como as tecnologias estão relacionadas ou como uma interação do usuário com o sistema vai ser conduzida, por onde ela passa até retornar uma resposta ao usuário.
+Para a construção do FluAI, foram escolhidas tecnologias modernas e adequadas ao escopo do projeto, garantindo desempenho, escalabilidade e uma boa experiência para o usuário final.
 
 
 | **Dimensão**   | **Tecnologia**  |
 | ---            | ---             |
-| SGBD           | MySQL           |
-| Front end      | HTML+CSS+JS     |
-| Back end       | Java SpringBoot |
+| SGBD           | Firebase E Postgre           |
+| Front end      | Kotlin   |
+| Back end       | Pyhton|
 | Deploy         | Github Pages    |
-
+| IA             | Llama     |
