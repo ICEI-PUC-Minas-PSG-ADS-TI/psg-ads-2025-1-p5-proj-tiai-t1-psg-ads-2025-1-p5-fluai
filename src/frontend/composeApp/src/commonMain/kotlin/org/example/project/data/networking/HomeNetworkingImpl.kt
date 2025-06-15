@@ -15,12 +15,12 @@ import org.example.project.domain.service.safeApiCall
 class HomeNetworkingImpl(
    val httpClient: HttpClient
 ) : HomeNetworking {
-    override suspend fun verifyLevelingTest(email: Email): Result<Boolean> {
-        return safeApiCall {
-            httpClient.post("http://10.0.2.2:5050/users/verify-leveling-test") {
-                contentType(ContentType.Application.Json)
-                setBody(email)
-            }.body()
+    override suspend fun verifyLevelingTest(email: Email): Boolean {
+        val response = httpClient.post("http://10.0.2.2:5050/users/verify-leveling-test") {
+            contentType(ContentType.Application.Json)
+            setBody(email)
         }
+
+        return response.body<Boolean>()
     }
 }
