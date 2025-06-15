@@ -47,7 +47,7 @@ def generate_level_test():
         return jsonify({"error": "Resposta inválida da IA."}), 500
 
 
-@ollama_bp.route("/define-user-english-level", methods=["GET"])
+@ollama_bp.route("/define-user-english-level", methods=["POST"])
 def define_user_english_level():
     try:
         data = request.get_json()
