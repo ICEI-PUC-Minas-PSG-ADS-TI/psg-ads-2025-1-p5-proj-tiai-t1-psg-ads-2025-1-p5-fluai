@@ -10,7 +10,7 @@ OLLAMA_URL = "http://ollama:11434/api/generate"  # URL para o Docker
 
 def generate_text_from_ollama(prompt):
     data = {
-        "model": "llama3.2:latest",
+        "model": "llama3:8b",
         "prompt": prompt,
         "stream": False,
     }
@@ -29,11 +29,25 @@ def generate_text_from_ollama(prompt):
         return None
 
 
-def save_lessons(question, answer, description, options):
+def save_test_lessons(question, answer, description, options):
     lesson = Lesson(
         question=question,
         answer=answer,
         description=description,
+        options=json.dumps(options)
+    )
+
+    db.session.add(lesson)
+    db.session.commit()
+    return lesson
+
+
+def save_lessons(question, answer, description, level, options):
+    lesson = Lesson(
+        question=question,
+        answer=answer,
+        description=description,
+        level=level,
         options=json.dumps(options)
     )
 

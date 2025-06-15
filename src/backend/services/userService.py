@@ -33,10 +33,11 @@ def recover_password_firebase(email):
     return link
 
 
-def update_user_english_level(english_level, user_id):
-    user = Users.query.get(user_id)
+def update_user_english_level(english_level, email, description):
+    user = get_user_by_email(email)
     if user:
         user.level = english_level
+        user.progress_history = description
         db.session.commit()
         return user
     return None
