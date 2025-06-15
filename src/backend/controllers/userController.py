@@ -62,10 +62,10 @@ def verify_leveling_test():
         user = get_user_by_email(email)
 
         if not user:
-            return jsonify({"error": "Usuário não encontrado."}), 404
+            return jsonify({"error": "Usuario nao encontrado."}), 404
 
         if not user.level:
-            return jsonify({"response": "Usuário não realizou o teste de nivelamento."}), 404
+            return jsonify({"response": "Usuario não realizou o teste de nivelamento."}), 404
 
         return jsonify({"response": user.level}), 200
 
