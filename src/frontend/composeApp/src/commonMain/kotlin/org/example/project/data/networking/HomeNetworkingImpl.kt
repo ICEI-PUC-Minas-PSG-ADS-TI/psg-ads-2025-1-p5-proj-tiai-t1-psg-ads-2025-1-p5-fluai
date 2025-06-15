@@ -9,6 +9,7 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import kotlinx.serialization.Serializable
 import org.example.project.domain.model.Email
 import org.example.project.domain.service.safeApiCall
 
@@ -24,3 +25,9 @@ class HomeNetworkingImpl(
         return response.status == HttpStatusCode.NotFound
     }
 }
+
+
+@Serializable
+data class Response(
+    val response : String
+)

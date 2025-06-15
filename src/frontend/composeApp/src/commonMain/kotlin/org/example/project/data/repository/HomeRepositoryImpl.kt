@@ -7,6 +7,8 @@ import org.example.project.domain.repository.HomeRepository
 class HomeRepositoryImpl(
     val homeNetworking: HomeNetworking
 ) : HomeRepository {
-    override suspend fun verifyLevelingTest(email: Email): Boolean = homeNetworking.verifyLevelingTest(email)
+    override suspend fun verifyLevelingTest(email: Email): Boolean {
+        return homeNetworking.verifyLevelingTest(email)
+    }
 
 }
