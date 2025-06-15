@@ -21,6 +21,6 @@ class HomeNetworkingImpl(
             setBody(email)
         }
 
-        return response.body<Boolean>()
+        return response.status == HttpStatusCode.NotFound
     }
 }
