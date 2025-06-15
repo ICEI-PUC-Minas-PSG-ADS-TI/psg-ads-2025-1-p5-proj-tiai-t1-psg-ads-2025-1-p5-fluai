@@ -53,7 +53,7 @@ def recover_password():
         return jsonify({"error": str(e)}), 500
 
 
-@user_bp.route("/verify-leveling-test", methods=["GET"])
+@user_bp.route("/verify-leveling-test", methods=["POST"])
 def verify_leveling_test():
     try:
         data = request.get_json()
