@@ -11,6 +11,7 @@ import org.koin.core.component.get
 import kotlinx.serialization.Serializable
 import org.example.project.domain.model.AuthData
 import org.example.project.ui.screens.auth.AuthViewModel
+import org.example.project.ui.screens.fluencyboost.FluencyBoostViewModel
 import org.example.project.ui.screens.home.HomeViewModel
 import org.example.project.ui.screens.learningpath.LearningPathViewModel
 import org.example.project.ui.screens.levelingtest.LevelingTestViewModel
@@ -94,9 +95,9 @@ class RootComponent(
                     parametersOf(
                         context,
                         config.authData,
-                        { authData : AuthData ->
+                        { authData : AuthData->
                             currentAuthData = authData
-                            navigation.replaceCurrent(Configuration.LearningPath(authData))
+                            navigation.replaceCurrent(Configuration.LevelingTest(authData))
                         },
                     )
                 })
@@ -118,7 +119,11 @@ class RootComponent(
                         config.authData,
                         { authData : AuthData ->
                             currentAuthData = authData
-                            navigation.replaceCurrent(Configuration.LevelingTest(authData = authData ))
+                            navigation.replaceCurrent(Configuration.LevelingTest(authData = authData))
+                        },
+                        { authData : AuthData ->
+                            currentAuthData = authData
+                            navigation.replaceCurrent(Configuration.FluencyBoost(authData = authData))
                         }
                     )
                 })
@@ -133,6 +138,25 @@ class RootComponent(
                             currentAuthData = authData
                             bottomBarController.select(1)
                             navigation.replaceCurrent(Configuration.HomeScreen(authData = authData))
+                        }
+                    )
+                })
+            )
+
+            is Configuration.FluencyBoost -> Child.FluencyBoost(
+                get<FluencyBoostViewModel>(parameters = {
+                    parametersOf(
+                        context,
+                        config.authData,
+                        { authData : AuthData ->
+                            currentAuthData = authData
+                            bottomBarController.select(1)
+                            navigation.replaceCurrent(Configuration.HomeScreen(authData = authData))
+                        },
+                        { authData : AuthData ->
+                            currentAuthData = authData
+                            bottomBarController.select(1)
+                            navigation.replaceCurrent(Configuration.FluencyBoost(authData = authData))
                         }
                     )
                 })
@@ -161,6 +185,7 @@ class RootComponent(
         data class UserAccount(val component: UserAccountViewModel) : Child()
         data class LearningPath(val component : LearningPathViewModel): Child()
         data class LevelingTest(val component: LevelingTestViewModel): Child()
+        data class FluencyBoost(val component: FluencyBoostViewModel): Child()
     }
 
     @Serializable
@@ -185,5 +210,9 @@ class RootComponent(
 
         @Serializable
         data class LevelingTest(val authData: AuthData) : Configuration()
+
+        @Serializable
+        data class FluencyBoost(val authData: AuthData) : Configuration()
+
     }
 }

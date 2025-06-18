@@ -11,11 +11,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import org.example.project.ui.navigation.RootComponent
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import org.example.project.ui.screens.auth.AuthScreen
+import org.example.project.ui.screens.fluencyboost.FluencyBoostScreen
 import org.example.project.ui.screens.home.HomeScreen
 import org.example.project.ui.screens.learningpath.LearningPath
 import org.example.project.ui.screens.levelingtest.LevelingTest
@@ -61,6 +61,7 @@ fun App(rootComponent: RootComponent){
                     is RootComponent.Child.UserAccount -> UserAccount(targetChild.component)
                     is RootComponent.Child.LearningPath -> LearningPath(targetChild.component)
                     is RootComponent.Child.LevelingTest -> LevelingTest(targetChild.component)
+                    is RootComponent.Child.FluencyBoost -> FluencyBoostScreen(targetChild.component)
                 }
             }
 

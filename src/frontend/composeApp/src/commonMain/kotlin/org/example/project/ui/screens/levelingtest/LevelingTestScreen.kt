@@ -42,7 +42,6 @@ import org.example.project.theme.Blue
 import org.example.project.ui.components.dialog.showErrorDialog
 import org.example.project.ui.components.dialog.showSuccessDialog
 import org.example.project.ui.components.loading.LoadingComponent
-import org.example.project.ui.screens.signup.SignUpResult
 import org.example.project.ui.state.rememberUiCommonState
 import org.example.project.ui.theme.PoppinsTypography
 import org.jetbrains.compose.resources.painterResource
@@ -59,7 +58,7 @@ fun LevelingTest(
         viewModel.getQuestion()
     }
 
-    val message = remember { mutableStateOf<String>("") }
+    val message = remember { mutableStateOf("") }
 
 
     LaunchedEffect(Unit){
@@ -104,10 +103,9 @@ fun LevelingTest(
                     ProgressBar(
                         currentQuestion = 0,
                         totalQuestions = 0,
-                        {
-
-                        }
-                    )
+                    ){
+                        viewModel.onEvent(LevelingTestEvent.GoToHome)
+                    }
                 }
             }
         }

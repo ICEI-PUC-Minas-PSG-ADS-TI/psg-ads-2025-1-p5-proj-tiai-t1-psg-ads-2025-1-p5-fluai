@@ -39,6 +39,7 @@ import org.example.project.domain.usecase.LevelingTestUseCaseImpl
 import org.example.project.domain.usecase.SignUpUseCase
 import org.example.project.domain.usecase.SignUpUseCaseImpl
 import org.example.project.ui.screens.auth.AuthViewModel
+import org.example.project.ui.screens.fluencyboost.FluencyBoostViewModel
 import org.example.project.ui.screens.home.HomeViewModel
 import org.example.project.ui.screens.learningpath.LearningPathViewModel
 import org.example.project.ui.screens.levelingtest.LevelingTestViewModel
@@ -112,7 +113,7 @@ val dataModules = module {
             componentContext = componentContext,
             homeUseCase = get(),
             authData = authData,
-            navigateToLevelingTest = navigateToLevelingTest,
+            navigateToLevelingTest = navigateToLevelingTest
         )
     }
 
@@ -124,20 +125,31 @@ val dataModules = module {
         )
     }
 
-    factory { (componentContext: ComponentContext, authData: AuthData, onNavigateToLevelingTest : (AuthData) -> Unit) ->
+    factory { (componentContext: ComponentContext, authData: AuthData, onNavigateToLevelingTest : (AuthData) -> Unit, onNavigateToFluencyBoost : (AuthData) -> Unit) ->
         LearningPathViewModel(
             componentContext = componentContext,
             authData = authData,
-            onNavigateToLevelingTest = onNavigateToLevelingTest
+            onNavigateToLevelingTest = onNavigateToLevelingTest,
+            onNavigateToFluencyBoost = onNavigateToFluencyBoost
         )
     }
 
     factory { (componentContext: ComponentContext, authData: AuthData, onNavigateToHome : (AuthData) -> Unit) ->
         LevelingTestViewModel(
             componentContext = componentContext,
+            homeUseCase = get(),
             levelingTestUseCase = get(),
             authData = authData,
-            onNavigateToHome = onNavigateToHome
+            onNavigateToHome = onNavigateToHome,
+        )
+    }
+
+    factory { (componentContext: ComponentContext, authData: AuthData, onNavigateToHome : (AuthData) -> Unit) ->
+        FluencyBoostViewModel(
+            componentContext = componentContext,
+            authData = authData,
+            levelingTestUseCase = get(),
+            navigateToHome = onNavigateToHome
         )
     }
 }

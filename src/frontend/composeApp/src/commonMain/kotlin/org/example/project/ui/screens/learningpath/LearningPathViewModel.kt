@@ -6,15 +6,18 @@ import org.example.project.domain.model.AuthData
 class LearningPathViewModel(
     componentContext: ComponentContext,
     private val authData: AuthData,
-    private val onNavigateToLevelingTest : (AuthData) -> Unit
+    private val onNavigateToLevelingTest : (AuthData) -> Unit,
+    private val onNavigateToFluencyBoost : (AuthData) -> Unit
 ) : ComponentContext by componentContext{
     fun onEvent(event : LearningPathEvent){
         when(event){
             is LearningPathEvent.GoToLevelingTest -> onNavigateToLevelingTest(authData)
+            is LearningPathEvent.GoToFluencyBoost -> onNavigateToFluencyBoost(authData)
         }
     }
 }
 
 sealed class LearningPathEvent{
     data object GoToLevelingTest : LearningPathEvent()
+    data object GoToFluencyBoost : LearningPathEvent()
 }

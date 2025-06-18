@@ -60,7 +60,9 @@ fun LearningPath(
                     viewModel.onEvent(LearningPathEvent.GoToLevelingTest)
                 }
                 Spacer(modifier = Modifier.width(16.dp))
-                TestCards(color = Light_Blue, title = stringResource(Res.string.learning_path_test_fluency_boost))
+                TestCards(color = Light_Blue, title = stringResource(Res.string.learning_path_test_fluency_boost)){
+                    viewModel.onEvent(LearningPathEvent.GoToFluencyBoost)
+                }
             }
 
         }

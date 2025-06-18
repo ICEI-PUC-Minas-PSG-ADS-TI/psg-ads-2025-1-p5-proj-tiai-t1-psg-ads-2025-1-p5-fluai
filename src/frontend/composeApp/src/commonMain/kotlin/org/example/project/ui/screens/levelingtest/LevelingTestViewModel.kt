@@ -10,7 +10,9 @@ import org.example.project.ui.extensions.coroutineScope
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.flow.asSharedFlow
 import org.example.project.domain.model.AuthData
+import org.example.project.domain.model.Email
 import org.example.project.domain.model.LevelingTestAnswers
+import org.example.project.domain.usecase.HomeUseCase
 
 sealed class LevelingTestResult {
     data object Loading : LevelingTestResult()
@@ -22,9 +24,13 @@ sealed class LevelingTestResult {
 class LevelingTestViewModel(
     componentContext: ComponentContext,
     private val levelingTestUseCase: LevelingTestUseCase,
+    private val homeUseCase: HomeUseCase,
     private val authData: AuthData,
-    private val onNavigateToHome : (AuthData) -> Unit
-) : ComponentContext by componentContext{
+    private val onNavigateToHome: (AuthData) -> Unit
+) : ComponentContext by componentContext {
+
+
+    private val _isFirstLesson = mutableStateOf(false)
 
     private val _levelingTestResult = MutableSharedFlow<LevelingTestResult?>()
     val levelingTestResult = _levelingTestResult.asSharedFlow()
@@ -38,43 +44,62 @@ class LevelingTestViewModel(
     val currentQuestionIndex: Int get() = _currentQuestionIndex.value
 
 
-    suspend fun getQuestion(){
-         _levelingTestResult.emit(LevelingTestResult.Loading)
-         val response = levelingTestUseCase.getQuestion()
-         response.onSuccess { questionList ->
-             println(questionList)
-             _questions.clear()
-             _questions.addAll(questionList)
-             _levelingTestResult.emit(LevelingTestResult.Success)
-         }.onFailure {
-             _levelingTestResult.emit(LevelingTestResult.Error(it.message ?: "Erro desconhecido"))
-         }
+    suspend fun getQuestion() {
+
+        val needTest = homeUseCase.verifyLevelingTest(Email(authData.email))
+        _isFirstLesson.value = needTest.isFailure
+
+        _levelingTestResult.emit(LevelingTestResult.Loading)
+
+        val response = if(_isFirstLesson.value){
+            levelingTestUseCase.getQuestion()
+        }else{
+            levelingTestUseCase.getQuestionSmartChallenges(Email(email = authData.email))
+        }
+
+        response.onSuccess { questionList ->
+            _questions.clear()
+            _questions.addAll(questionList)
+            _levelingTestResult.emit(LevelingTestResult.Success)
+        }.onFailure {
+            _levelingTestResult.emit(
+                LevelingTestResult.Error(
+                    it.message ?: "Erro desconhecido"
+                )
+            )
+        }
+
     }
 
-    private suspend fun submitAnswer(answer: String){
+    private suspend fun submitAnswer(answer: String) {
         _answers.add(answer)
-        if (_currentQuestionIndex.value < _questions.size - 1){
+        if (_currentQuestionIndex.value < _questions.size - 1) {
             _currentQuestionIndex.value += 1
-        }else{
+        } else {
             _levelingTestResult.emit(LevelingTestResult.Loading)
             val formattedAnswer = LevelingTestAnswers(email = authData.email, questions = _answers)
             val response = levelingTestUseCase.submitAnswer(formattedAnswer)
             response.onSuccess {
                 _levelingTestResult.emit(LevelingTestResult.Completed(it.response))
             }.onFailure {
-                _levelingTestResult.emit(LevelingTestResult.Error(it.message ?: "Erro desconhecido"))
+                _levelingTestResult.emit(
+                    LevelingTestResult.Error(
+                        it.message ?: "Erro desconhecido"
+                    )
+                )
             }
 
         }
     }
 
-    fun onEvent(event : LevelingTestEvent){
-        when(event){
+    fun onEvent(event: LevelingTestEvent) {
+        when (event) {
             is LevelingTestEvent.SubmitAnswer -> {
                 coroutineScope.launch {
                     submitAnswer(event.answer)
                 }
             }
+
             is LevelingTestEvent.GetQuestions -> {
                 coroutineScope.launch {
                     getQuestion()

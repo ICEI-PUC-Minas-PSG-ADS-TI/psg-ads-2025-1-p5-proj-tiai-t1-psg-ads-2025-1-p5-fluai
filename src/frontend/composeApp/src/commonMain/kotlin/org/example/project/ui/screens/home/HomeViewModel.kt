@@ -1,7 +1,6 @@
 package org.example.project.ui.screens.home
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.launch
@@ -19,7 +18,7 @@ class HomeViewModel(
     ) : ComponentContext by componentContext {
 
     private val _showTestDialog = mutableStateOf(false)
-    val showTestDialog: State<Boolean> = _showTestDialog
+    var showTestDialog: MutableState<Boolean> = _showTestDialog
 
     init {
         verifyLevelingTest()
@@ -34,13 +33,13 @@ class HomeViewModel(
 
     }
 
-    fun verifyLevelingTest(){
+     private fun verifyLevelingTest(){
         coroutineScope.launch {
-            try {
-                val needsTest = homeUseCase.verifyLevelingTest(Email(authData.email))
-                _showTestDialog.value = needsTest
-            } catch (e: Exception) {
+            val response = homeUseCase.verifyLevelingTest(Email(authData.email))
+            response.onSuccess {
                 _showTestDialog.value = false
+            }.onFailure {
+                _showTestDialog.value = true
             }
         }
     }
