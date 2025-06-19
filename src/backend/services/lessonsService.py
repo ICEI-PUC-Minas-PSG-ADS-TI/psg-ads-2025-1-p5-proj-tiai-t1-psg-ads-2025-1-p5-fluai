@@ -9,6 +9,7 @@ def get_leveling_tests():
 
 
 def get_custom_activity():
-    lessons = Lesson.query.filter_by(
-        description="custom activity").limit(5).all()
+    lessons = Lesson.query.filter_by(description="custom activity")\
+        .order_by(Lesson.id.desc())\
+        .limit(5).all()
     return lessons
