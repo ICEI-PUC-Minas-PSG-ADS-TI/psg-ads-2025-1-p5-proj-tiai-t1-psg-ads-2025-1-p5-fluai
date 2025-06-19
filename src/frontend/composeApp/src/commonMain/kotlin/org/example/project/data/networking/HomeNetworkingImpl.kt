@@ -22,4 +22,13 @@ class HomeNetworkingImpl(
            response.body()
         }
     }
+
+    override suspend fun preloadQuestions(email: Email): Result<Unit> {
+        return safeApiCall {
+            httpClient.post("http://10.0.2.2:5050/ollama/generate-custom-activity"){
+                contentType(ContentType.Application.Json)
+                setBody(email)
+            }
+        }
+    }
 }

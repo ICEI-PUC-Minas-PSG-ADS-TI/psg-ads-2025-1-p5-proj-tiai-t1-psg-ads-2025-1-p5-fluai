@@ -68,7 +68,6 @@ class LevelingTestViewModel(
                 )
             )
         }
-
     }
 
     private suspend fun submitAnswer(answer: String) {

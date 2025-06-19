@@ -23,6 +23,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +42,8 @@ import org.example.project.theme.Blue
 import org.example.project.theme.Light_Blue
 import org.example.project.theme.Violet
 import org.example.project.theme.Yellow
+import org.example.project.ui.components.loading.LoadingComponent
+import org.example.project.ui.state.rememberUiCommonState
 import org.example.project.ui.theme.PoppinsTypography
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -49,22 +52,39 @@ import org.jetbrains.compose.resources.stringResource
 fun LearningPath(
     viewModel: LearningPathViewModel
 ){
+    val uiState = rememberUiCommonState()
+
+    LaunchedEffect(Unit){
+        viewModel.learningPath.collect { result ->
+            when(result){
+                is LearningPathResult.Success -> uiState.showCircularProgressBar.value = false
+                is LearningPathResult.Loading -> uiState.showCircularProgressBar.value = true
+                is LearningPathResult.Error -> uiState.showCircularProgressBar.value = false
+            }
+        }
+    }
+
     Surface(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Text(text = stringResource(Res.string.learning_path_title), style = PoppinsTypography().h5, fontWeight = FontWeight.SemiBold, modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 24.dp))
-            Spacer(modifier = Modifier.height(32.dp))
-            LearningPathBanner(modifier = Modifier.align(Alignment.CenterHorizontally))
-            Spacer(modifier = Modifier.height(32.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                TestCards(color = Yellow, title = stringResource(Res.string.learning_path_test_smart_challenges)){
-                    viewModel.onEvent(LearningPathEvent.GoToLevelingTest)
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                TestCards(color = Light_Blue, title = stringResource(Res.string.learning_path_test_fluency_boost)){
-                    viewModel.onEvent(LearningPathEvent.GoToFluencyBoost)
+        Box(modifier = Modifier.fillMaxSize()) {
+            if(uiState.showCircularProgressBar.value){
+                LoadingComponent(isLoading = uiState.showCircularProgressBar.value)
+            }else{
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Text(text = stringResource(Res.string.learning_path_title), style = PoppinsTypography().h5, fontWeight = FontWeight.SemiBold, modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 24.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
+                    LearningPathBanner(modifier = Modifier.align(Alignment.CenterHorizontally))
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                        TestCards(color = Yellow, title = stringResource(Res.string.learning_path_test_smart_challenges)){
+                            viewModel.onEvent(LearningPathEvent.GoToLevelingTest)
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                        TestCards(color = Light_Blue, title = stringResource(Res.string.learning_path_test_fluency_boost)){
+                            viewModel.onEvent(LearningPathEvent.GoToFluencyBoost)
+                        }
+                    }
                 }
             }
-
         }
     }
 }

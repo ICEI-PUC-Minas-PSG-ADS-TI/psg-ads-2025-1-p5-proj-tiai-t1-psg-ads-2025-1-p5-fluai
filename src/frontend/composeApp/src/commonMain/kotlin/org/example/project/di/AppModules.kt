@@ -129,6 +129,7 @@ val dataModules = module {
         LearningPathViewModel(
             componentContext = componentContext,
             authData = authData,
+            homeUseCase = get(),
             onNavigateToLevelingTest = onNavigateToLevelingTest,
             onNavigateToFluencyBoost = onNavigateToFluencyBoost
         )

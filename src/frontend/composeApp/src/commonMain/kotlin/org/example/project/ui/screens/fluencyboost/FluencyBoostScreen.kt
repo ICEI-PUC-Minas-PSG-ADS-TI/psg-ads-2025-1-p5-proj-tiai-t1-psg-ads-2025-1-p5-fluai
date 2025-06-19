@@ -22,6 +22,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,7 +34,9 @@ import androidx.compose.ui.unit.dp
 import org.example.project.theme.Dark_Blue
 import org.example.project.theme.Light_Blue
 import org.example.project.theme.Light_Gray
+import org.example.project.ui.components.dialog.showErrorDialog
 import org.example.project.ui.components.dialog.showSuccessDialog
+import org.example.project.ui.components.loading.LoadingComponent
 import org.example.project.ui.screens.levelingtest.TopAppBar
 import org.example.project.ui.screens.levelingtest.formatAnswer
 import org.example.project.ui.state.rememberUiCommonState
@@ -48,6 +52,7 @@ fun FluencyBoostScreen(
     }
 
     val uiState = rememberUiCommonState()
+    val message = remember { mutableStateOf("") }
 
     LaunchedEffect(Unit){
         viewModel.fluencyBoostResult.collect { result ->
@@ -66,6 +71,7 @@ fun FluencyBoostScreen(
 
                 is FluencyBoostResult.Completed -> {
                     uiState.showCircularProgressBar.value = false
+                    message.value = result.message
                     uiState.isDisplaySuccessDialog.value = true
                 }
                 else -> Unit
@@ -84,19 +90,22 @@ fun FluencyBoostScreen(
             }
         }
     ) {
-
-        showSuccessDialog(isDisplaySuccessDialog = uiState.isDisplaySuccessDialog, message = "Lição concluída!"){
+        showErrorDialog(isDisplayDialogError = uiState.isDisplayDialogError, errorMessage = uiState.errorMessage.value)
+        showSuccessDialog(isDisplaySuccessDialog = uiState.isDisplaySuccessDialog, message = message.value){
             viewModel.onEvent(FluencyBoostEvent.GoToHome)
         }
         if (viewModel.questions.isNotEmpty()){
-            val currentIndex = viewModel.questions[viewModel.currentQuestionIndex]
-            QuestionsContent(
-                question = currentIndex.question,
-                options = currentIndex.optionList(),
-                onOptionSelected = { formattedAnswer ->
-                    viewModel.onEvent(FluencyBoostEvent.SubmitAnswer(formattedAnswer))
-                }
-            )
+            Column(modifier = Modifier.fillMaxSize()) {
+                LoadingComponent(isLoading = uiState.showCircularProgressBar.value)
+                val currentIndex = viewModel.questions[viewModel.currentQuestionIndex]
+                QuestionsContent(
+                    question = currentIndex.question,
+                    options = currentIndex.optionList(),
+                    onOptionSelected = { formattedAnswer ->
+                        viewModel.onEvent(FluencyBoostEvent.SubmitAnswer(formattedAnswer))
+                    }
+                )
+            }
         }
     }
 }
@@ -109,7 +118,6 @@ fun QuestionsContent(
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(20.dp)) {
         Spacer(modifier = Modifier.height(32.dp))
-
         FluencyBoostQuestion(question = question, options = options, onOptionSelected = onOptionSelected)
     }
 }

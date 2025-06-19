@@ -24,8 +24,8 @@ class FluencyBoostViewModel(
     componentContext: ComponentContext,
     private val authData: AuthData,
     private val levelingTestUseCase: LevelingTestUseCase,
-    val navigateToHome : (AuthData) -> Unit
-) : ComponentContext by componentContext{
+    val navigateToHome: (AuthData) -> Unit
+) : ComponentContext by componentContext {
 
     private val _fluencyBoostResult = MutableSharedFlow<FluencyBoostResult?>()
     val fluencyBoostResult = _fluencyBoostResult.asSharedFlow()
@@ -57,30 +57,41 @@ class FluencyBoostViewModel(
         }
     }
 
-    private fun submitAnswer(answer : String){
-        coroutineScope.launch {
-            _answers.add(answer)
-            if (_currentQuestionIndex.value < _questions.size - 1) {
-                _currentQuestionIndex.value += 1
-            } else {
-                _fluencyBoostResult.emit(FluencyBoostResult.Loading)
-                val response = levelingTestUseCase.submitAnswer(LevelingTestAnswers(email = authData.email, questions = _answers))
-                response.onSuccess {
-                    _fluencyBoostResult.emit(FluencyBoostResult.Completed(it.response))
-                }.onFailure {
-                    _fluencyBoostResult.emit(FluencyBoostResult.Error(it.message ?: "Erro desconhecido"))
+    private suspend fun submitAnswer(answer: String) {
+        _answers.add(answer)
+        if (_currentQuestionIndex.value < _questions.size - 1) {
+            _currentQuestionIndex.value += 1
+        } else {
+            _fluencyBoostResult.emit(FluencyBoostResult.Loading)
+            val response = levelingTestUseCase.submitAnswer(
+                LevelingTestAnswers(
+                    email = authData.email,
+                    questions = _answers
+                )
+            )
+            response.onSuccess {
+                _fluencyBoostResult.emit(FluencyBoostResult.Completed(it.response))
+            }.onFailure {
+                _fluencyBoostResult.emit(
+                    FluencyBoostResult.Error(
+                        it.message ?: "Erro desconhecido"
+                    )
+                )
+            }
+        }
+
+    }
+
+    fun onEvent(event: FluencyBoostEvent) {
+        when (event) {
+            is FluencyBoostEvent.GoToHome -> navigateToHome(authData)
+            is FluencyBoostEvent.SubmitAnswer -> {
+                coroutineScope.launch {
+                    submitAnswer(event.answer)
                 }
             }
         }
-    }
 
-    fun onEvent(event : FluencyBoostEvent){
-        coroutineScope.launch {
-            when(event){
-                is FluencyBoostEvent.GoToHome -> navigateToHome(authData)
-                is FluencyBoostEvent.SubmitAnswer -> submitAnswer(event.answer)
-            }
-        }
     }
 
 }

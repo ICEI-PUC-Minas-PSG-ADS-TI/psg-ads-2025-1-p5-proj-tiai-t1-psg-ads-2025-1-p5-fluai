@@ -11,4 +11,6 @@ class HomeRepositoryImpl(
     override suspend fun verifyLevelingTest(email: Email): Result<Response?>  {
         return homeNetworking.verifyLevelingTest(email)
     }
+
+    override suspend fun preloadQuestions(email: Email): Result<Unit> = homeNetworking.preloadQuestions(email)
 }

@@ -9,27 +9,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import frontend.composeapp.generated.resources.Res
-import frontend.composeapp.generated.resources.success_feedback
 import frontend.composeapp.generated.resources.success_feedback_button_continue
 import frontend.composeapp.generated.resources.success_feedback_title
 import org.example.project.theme.Blue
 import org.example.project.ui.components.PrimaryButton
 import org.example.project.ui.theme.PoppinsTypography
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -60,9 +63,10 @@ fun AlertDialog(text : String, onDismiss : () -> Unit, onClick: () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
-                        painter = painterResource(Res.drawable.success_feedback),
-                        contentDescription = "Sucesso",
-                        modifier = Modifier
+                        imageVector = Icons.Filled.Warning,
+                        contentDescription = "Alert",
+                        colorFilter = ColorFilter.tint(Color.Yellow),
+                        modifier = Modifier.size(70.dp)
                     )
                     Text(
                         text = stringResource(Res.string.success_feedback_title),
@@ -78,6 +82,7 @@ fun AlertDialog(text : String, onDismiss : () -> Unit, onClick: () -> Unit) {
                         color = Color.Gray,
                         maxLines = 2,
                         fontWeight = FontWeight.W300,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier
                             .padding(top = 8.dp)
                             .align(Alignment.CenterHorizontally)
