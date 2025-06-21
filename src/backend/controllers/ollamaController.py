@@ -57,8 +57,10 @@ def define_user_english_level():
 
         response = generate_text_from_ollama(prompt)
 
+        print(response)
+
         if not response:
-            return jsonify({"error": "Erro ao definir nível de inglês com a IA."}), 400
+            return jsonify({"error": f"Erro ao definir nível de inglês com a IA.{response}"}), 400
 
         user = update_user_english_level(response, email, "")
 
@@ -72,17 +74,12 @@ def define_user_english_level():
 
 
 @ollama_bp.route("/generate-custom-activity", methods=["POST"])
-def generate_custom_activity():
-    data = request.get_json()
-    email = data.get("email")
-
-    if not email:
-        return jsonify({"error": "Email é obrigatório"}), 400
-
+def generate_custom_activity(email):
     user = get_user_by_email(email)
-
     if not user:
-        return jsonify({"error": "Usuário não encontrado"}), 404
+        # Só logue erro, não retorne JSON
+        print(f"Usuário não encontrado para email {email}")
+        return
 
     user_level = user.level or "A1"
     progress = user.progress_history or "sem histórico registrado"
@@ -100,8 +97,10 @@ def generate_custom_activity():
     response = generate_text_from_ollama(prompt)
 
     match = re.search(r"\[.*\]", response, re.DOTALL)
+
     if not match:
-        return jsonify({"error": "Resposta da IA não contém um JSON válido."}), 500
+        print("Resposta da IA não contém JSON válido.")
+        return
 
     json_text = match.group(0)
 
@@ -114,9 +113,7 @@ def generate_custom_activity():
             save_lessons(question, answer, "custom activity",
                          user_level, options)
     except Exception as e:
-        return jsonify({"error": f"Erro ao processar resposta da IA: {str(e)}"}), 500
-
-    return jsonify({"questions": questions})
+        print(f"Erro ao salvar questões: {str(e)}")
 
 
 @ollama_bp.route("/fix-user-responses", methods=["GET"])
