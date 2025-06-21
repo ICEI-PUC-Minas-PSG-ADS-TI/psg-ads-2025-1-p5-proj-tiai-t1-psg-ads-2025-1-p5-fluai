@@ -13,12 +13,12 @@ import org.example.project.domain.service.safeApiCall
 class ForgotPasswordNetworkingImpl(
     private val httpClient: HttpClient
 ) : ForgotPasswordNetworking {
-    override suspend fun sendForgotPasswordRequest(request: ForgotPasswordRequestDto): Result<String> {
+    override suspend fun sendForgotPasswordRequest(request: ForgotPasswordRequestDto): Result<ForgotPasswordResponseDto> {
         return safeApiCall {
-            httpClient.post("http://10.0.2.2:5050/users/forgot-password") {
+            httpClient.post("http://localhost:5050/users/recover-password") {
                 contentType(ContentType.Application.Json)
                 setBody(request)
-            }.body<ForgotPasswordResponseDto>().resetLink
+            }.body<ForgotPasswordResponseDto>()
         }
     }
 }

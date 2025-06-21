@@ -91,7 +91,7 @@ fun ForgotPasswordScreen(
                         .fillMaxWidth()
                         .padding(top = 16.dp),
                     value = email,
-                    onValueChange = {email = it},
+                    onValueChange = { email = it },
                     label = {
                         Text("Email")
                     },
@@ -113,7 +113,9 @@ fun ForgotPasswordScreen(
                     buttonText = "Enviar",
                     textColor = Color.White,
                     enable = true,
-                    onClick = {}
+                    onClick = {
+                        viewModel.onEvent(ForgotPasswordEvent.SubmitEmail(email))
+                    }
                 )
             }
         }

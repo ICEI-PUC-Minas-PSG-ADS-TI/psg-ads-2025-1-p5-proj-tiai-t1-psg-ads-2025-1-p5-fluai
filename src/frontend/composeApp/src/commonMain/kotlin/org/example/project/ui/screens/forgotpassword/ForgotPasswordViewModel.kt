@@ -31,6 +31,7 @@ class ForgotPasswordViewModel(
     private fun sendResetLink(email: String) {
         viewModelScope.launch {
             val result = forgotPasswordUseCase(email)
+
             result
                 .onSuccess { resetLink ->
                     onNavigateToResetLinkScreen(resetLink)

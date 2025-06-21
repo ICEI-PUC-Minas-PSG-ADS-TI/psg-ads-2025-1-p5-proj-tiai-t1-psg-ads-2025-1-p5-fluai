@@ -19,7 +19,13 @@ import androidx.compose.ui.unit.dp
 import org.example.project.theme.Blue
 import org.example.project.ui.components.PrimaryButton
 
-
+@Composable
+fun ResetPasswordScreen(viewModel: ResetPasswordViewModel) {
+    ResetPasswordScreen(
+        resetLink = viewModel.resetLink,
+        onBackToLogin = viewModel.onNavigateBackToLogin
+    )
+}
 @Composable
 fun ResetPasswordScreen(
     resetLink: String,

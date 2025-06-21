@@ -36,10 +36,10 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import frontend.composeapp.generated.resources.Res
-import frontend.composeapp.generated.resources.card_image_1
-import frontend.composeapp.generated.resources.card_image_2
-import frontend.composeapp.generated.resources.default_avatar
-import frontend.composeapp.generated.resources.meetup_image
+//import frontend.composeapp.generated.resources.card_image_1
+//import frontend.composeapp.generated.resources.card_image_2
+//import frontend.composeapp.generated.resources.default_avatar
+//import frontend.composeapp.generated.resources.meetup_image
 import org.example.project.theme.Blue
 import org.example.project.theme.Cyan
 import org.example.project.theme.Light_Purple
@@ -78,7 +78,7 @@ fun HomeScreen(
                 }
             },
             backgroundColor = Blue,
-            actions = {
+           /* actions = {
                 IconButton(onClick = {}) {
                     Image(
                         painter = painterResource(Res.drawable.default_avatar),
@@ -86,13 +86,13 @@ fun HomeScreen(
                         modifier = Modifier.padding(end = 16.dp).size(70.dp)
                     )
                 }
-            }
+            }*/
         )
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp)
         ) {
-            item {
+           /* item {
                 LearningCard(
                     modifier = Modifier,
                     title = "O que você quer aprender?",
@@ -111,13 +111,13 @@ fun HomeScreen(
                         )
                     }
                 }
-            }
-            item {
+            }*/
+           /* item {
                 LearningCard(
                     image = painterResource(Res.drawable.card_image_2),
                     imageAlignment = Alignment.Center,
                 )
-            }
+            }*/
         }
         Text(
             modifier = Modifier.padding(horizontal = 18.dp),
@@ -158,12 +158,12 @@ fun HomeScreen(
                             )
                         }
                     }
-                    Image(
+                    /*Image(
                         modifier = Modifier.weight(0.3f)
                             .padding(top = 24.dp, bottom = 24.dp, end = 16.dp),
                         painter = painterResource(Res.drawable.meetup_image),
                         contentDescription = "",
-                    )
+                    )*/
                 }
             }
         }

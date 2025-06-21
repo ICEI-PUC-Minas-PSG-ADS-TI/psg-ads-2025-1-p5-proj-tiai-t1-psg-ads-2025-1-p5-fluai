@@ -7,7 +7,12 @@ class ForgotPasswordUseCase(
     private val repository: ForgotPasswordRepository
 ) {
     suspend operator fun invoke(email: String): Result<String> {
-        val request = ForgotPasswordRequestDto(email)
-        return repository.forgotPassword(request)
+        return try {
+            val request = ForgotPasswordRequestDto(email)
+            repository.forgotPassword(request)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
     }
 }

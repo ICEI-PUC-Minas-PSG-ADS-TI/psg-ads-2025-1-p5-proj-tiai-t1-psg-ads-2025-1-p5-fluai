@@ -15,7 +15,9 @@ import org.example.project.ui.navigation.RootComponent
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import org.example.project.ui.screens.auth.AuthScreen
+import org.example.project.ui.screens.forgotpassword.ForgotPasswordScreen
 import org.example.project.ui.screens.home.HomeScreen
+import org.example.project.ui.screens.resetpassword.ResetPasswordScreen
 import org.example.project.ui.screens.signup.SignUpScreen
 import org.example.project.ui.screens.splash.SplashScreen
 import org.example.project.ui.screens.useraccount.UserAccount
@@ -55,6 +57,8 @@ fun App(rootComponent: RootComponent){
                     is RootComponent.Child.SignUpScreen -> SignUpScreen(targetChild.component)
                     is RootComponent.Child.HomeScreen -> HomeScreen(targetChild.component)
                     is RootComponent.Child.UserAccount -> UserAccount(targetChild.component)
+                    is RootComponent.Child.ForgotPasswordScreen -> ForgotPasswordScreen(targetChild.component)
+                    is RootComponent.Child.ResetPasswordScreen -> ResetPasswordScreen(viewModel = targetChild.component)
                 }
             }
 

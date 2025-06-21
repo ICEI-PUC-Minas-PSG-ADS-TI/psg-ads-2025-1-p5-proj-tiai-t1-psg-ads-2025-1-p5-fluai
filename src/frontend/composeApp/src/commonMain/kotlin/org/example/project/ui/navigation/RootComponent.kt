@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.router.stack.replaceCurrent
@@ -11,7 +12,9 @@ import org.koin.core.component.get
 import kotlinx.serialization.Serializable
 import org.example.project.domain.model.AuthData
 import org.example.project.ui.screens.auth.AuthViewModel
+import org.example.project.ui.screens.forgotpassword.ForgotPasswordViewModel
 import org.example.project.ui.screens.home.HomeViewModel
+import org.example.project.ui.screens.resetpassword.ResetPasswordViewModel
 import org.example.project.ui.screens.signup.SignUpViewModel
 import org.example.project.ui.screens.splash.SplashViewModel
 import org.example.project.ui.screens.useraccount.UserAccountViewModel
@@ -70,7 +73,9 @@ class RootComponent(
                             navigation.replaceCurrent(
                                 Configuration.HomeScreen(authData)
                             )
-                        })
+                        },
+                        { navigation.pushNew(Configuration.ForgotPasswordScreen) }
+                    )
                 })
             )
 
@@ -101,6 +106,26 @@ class RootComponent(
                     )
                 })
             )
+
+            is Configuration.ForgotPasswordScreen -> Child.ForgotPasswordScreen(
+                get<ForgotPasswordViewModel>(parameters = {
+                    parametersOf(
+                        context,
+                        { navigation.pop() },
+                        { _: String -> println("Reset link recebido!") }
+                    )
+                })
+            )
+
+            is Configuration.ResetPasswordScreen -> Child.ResetPasswordScreen(
+                get<ResetPasswordViewModel>(parameters = {
+                    parametersOf(
+                        context,
+                        config.resetLink,
+                        { navigation.replaceCurrent(Configuration.AuthScreen) }
+                    )
+                })
+            )
         }
     }
 
@@ -122,7 +147,8 @@ class RootComponent(
         data class SignUpScreen(val component: SignUpViewModel) : Child()
         data class HomeScreen(val component: HomeViewModel) : Child()
         data class UserAccount(val component: UserAccountViewModel) : Child()
-
+        data class ForgotPasswordScreen(val component: ForgotPasswordViewModel) : Child()
+        data class ResetPasswordScreen(val component: ResetPasswordViewModel) : Child()
     }
 
     @Serializable
@@ -141,5 +167,11 @@ class RootComponent(
 
         @Serializable
         data object UserAccount : Configuration()
+
+        @Serializable
+        data object ForgotPasswordScreen : Configuration()
+
+        @Serializable
+        data class ResetPasswordScreen(val resetLink: String) : Configuration()
     }
 }

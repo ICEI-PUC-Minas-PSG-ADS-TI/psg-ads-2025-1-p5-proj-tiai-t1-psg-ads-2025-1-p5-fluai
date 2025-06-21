@@ -13,7 +13,8 @@ class AuthViewModel(
     componentContext: ComponentContext,
     private val authUseCase: AuthUseCase,
     private val onNavigateToSignUp: () -> Unit,
-    private val onNavigationToHome: (AuthData) -> Unit
+    private val onNavigationToHome: (AuthData) -> Unit,
+    private val onNavigateToForgotPasswordScreen: () -> Unit
 ) : ComponentContext by componentContext {
 
     private val _authStateResult = MutableSharedFlow<AuthResult>()
@@ -44,6 +45,7 @@ class AuthViewModel(
                     sendUserData(email = event.email, password = event.password)
                 }
             }
+            is AuthScreenEvent.GoToForgotPassword -> onNavigateToForgotPasswordScreen()
         }
     }
 }

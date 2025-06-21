@@ -17,6 +17,8 @@ suspend fun <T> safeApiCall(call: suspend () -> T): Result<T> {
     } catch (e: IOException) {
         Result.failure(Throwable(message = "Sem conexão com a internet."))
     } catch (e: Exception) {
-        Result.failure(Throwable(message = "Erro desconhecido. Tente novamente."))
+        println("ERRO REAL: ${e::class.simpleName} - ${e.message}")
+        e.printStackTrace()
+        Result.failure(e)
     }
 }

@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import frontend.composeapp.generated.resources.Res
-import frontend.composeapp.generated.resources.default_avatar
+//import frontend.composeapp.generated.resources.default_avatar
 import org.example.project.ui.theme.PoppinsTypography
 import org.jetbrains.compose.resources.painterResource
 
@@ -33,7 +33,7 @@ fun UserAccount(
             Text(text = "Conta", style = PoppinsTypography().h5, fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.fillMaxWidth().align(Alignment.Start))
             Spacer(modifier = Modifier.size(16.dp))
             IconButton(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),  onClick = {}){
-                Image(painter = painterResource(Res.drawable.default_avatar), contentDescription = "", modifier = Modifier.padding(end = 16.dp).size(100.dp))
+                //Image(painter = painterResource(Res.drawable.default_avatar), contentDescription = "", modifier = Modifier.padding(end = 16.dp).size(100.dp))
             }
             Spacer(modifier = Modifier.size(30.dp))
             TextButton(onClick = {}){ Text(text = "Editar perfil", style = PoppinsTypography().subtitle1, fontWeight = FontWeight.SemiBold,  color = Color.Black, modifier = Modifier.fillMaxWidth()) }
