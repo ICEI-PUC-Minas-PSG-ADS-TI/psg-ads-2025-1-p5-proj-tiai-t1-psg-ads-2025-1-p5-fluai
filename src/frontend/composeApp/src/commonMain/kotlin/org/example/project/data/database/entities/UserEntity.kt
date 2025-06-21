@@ -10,7 +10,9 @@ data class UserEntity(
     val uid : String = "",
     val username : String = "Usuário",
     val authToken : String = "",
-    val isLogged: Boolean = false
+    val isLogged: Boolean = false,
+    val smartChallengesCompleted : Int = 0,
+    val fluencyBoostCompleted : Int = 0
 )
 
 

@@ -42,6 +42,7 @@ import org.example.project.theme.Blue
 import org.example.project.ui.components.dialog.showErrorDialog
 import org.example.project.ui.components.dialog.showSuccessDialog
 import org.example.project.ui.components.loading.LoadingComponent
+import org.example.project.ui.screens.fluencyboost.ActivityGenerationScreen
 import org.example.project.ui.state.rememberUiCommonState
 import org.example.project.ui.theme.PoppinsTypography
 import org.jetbrains.compose.resources.painterResource
@@ -60,71 +61,84 @@ fun LevelingTest(
 
     val message = remember { mutableStateOf("") }
 
+    val generating = remember { mutableStateOf(false) }
+
 
     LaunchedEffect(Unit){
         viewModel.levelingTestResult.collect { result ->
             when(result){
                 is LevelingTestResult.Success -> {
+                    generating.value = false
                     uiState.showCircularProgressBar.value = false
                 }
 
                 is LevelingTestResult.Loading -> uiState.showCircularProgressBar.value = true
 
                 is LevelingTestResult.Error -> {
+                    generating.value = false
                     uiState.showCircularProgressBar.value = false
                     uiState.isDisplayDialogError.value = true
                     uiState.errorMessage.value = result.message
                 }
 
                 is LevelingTestResult.Completed -> {
+                    generating.value = false
                     uiState.showCircularProgressBar.value = false
                     message.value = result.message
                     uiState.isDisplaySuccessDialog.value = true
+                }
+
+                is LevelingTestResult.Generating -> {
+                    generating.value = true
                 }
                 else -> Unit
             }
         }
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            if (viewModel.questions.isNotEmpty()){
-                TopAppBar(currentQuestions = viewModel.currentQuestionIndex + 1 , viewModel.questions.size){
-                    viewModel.onEvent(LevelingTestEvent.GoToHome)
-                }
-            }else{
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White)
-                        .padding(vertical = 12.dp)
-                ) {
-                    ProgressBar(
-                        currentQuestion = 0,
-                        totalQuestions = 0,
-                    ){
+    if (generating.value){
+        ActivityGenerationScreen()
+    }else{
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                if (viewModel.questions.isNotEmpty()){
+                    TopAppBar(currentQuestions = viewModel.currentQuestionIndex + 1 , viewModel.questions.size){
                         viewModel.onEvent(LevelingTestEvent.GoToHome)
+                    }
+                }else{
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White)
+                            .padding(vertical = 12.dp)
+                    ) {
+                        TopAppBar(
+                            currentQuestions = 0,
+                            totalQuestions = 0
+                        ){
+                            viewModel.onEvent(LevelingTestEvent.GoToHome)
+                        }
                     }
                 }
             }
-        }
-    ) { paddingValues ->
-        showErrorDialog(isDisplayDialogError = uiState.isDisplayDialogError, errorMessage = uiState.errorMessage.value)
-        showSuccessDialog(isDisplaySuccessDialog = uiState.isDisplaySuccessDialog, message = message.value){
-            viewModel.onEvent(LevelingTestEvent.GoToHome)
-        }
-        LoadingComponent(uiState.showCircularProgressBar.value)
-        if (!uiState.showCircularProgressBar.value && viewModel.questions.isNotEmpty()){
-            val currentQuestion = viewModel.questions[viewModel.currentQuestionIndex]
-            QuestionContent(
-                question = currentQuestion.question,
-                options = currentQuestion.optionList(),
-                onOptionSelected = { formattedAnswer ->
-                    viewModel.onEvent(LevelingTestEvent.SubmitAnswer(formattedAnswer))
-                },
-                paddingValues = paddingValues
-            )
+        ) { paddingValues ->
+            showErrorDialog(isDisplayDialogError = uiState.isDisplayDialogError, errorMessage = uiState.errorMessage.value)
+            showSuccessDialog(isDisplaySuccessDialog = uiState.isDisplaySuccessDialog, message = message.value){
+                viewModel.onEvent(LevelingTestEvent.GoToHome)
+            }
+            LoadingComponent(uiState.showCircularProgressBar.value)
+            if (!uiState.showCircularProgressBar.value && viewModel.questions.isNotEmpty()){
+                val currentQuestion = viewModel.questions[viewModel.currentQuestionIndex]
+                QuestionContent(
+                    question = currentQuestion.question,
+                    options = currentQuestion.optionList(),
+                    onOptionSelected = { formattedAnswer ->
+                        viewModel.onEvent(LevelingTestEvent.SubmitAnswer(formattedAnswer))
+                    },
+                    paddingValues = paddingValues
+                )
+            }
         }
     }
 }

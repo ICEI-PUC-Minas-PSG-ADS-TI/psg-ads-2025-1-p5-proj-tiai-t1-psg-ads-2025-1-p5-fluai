@@ -129,7 +129,7 @@ val dataModules = module {
         LearningPathViewModel(
             componentContext = componentContext,
             authData = authData,
-            homeUseCase = get(),
+            userLocalDataSource = get(),
             onNavigateToLevelingTest = onNavigateToLevelingTest,
             onNavigateToFluencyBoost = onNavigateToFluencyBoost
         )
@@ -139,6 +139,7 @@ val dataModules = module {
         LevelingTestViewModel(
             componentContext = componentContext,
             homeUseCase = get(),
+            userLocalDataSource = get(),
             levelingTestUseCase = get(),
             authData = authData,
             onNavigateToHome = onNavigateToHome,
@@ -149,6 +150,8 @@ val dataModules = module {
         FluencyBoostViewModel(
             componentContext = componentContext,
             authData = authData,
+            homeUseCase = get(),
+            userLocalDataSource = get(),
             levelingTestUseCase = get(),
             navigateToHome = onNavigateToHome
         )

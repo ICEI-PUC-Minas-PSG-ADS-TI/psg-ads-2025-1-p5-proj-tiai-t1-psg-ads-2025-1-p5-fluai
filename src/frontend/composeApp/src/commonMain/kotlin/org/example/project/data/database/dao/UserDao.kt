@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import org.example.project.data.database.entities.UserEntity
 
 @Dao
@@ -25,5 +26,14 @@ interface UserDao {
 
     @Query("UPDATE users SET isLogged = 1 WHERE email = :email")
     suspend fun setUserLogged(email: String)
+
+    @Query("UPDATE users SET smartChallengesCompleted = smartChallengesCompleted + 1 WHERE email = :email")
+    suspend fun incrementSmartChallengesCompleted(email: String)
+
+    @Query("UPDATE users SET fluencyBoostCompleted = fluencyBoostCompleted + 1 WHERE email = :email")
+    suspend fun incrementFluencyBoostCompleted(email: String)
+
+    @Query("SELECT * FROM users WHERE isLogged = 1 LIMIT 1")
+    fun observeLoggedUser(): Flow<UserEntity?>
 
 }

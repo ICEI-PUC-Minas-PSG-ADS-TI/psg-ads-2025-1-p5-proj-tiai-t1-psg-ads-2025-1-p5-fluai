@@ -1,14 +1,12 @@
 package org.example.project.ui.screens.learningpath
 
-import androidx.compose.runtime.mutableStateOf
 import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.example.project.data.database.entities.UserEntity
+import org.example.project.data.database.local.user.UserLocalDataSource
 import org.example.project.domain.model.AuthData
-import org.example.project.domain.model.Email
-import org.example.project.domain.usecase.HomeUseCase
 import org.example.project.ui.extensions.coroutineScope
 
 sealed class LearningPathResult {
@@ -21,30 +19,23 @@ sealed class LearningPathResult {
 class LearningPathViewModel(
     componentContext: ComponentContext,
     private val authData: AuthData,
-    private val homeUseCase: HomeUseCase,
+    private val userLocalDataSource: UserLocalDataSource,
     private val onNavigateToLevelingTest : (AuthData) -> Unit,
     private val onNavigateToFluencyBoost : (AuthData) -> Unit
 ) : ComponentContext by componentContext{
 
-    private val _learningPath = MutableStateFlow<LearningPathResult>(LearningPathResult.Loading)
-    val learningPath : StateFlow<LearningPathResult> = _learningPath
+
+    private val _loggedUserFlow = MutableStateFlow<UserEntity?>(null)
+    val loggedUserFlow : StateFlow<UserEntity?> = _loggedUserFlow
 
     init {
-        preloadQuestions()
-    }
-
-
-    private fun preloadQuestions(){
         coroutineScope.launch {
-            _learningPath.value = LearningPathResult.Loading
-            val response = homeUseCase.preloadQuestions(Email(authData.email))
-            response.onSuccess {
-               _learningPath.value = LearningPathResult.Success
-            }.onFailure {
-                _learningPath.value = LearningPathResult.Error
+            userLocalDataSource.observeLoggedUser().collect{
+                _loggedUserFlow.value = it
             }
         }
     }
+
 
     fun onEvent(event : LearningPathEvent){
         when(event){

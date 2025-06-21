@@ -1,5 +1,6 @@
 package org.example.project.data.database.local.user
 
+import kotlinx.coroutines.flow.Flow
 import org.example.project.data.database.dao.UserDao
 import org.example.project.data.database.entities.UserEntity
 
@@ -24,6 +25,18 @@ class UserLocalDataSourceImpl(
 
     override suspend fun setUserLogged(email: String) {
          userDao.setUserLogged(email)
+    }
+
+    override suspend fun incrementSmartChallengesCompleted(email: String) {
+        userDao.incrementSmartChallengesCompleted(email)
+    }
+
+    override suspend fun incrementFluencyBoostCompleted(email: String) {
+        userDao.incrementFluencyBoostCompleted(email)
+    }
+
+    override suspend fun observeLoggedUser(): Flow<UserEntity?> {
+        return userDao.observeLoggedUser()
     }
 
 }
