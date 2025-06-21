@@ -21,7 +21,7 @@ def get_leveling_tests_route():
         return jsonify({"error": str(e)}), 500
 
 
-@lessons_bp.route('/custom-activity', methods=['GET'])
+@lessons_bp.route('/custom-activity', methods=['POST'])
 def get_custom_activity_route():
     try:
         data = request.get_json()
