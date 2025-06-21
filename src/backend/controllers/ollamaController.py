@@ -77,7 +77,6 @@ def define_user_english_level():
 def generate_custom_activity(email):
     user = get_user_by_email(email)
     if not user:
-        # Só logue erro, não retorne JSON
         print(f"Usuário não encontrado para email {email}")
         return
 
