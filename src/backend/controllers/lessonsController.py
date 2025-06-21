@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from services.lessonsService import get_leveling_tests, get_custom_activity
+from controllers.ollamaController import generate_custom_activity
 
 
 lessons_bp = Blueprint('lessons', __name__)
@@ -23,6 +24,8 @@ def get_leveling_tests_route():
 def get_custom_activity_route():
     try:
         custom_activity = get_custom_activity()
+
+        generate_custom_activity()
 
         if not custom_activity:
             return jsonify({"error": "Nenhuma atividade personalizada encontrada"}), 404
