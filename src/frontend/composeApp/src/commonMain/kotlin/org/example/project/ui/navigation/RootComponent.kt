@@ -11,7 +11,10 @@ import org.koin.core.component.get
 import kotlinx.serialization.Serializable
 import org.example.project.domain.model.AuthData
 import org.example.project.ui.screens.auth.AuthViewModel
+import org.example.project.ui.screens.fluencyboost.FluencyBoostViewModel
 import org.example.project.ui.screens.home.HomeViewModel
+import org.example.project.ui.screens.learningpath.LearningPathViewModel
+import org.example.project.ui.screens.levelingtest.LevelingTestViewModel
 import org.example.project.ui.screens.signup.SignUpViewModel
 import org.example.project.ui.screens.splash.SplashViewModel
 import org.example.project.ui.screens.useraccount.UserAccountViewModel
@@ -22,6 +25,7 @@ class RootComponent(
     componentContext: ComponentContext
 ) : ComponentContext by componentContext, KoinComponent {
 
+
     private val navigation = StackNavigation<Configuration>()
     val childStack = childStack(
         source = navigation,
@@ -30,6 +34,8 @@ class RootComponent(
         handleBackButton = true,
         childFactory = ::createChild
     )
+
+    val currentConfig = childStack.value.active.configuration
 
     private fun logout(){
         navigation.navigate { listOf(Configuration.SplashScreen) }
@@ -89,6 +95,11 @@ class RootComponent(
                     parametersOf(
                         context,
                         config.authData,
+                        { authData : AuthData->
+                            currentAuthData = authData
+                            navigation.replaceCurrent(Configuration.LevelingTest(authData))
+                        },
+                        config.secondsToAdd
                     )
                 })
             )
@@ -101,6 +112,56 @@ class RootComponent(
                     )
                 })
             )
+
+            is Configuration.LearningPath -> Child.LearningPath(
+                get<LearningPathViewModel>(parameters = {
+                    parametersOf(
+                        context,
+                        config.authData,
+                        { authData : AuthData ->
+                            currentAuthData = authData
+                            navigation.replaceCurrent(Configuration.LevelingTest(authData = authData))
+                        },
+                        { authData : AuthData ->
+                            currentAuthData = authData
+                            navigation.replaceCurrent(Configuration.FluencyBoost(authData = authData))
+                        }
+                    )
+                })
+            )
+
+            is Configuration.LevelingTest -> Child.LevelingTest(
+                get<LevelingTestViewModel>(parameters = {
+                    parametersOf(
+                        context,
+                        config.authData,
+                        { authData : AuthData, seconds : Int ->
+                            currentAuthData = authData
+                            bottomBarController.select(1)
+                            navigation.replaceCurrent(Configuration.HomeScreen(authData = authData, seconds))
+                        }
+                    )
+                })
+            )
+
+            is Configuration.FluencyBoost -> Child.FluencyBoost(
+                get<FluencyBoostViewModel>(parameters = {
+                    parametersOf(
+                        context,
+                        config.authData,
+                        { authData : AuthData, seconds : Int ->
+                            currentAuthData = authData
+                            bottomBarController.select(1)
+                            navigation.replaceCurrent(Configuration.HomeScreen(authData = authData, seconds))
+                        },
+                        { authData : AuthData ->
+                            currentAuthData = authData
+                            bottomBarController.select(1)
+                            navigation.replaceCurrent(Configuration.FluencyBoost(authData = authData))
+                        }
+                    )
+                })
+            )
         }
     }
 
@@ -109,7 +170,8 @@ class RootComponent(
     fun navigateTo(index: Int){
         bottomBarController.select(index)
         when(index){
-            1 ->  navigation.replaceCurrent(Configuration.HomeScreen(authData = currentAuthData!!))
+            0 -> navigation.replaceCurrent(Configuration.LearningPath(authData = currentAuthData!!))
+            1 ->  navigation.replaceCurrent(Configuration.HomeScreen(authData = currentAuthData!!, secondsToAdd = 0))
             2 -> navigation.replaceCurrent(Configuration.UserAccount)
         }
     }
@@ -122,7 +184,9 @@ class RootComponent(
         data class SignUpScreen(val component: SignUpViewModel) : Child()
         data class HomeScreen(val component: HomeViewModel) : Child()
         data class UserAccount(val component: UserAccountViewModel) : Child()
-
+        data class LearningPath(val component : LearningPathViewModel): Child()
+        data class LevelingTest(val component: LevelingTestViewModel): Child()
+        data class FluencyBoost(val component: FluencyBoostViewModel): Child()
     }
 
     @Serializable
@@ -137,9 +201,19 @@ class RootComponent(
         data object SignUpScreen : Configuration()
 
         @Serializable
-        data class HomeScreen(val authData: AuthData) : Configuration()
+        data class HomeScreen(val authData: AuthData, val secondsToAdd : Int = 0) : Configuration()
 
         @Serializable
         data object UserAccount : Configuration()
+
+        @Serializable
+        data class LearningPath(val authData: AuthData) : Configuration()
+
+        @Serializable
+        data class LevelingTest(val authData: AuthData) : Configuration()
+
+        @Serializable
+        data class FluencyBoost(val authData: AuthData) : Configuration()
+
     }
 }

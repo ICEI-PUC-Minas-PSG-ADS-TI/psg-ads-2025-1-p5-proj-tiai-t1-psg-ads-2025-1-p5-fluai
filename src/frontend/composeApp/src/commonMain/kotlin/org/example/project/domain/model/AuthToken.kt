@@ -8,5 +8,7 @@ data class AuthData(
     val uuid: String,
     val email: String,
     val token: String,
-    val isLogged : Boolean = false
+    val isLogged : Boolean = false,
+    val smartChallengesCompleted : Int = 0,
+    val fluencyBoostCompleted : Int = 0
 )

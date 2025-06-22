@@ -63,6 +63,7 @@ kotlin {
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(libs.firebase.auth)
             implementation(libs.firebase.common)
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
             implementation(libs.gitlive.firebase.app)
             implementation(libs.firebase.firestore)
             implementation(libs.decompose)
