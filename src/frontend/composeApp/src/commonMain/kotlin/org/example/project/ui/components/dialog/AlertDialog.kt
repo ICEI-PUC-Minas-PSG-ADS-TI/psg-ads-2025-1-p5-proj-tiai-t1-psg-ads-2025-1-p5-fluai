@@ -69,14 +69,6 @@ fun AlertDialog(text : String, onDismiss : () -> Unit, onClick: () -> Unit) {
                         modifier = Modifier.size(70.dp)
                     )
                     Text(
-                        text = stringResource(Res.string.success_feedback_title),
-                        style = PoppinsTypography().subtitle2,
-                        color = Color.Black,
-                        modifier = Modifier
-                            .padding(top = 12.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    Text(
                         text = text,
                         style = PoppinsTypography().caption,
                         color = Color.Gray,
