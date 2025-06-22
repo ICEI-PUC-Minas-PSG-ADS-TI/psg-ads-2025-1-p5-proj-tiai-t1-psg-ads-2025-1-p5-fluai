@@ -108,12 +108,14 @@ val dataModules = module {
         )
     }
 
-    factory { (componentContext: ComponentContext, authData : AuthData, navigateToLevelingTest : (AuthData) -> Unit) ->
+    factory { (componentContext: ComponentContext, authData : AuthData, navigateToLevelingTest : (AuthData) -> Unit, secondsToAdd : Int) ->
         HomeViewModel(
             componentContext = componentContext,
             homeUseCase = get(),
+            userLocalDataSource = get(),
             authData = authData,
-            navigateToLevelingTest = navigateToLevelingTest
+            navigateToLevelingTest = navigateToLevelingTest,
+            secondsToAdd = secondsToAdd
         )
     }
 
@@ -135,7 +137,7 @@ val dataModules = module {
         )
     }
 
-    factory { (componentContext: ComponentContext, authData: AuthData, onNavigateToHome : (AuthData) -> Unit) ->
+    factory { (componentContext: ComponentContext, authData: AuthData, onNavigateToHome : (AuthData, Int) -> Unit) ->
         LevelingTestViewModel(
             componentContext = componentContext,
             homeUseCase = get(),
@@ -146,11 +148,10 @@ val dataModules = module {
         )
     }
 
-    factory { (componentContext: ComponentContext, authData: AuthData, onNavigateToHome : (AuthData) -> Unit) ->
+    factory { (componentContext: ComponentContext, authData: AuthData, onNavigateToHome : (AuthData, Int) -> Unit) ->
         FluencyBoostViewModel(
             componentContext = componentContext,
             authData = authData,
-            homeUseCase = get(),
             userLocalDataSource = get(),
             levelingTestUseCase = get(),
             navigateToHome = onNavigateToHome

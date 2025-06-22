@@ -12,7 +12,9 @@ data class UserEntity(
     val authToken : String = "",
     val isLogged: Boolean = false,
     val smartChallengesCompleted : Int = 0,
-    val fluencyBoostCompleted : Int = 0
+    val fluencyBoostCompleted : Int = 0,
+    val dailyGoal : Int = 15,
+    val dailyStudyTime: Int = 0
 )
 
 

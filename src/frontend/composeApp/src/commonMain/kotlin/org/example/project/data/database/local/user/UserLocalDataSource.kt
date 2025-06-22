@@ -12,4 +12,8 @@ interface UserLocalDataSource {
     suspend fun incrementSmartChallengesCompleted(email: String)
     suspend fun incrementFluencyBoostCompleted(email: String)
     suspend fun observeLoggedUser(): Flow<UserEntity?>
+    suspend fun updateUserDailyGoal(email: String, userGoal: Int)
+    suspend fun addStudyTime(email: String, seconds: Int)
+    suspend fun getDailyStudyTime(email: String): Int
+    suspend fun getLoggedUserSnapshot(): UserEntity?
 }

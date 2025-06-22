@@ -1,9 +1,12 @@
 package org.example.project.ui.screens.levelingtest
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,13 +29,16 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -54,6 +60,11 @@ fun LevelingTest(
 
     val uiState = rememberUiCommonState()
 
+    DisposableEffect(Unit){
+        onDispose {
+            viewModel.onExit()
+        }
+    }
 
     LaunchedEffect(Unit){
         viewModel.getQuestion()
@@ -75,7 +86,6 @@ fun LevelingTest(
                 is LevelingTestResult.Loading -> uiState.showCircularProgressBar.value = true
 
                 is LevelingTestResult.Error -> {
-                    generating.value = false
                     uiState.showCircularProgressBar.value = false
                     uiState.isDisplayDialogError.value = true
                     uiState.errorMessage.value = result.message
@@ -89,6 +99,8 @@ fun LevelingTest(
                 }
 
                 is LevelingTestResult.Generating -> {
+                    uiState.showCircularProgressBar.value = false
+                    uiState.isDisplayDialogError.value = false
                     generating.value = true
                 }
                 else -> Unit
@@ -133,6 +145,7 @@ fun LevelingTest(
                 QuestionContent(
                     question = currentQuestion.question,
                     options = currentQuestion.optionList(),
+                    correctAnswer = currentQuestion.answer,
                     onOptionSelected = { formattedAnswer ->
                         viewModel.onEvent(LevelingTestEvent.SubmitAnswer(formattedAnswer))
                     },
@@ -148,9 +161,21 @@ fun LevelingTest(
 fun QuestionContent(
     question: String,
     options: List<String>,
+    correctAnswer: String,
     onOptionSelected: (String) -> Unit,
     paddingValues: PaddingValues
 ) {
+    val selectedOption = remember(question) { mutableStateOf<String?>(null) }
+    val hasAnswered = remember(question) { mutableStateOf(false) }
+
+    LaunchedEffect(hasAnswered.value) {
+        if (hasAnswered.value) {
+            kotlinx.coroutines.delay(1000)
+            val formatted = formatAnswer(question, selectedOption.value!!)
+            onOptionSelected(formatted)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -162,25 +187,24 @@ fun QuestionContent(
         LevelingTestQuestion(
             question = question,
             options = options,
-            onOptionSelected = onOptionSelected
+            selectedOption = selectedOption.value,
+            correctAnswer = correctAnswer,
+            onOptionSelected = { answer ->
+                if (!hasAnswered.value) {
+                    selectedOption.value = answer
+                    hasAnswered.value = true
+                }
+            }
         )
     }
 }
 
 
-@Composable
-fun EmptyState() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("No questions available")
-    }
-}
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun LevelingTestQuestion(question: String, options : List<String>, onOptionSelected : (String) -> Unit){
+fun LevelingTestQuestion(question: String, options : List<String>, selectedOption : String?, correctAnswer: String, onOptionSelected : (String) -> Unit){
+
+
     Text(text = question, style = PoppinsTypography().h6, color = Color.Black, fontWeight = FontWeight.Normal, modifier = Modifier.padding(horizontal = 16.dp))
     Spacer(modifier = Modifier.height(24.dp))
     FlowRow(
@@ -191,12 +215,21 @@ fun LevelingTestQuestion(question: String, options : List<String>, onOptionSelec
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         options.forEachIndexed { index, answer ->
+
+            val isAnswered = selectedOption != null
+            val isUserSelected = selectedOption == answer
+            val isCorrect = isAnswered && answer == correctAnswer
+            val isWrong = isAnswered && isUserSelected && answer != correctAnswer
+
             AnswerButton(
                 text = answer,
                 onClick = {
-                    val formated = formatAnswer(question, answer)
-                    onOptionSelected(formated)
-                })
+                    onOptionSelected(answer)
+                },
+                isCorrectAnswer = isCorrect,
+                isWrongAnswer = isWrong,
+                isSelected = isUserSelected
+            )
         }
     }
 }
@@ -206,14 +239,30 @@ fun formatAnswer(question: String, answer: String) : String{
 }
 
 @Composable
-fun AnswerButton(text : String, onClick : () -> Unit){
+fun AnswerButton(text : String, onClick : () -> Unit, isCorrectAnswer: Boolean = false, isWrongAnswer: Boolean = false, isSelected: Boolean = false){
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (pressed) 0.97f else 1f,
+        label = "ScaleAnimation"
+    )
+
+    val backgroundColor = when {
+        isCorrectAnswer -> Color(0xFF31CD63)
+        isWrongAnswer -> Color(0xFFFF6B6B)
+        isSelected -> Color(0xFFD3D3D3)
+        else -> Color(0xFFEFEFFF)
+    }
+
     Box(
         modifier = Modifier
         .clip(RoundedCornerShape(22))
-        .background(Color(0xFFEFEFFF))
+            .graphicsLayer(scaleX = scale, scaleY = scale)
+        .background(backgroundColor)
         .border(1.dp, Color(0xFF8888AA), RoundedCornerShape(22))
+        .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
         .padding(horizontal = 20.dp, vertical = 12.dp)
-        .clickable(onClick = onClick)
     ){
         Row{
             Text(

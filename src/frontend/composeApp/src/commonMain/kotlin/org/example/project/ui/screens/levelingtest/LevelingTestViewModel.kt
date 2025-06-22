@@ -8,10 +8,13 @@ import org.example.project.domain.model.Questions
 import org.example.project.domain.usecase.LevelingTestUseCase
 import org.example.project.ui.extensions.coroutineScope
 import androidx.compose.runtime.mutableStateOf
+import kotlinx.coroutines.delay
 import org.example.project.data.database.local.user.UserLocalDataSource
+import org.example.project.data.utils.SessionTimeTracker
 import org.example.project.domain.model.AuthData
 import org.example.project.domain.model.Email
 import org.example.project.domain.model.LevelingTestAnswers
+import org.example.project.domain.service.TooManyRequestsException
 import org.example.project.domain.usecase.HomeUseCase
 
 sealed class LevelingTestResult {
@@ -28,8 +31,19 @@ class LevelingTestViewModel(
     private val homeUseCase: HomeUseCase,
     private val userLocalDataSource: UserLocalDataSource,
     private val authData: AuthData,
-    private val onNavigateToHome: (AuthData) -> Unit
+    private val onNavigateToHome: (AuthData, Int) -> Unit
 ) : ComponentContext by componentContext {
+
+    private val sessionTracker = SessionTimeTracker()
+
+    init {
+        sessionTracker.startSession()
+    }
+
+    fun onExit(){
+        val seconds = sessionTracker.endSession()
+        onNavigateToHome(authData, seconds)
+    }
 
 
     private val _isFirstLesson = mutableStateOf(false)
@@ -47,37 +61,43 @@ class LevelingTestViewModel(
 
 
 
-    private suspend fun preloadQuestions() {
-        _levelingTestResult.value = LevelingTestResult.Generating
-        val response = homeUseCase.preloadQuestions(Email(authData.email))
-        response.onSuccess {
-            _levelingTestResult.value = LevelingTestResult.Success
-        }.onFailure {
-            _levelingTestResult.value =
-                LevelingTestResult.Error(message = it.message ?: "Err desconhecido")
-        }
-    }
-
     suspend fun getQuestion() {
-
         val needTest = homeUseCase.verifyLevelingTest(Email(authData.email))
         _isFirstLesson.value = needTest.isFailure
         _levelingTestResult.value = LevelingTestResult.Loading
-        val response = if(_isFirstLesson.value){
-            levelingTestUseCase.getQuestion()
-        }else{
-            preloadQuestions()
-            levelingTestUseCase.getQuestionSmartChallenges(Email(email = authData.email))
+
+        val maxRetries = 5
+        var attempts = 0
+
+        while (attempts < maxRetries) {
+            val response = if (_isFirstLesson.value) {
+                levelingTestUseCase.getQuestion()
+            } else {
+                levelingTestUseCase.getQuestionSmartChallenges(Email(email = authData.email))
+            }
+
+            if (response.isSuccess) {
+                val questionList = response.getOrNull().orEmpty()
+                _questions.clear()
+                _questions.addAll(questionList)
+                _levelingTestResult.value = LevelingTestResult.Success
+                return
+            }
+
+            val error = response.exceptionOrNull()
+            if (error is TooManyRequestsException) {
+                _levelingTestResult.value = LevelingTestResult.Generating
+                delay(25000L)
+                attempts++
+            } else {
+                _levelingTestResult.value = LevelingTestResult.Error(error?.message ?: "Erro desconhecido")
+                return
+            }
         }
 
-        response.onSuccess { questionList ->
-            _questions.clear()
-            _questions.addAll(questionList)
-            _levelingTestResult.value = LevelingTestResult.Success
-        }.onFailure {
-            _levelingTestResult.value = LevelingTestResult.Error(it.message ?: "Erro desconhecido")
-        }
+        _levelingTestResult.value = LevelingTestResult.Error("Atividades ainda estão sendo geradas. Tente novamente em alguns minutos.")
     }
+
 
     private suspend fun submitAnswer(answer: String) {
         _answers.add(answer)
@@ -111,7 +131,10 @@ class LevelingTestViewModel(
                 }
             }
 
-            is LevelingTestEvent.GoToHome -> onNavigateToHome(authData)
+            is LevelingTestEvent.GoToHome -> {
+                val seconds = sessionTracker.endSession()
+                onNavigateToHome(authData, seconds)
+            }
         }
     }
 

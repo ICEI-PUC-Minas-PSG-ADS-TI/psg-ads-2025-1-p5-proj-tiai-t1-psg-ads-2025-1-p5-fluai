@@ -24,6 +24,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +55,12 @@ fun FluencyBoostScreen(
     viewModel: FluencyBoostViewModel
 ) {
 
+    DisposableEffect(Unit){
+        onDispose {
+            viewModel.onExit()
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.getQuestion()
     }
@@ -67,6 +74,7 @@ fun FluencyBoostScreen(
         viewModel.fluencyBoostResult.collect { result ->
             when (result) {
                 is FluencyBoostResult.Success -> {
+                    uiState.showCircularProgressBar.value = false
                     generating.value = false
                 }
 
@@ -142,6 +150,7 @@ fun FluencyBoostScreen(
                     val currentIndex = viewModel.questions[viewModel.currentQuestionIndex]
                     QuestionsContent(
                         question = currentIndex.question,
+                        correctAnswer = currentIndex.answer,
                         options = currentIndex.optionList(),
                         onOptionSelected = { formattedAnswer ->
                             viewModel.onEvent(FluencyBoostEvent.SubmitAnswer(formattedAnswer))
@@ -172,8 +181,8 @@ fun ActivityGenerationScreen() {
         steps.forEachIndexed { index, _ ->
             currentStep.value = index
             repeat(10) { i ->
-                progress.floatValue = (index * 10 + i) / 50f
-                delay(1000)
+                progress.floatValue = (index * 10 + i + 1) / 50f
+                delay(500)
             }
         }
     }
@@ -219,49 +228,111 @@ fun ActivityGenerationScreen() {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun QuestionsContent(
     question: String,
-    options: List<String>,
-    onOptionSelected: (String) -> Unit,
-) {
-    Column(modifier = Modifier.fillMaxSize().padding(20.dp)) {
-        Spacer(modifier = Modifier.height(32.dp))
-        FluencyBoostQuestion(
-            question = question,
-            options = options,
-            onOptionSelected = onOptionSelected
-        )
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-fun FluencyBoostQuestion(
-    question: String,
+    correctAnswer: String,
     options: List<String>,
     onOptionSelected: (String) -> Unit
 ) {
+    val selectedAnswer = remember(question) { mutableStateOf<String?>(null) }
+    val showFeedback = remember(question) { mutableStateOf(false) }
 
-    Text(
-        text = question,
-        style = PoppinsTypography().h6,
-        color = Dark_Blue,
-        fontWeight = FontWeight.SemiBold
-    )
 
-    Spacer(modifier = Modifier.height(60.dp))
+    LaunchedEffect(showFeedback.value) {
+        if (showFeedback.value) {
+            delay(1500)
+            selectedAnswer.value?.let {
+                val formatted = formatAnswer(question, it)
+                onOptionSelected(formatted)
+            }
+        }
+    }
 
-    FlowColumn {
-        options.forEachIndexed { index, answer ->
-            AnswerButton(
-                modifier = Modifier.padding(bottom = 32.dp),
-                text = answer,
-                letter = "${'a' + index}",
-                onClick = {
-                    val formatted = formatAnswer(question, answer)
-                    onOptionSelected(formatted)
-                }
+
+    Column(modifier = Modifier.fillMaxSize().padding(20.dp)) {
+        Spacer(modifier = Modifier.height(32.dp))
+        Text(
+            text = question,
+            style = PoppinsTypography().h6,
+            color = Dark_Blue,
+            fontWeight = FontWeight.SemiBold
+        )
+        Spacer(modifier = Modifier.height(60.dp))
+
+        FlowColumn {
+            options.forEachIndexed { index, answer ->
+                val isUserSelected = selectedAnswer.value == answer
+                val isCorrect = showFeedback.value && answer == correctAnswer
+                val isWrong = showFeedback.value && isUserSelected && answer != correctAnswer
+
+                AnswerButtonWithFeedback(
+                    modifier = Modifier.padding(bottom = 32.dp),
+                    text = answer,
+                    letter = "${'a' + index}",
+                    isCorrect = isCorrect,
+                    isWrong = isWrong,
+                    isDisabled = selectedAnswer.value != null,
+                    onClick = {
+                        if (selectedAnswer.value == null) {
+                            selectedAnswer.value = answer
+                            showFeedback.value = true
+                        }
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+fun AnswerButtonWithFeedback(
+    modifier: Modifier = Modifier,
+    text: String,
+    letter: String,
+    isCorrect: Boolean,
+    isWrong: Boolean,
+    isDisabled: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor = when {
+        isCorrect -> Color(0xFF45C486)
+        isWrong -> Color(0xFFFF6B6B)
+        else -> Light_Blue
+    }
+
+    Button(
+        modifier = modifier.fillMaxWidth().height(60.dp),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = backgroundColor,
+            disabledBackgroundColor = backgroundColor
+        ),        shape = RoundedCornerShape(8.dp),
+        enabled = !isDisabled,
+        onClick = onClick
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier.size(36.dp).clip(CircleShape).background(color = Light_Gray),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = letter,
+                    style = PoppinsTypography().body1,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = text,
+                style = PoppinsTypography().button,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth().align(Alignment.CenterVertically)
             )
         }
     }

@@ -39,4 +39,23 @@ class UserLocalDataSourceImpl(
         return userDao.observeLoggedUser()
     }
 
+    override suspend fun updateUserDailyGoal(email: String, userGoal: Int){
+        userDao.updateUserDailyGoal(email, userGoal)
+    }
+
+    override suspend fun addStudyTime(email: String, seconds: Int) {
+        userDao.addStudyTime(email, seconds)
+        val updatedUser = userDao.getLoggedUserSnapshot()?.copy()
+        updatedUser?.let { userDao.insertUser(it) }
+    }
+
+    override suspend fun getDailyStudyTime(email: String): Int {
+        return userDao.getDailyStudyTime(email)
+    }
+
+    override suspend fun getLoggedUserSnapshot(): UserEntity? {
+        return userDao.getLoggedUserSnapshot()
+    }
+
+
 }

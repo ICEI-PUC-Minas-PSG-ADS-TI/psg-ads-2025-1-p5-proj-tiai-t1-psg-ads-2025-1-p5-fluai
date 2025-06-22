@@ -39,7 +39,10 @@ internal object KtorApiClient {
 
             HttpResponseValidator {
                 validateResponse { response ->
-                    if (response.status.value > 299){
+                    if (response.status == io.ktor.http.HttpStatusCode.TooManyRequests) {
+                        throw TooManyRequestsException("Atividades em geração")
+                    }
+                    else if (response.status.value > 299) {
                         val error = runCatching { response.body<HttpException>() }.getOrNull()
                         throw error ?: HttpException("Erro desconhecido.")
                     }

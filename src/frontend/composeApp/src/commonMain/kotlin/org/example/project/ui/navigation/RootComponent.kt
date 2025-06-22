@@ -99,6 +99,7 @@ class RootComponent(
                             currentAuthData = authData
                             navigation.replaceCurrent(Configuration.LevelingTest(authData))
                         },
+                        config.secondsToAdd
                     )
                 })
             )
@@ -134,10 +135,10 @@ class RootComponent(
                     parametersOf(
                         context,
                         config.authData,
-                        { authData : AuthData ->
+                        { authData : AuthData, seconds : Int ->
                             currentAuthData = authData
                             bottomBarController.select(1)
-                            navigation.replaceCurrent(Configuration.HomeScreen(authData = authData))
+                            navigation.replaceCurrent(Configuration.HomeScreen(authData = authData, seconds))
                         }
                     )
                 })
@@ -148,10 +149,10 @@ class RootComponent(
                     parametersOf(
                         context,
                         config.authData,
-                        { authData : AuthData ->
+                        { authData : AuthData, seconds : Int ->
                             currentAuthData = authData
                             bottomBarController.select(1)
-                            navigation.replaceCurrent(Configuration.HomeScreen(authData = authData))
+                            navigation.replaceCurrent(Configuration.HomeScreen(authData = authData, seconds))
                         },
                         { authData : AuthData ->
                             currentAuthData = authData
@@ -170,7 +171,7 @@ class RootComponent(
         bottomBarController.select(index)
         when(index){
             0 -> navigation.replaceCurrent(Configuration.LearningPath(authData = currentAuthData!!))
-            1 ->  navigation.replaceCurrent(Configuration.HomeScreen(authData = currentAuthData!!))
+            1 ->  navigation.replaceCurrent(Configuration.HomeScreen(authData = currentAuthData!!, secondsToAdd = 0))
             2 -> navigation.replaceCurrent(Configuration.UserAccount)
         }
     }
@@ -200,7 +201,7 @@ class RootComponent(
         data object SignUpScreen : Configuration()
 
         @Serializable
-        data class HomeScreen(val authData: AuthData) : Configuration()
+        data class HomeScreen(val authData: AuthData, val secondsToAdd : Int = 0) : Configuration()
 
         @Serializable
         data object UserAccount : Configuration()

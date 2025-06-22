@@ -35,7 +35,7 @@ class LevelingTestNetworkingImpl(
 
     override suspend fun getQuestionSmartChallenges(email: Email): Result<List<Questions>> {
        return safeApiCall {
-           httpClient.get(urlString = "http://10.0.2.2:5050/lessons/custom-activity"){
+           httpClient.post(urlString = "http://10.0.2.2:5050/lessons/custom-activity"){
                contentType(ContentType.Application.Json)
                setBody(email)
            }.body()

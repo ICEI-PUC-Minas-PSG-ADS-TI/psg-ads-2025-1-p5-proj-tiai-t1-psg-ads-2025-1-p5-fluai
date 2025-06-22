@@ -36,4 +36,16 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE isLogged = 1 LIMIT 1")
     fun observeLoggedUser(): Flow<UserEntity?>
 
+    @Query("UPDATE users SET dailyGoal = :userGoal WHERE email = :email")
+    suspend fun updateUserDailyGoal(email: String, userGoal : Int)
+
+    @Query("UPDATE users SET dailyStudyTime = dailyStudyTime + :seconds WHERE email = :email")
+    suspend fun addStudyTime(email: String, seconds: Int)
+
+    @Query("SELECT dailyStudyTime FROM users WHERE email = :email")
+    suspend fun getDailyStudyTime(email: String): Int
+
+    @Query("SELECT * FROM users WHERE isLogged = 1 LIMIT 1")
+    suspend fun getLoggedUserSnapshot(): UserEntity?
+
 }
