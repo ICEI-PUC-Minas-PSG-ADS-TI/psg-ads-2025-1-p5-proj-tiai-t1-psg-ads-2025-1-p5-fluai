@@ -19,12 +19,14 @@ import org.example.project.data.networking.LevelingTestNetworkingImpl
 import org.example.project.data.networking.SignUpNetworking
 import org.example.project.data.networking.SignUpNetworkingImpl
 import org.example.project.data.repository.AuthRepositoryImpl
+import org.example.project.data.repository.ForgotPasswordRepositoryImpl
 import org.example.project.data.repository.HomeRepositoryImpl
 import org.example.project.data.repository.LevelingTestRepositoryImpl
 import org.example.project.data.repository.SessionRepositoryImpl
 import org.example.project.data.repository.SignUpRepositoryImpl
 import org.example.project.domain.model.AuthData
 import org.example.project.domain.repository.AuthRepository
+import org.example.project.domain.repository.ForgotPasswordRepository
 import org.example.project.domain.repository.HomeRepository
 import org.example.project.domain.repository.LevelingTestRepository
 import org.example.project.domain.repository.SessionRepository
@@ -32,6 +34,8 @@ import org.example.project.domain.repository.SignUpRepository
 import org.example.project.domain.service.KtorApiClient
 import org.example.project.domain.usecase.AuthUseCase
 import org.example.project.domain.usecase.AuthUseCaseImpl
+import org.example.project.domain.usecase.ForgotPasswordUseCase
+import org.example.project.domain.usecase.ForgotPasswordUseCaseImpl
 import org.example.project.domain.usecase.HomeUseCase
 import org.example.project.domain.usecase.HomeUseCaseImpl
 import org.example.project.domain.usecase.LevelingTestUseCase
@@ -40,9 +44,11 @@ import org.example.project.domain.usecase.SignUpUseCase
 import org.example.project.domain.usecase.SignUpUseCaseImpl
 import org.example.project.ui.screens.auth.AuthViewModel
 import org.example.project.ui.screens.fluencyboost.FluencyBoostViewModel
+import org.example.project.ui.screens.forgotpassword.ForgotPasswordViewModel
 import org.example.project.ui.screens.home.HomeViewModel
 import org.example.project.ui.screens.learningpath.LearningPathViewModel
 import org.example.project.ui.screens.levelingtest.LevelingTestViewModel
+import org.example.project.ui.screens.resetpassword.ResetPasswordViewModel
 import org.example.project.ui.screens.signup.SignUpViewModel
 import org.example.project.ui.screens.splash.SplashViewModel
 import org.example.project.ui.screens.useraccount.UserAccountViewModel
@@ -70,6 +76,10 @@ val dataModules = module {
 
     single<SessionRepository> { SessionRepositoryImpl(get(), get()) }
 
+
+    single<ForgotPasswordUseCase> {ForgotPasswordUseCaseImpl(get())}
+    single<ForgotPasswordRepository> {ForgotPasswordRepositoryImpl(get())}
+    single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
 
     single<AuthUseCase> {AuthUseCaseImpl(get())}
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
@@ -99,14 +109,34 @@ val dataModules = module {
             )
     }
 
-    factory { (componentContext: ComponentContext, onNavigateToSignUp: () -> Unit, onNavigateToHome: (AuthData) -> Unit) ->
+    factory { (componentContext: ComponentContext, onNavigateToSignUp: () -> Unit, onNavigateToHome: (AuthData) -> Unit, onNavigateToForgotPasswordScreen: () -> Unit) ->
         AuthViewModel(
             componentContext = componentContext,
             authUseCase = get(),
             onNavigateToSignUp = onNavigateToSignUp,
-            onNavigationToHome = onNavigateToHome
+            onNavigationToHome = onNavigateToHome,
+            onNavigateToForgotPasswordScreen = onNavigateToForgotPasswordScreen
         )
     }
+
+    factory { (componentContext: ComponentContext, onNavigateBack: () -> Unit, onNavigateToResetLinkScreen: (String) -> Unit, forgotPasswordUseCase: () -> Unit) ->
+        ForgotPasswordViewModel(
+            componentContext = componentContext,
+            onNavigateBack = onNavigateBack,
+            onNavigateToResetLinkScreen = onNavigateToResetLinkScreen,
+            forgotPasswordUseCase = get()
+        )
+    }
+
+    factory { (componentContext: ComponentContext, oobCode: String, onPasswordResetSuccess: () -> Unit) ->
+        ResetPasswordViewModel(
+            componentContext = componentContext,
+            oobCode = oobCode,
+            onPasswordResetSuccess = onPasswordResetSuccess,
+            resetPasswordUseCase = get()
+        )
+    }
+
 
     factory { (componentContext: ComponentContext, authData : AuthData, navigateToLevelingTest : (AuthData) -> Unit, secondsToAdd : Int) ->
         HomeViewModel(

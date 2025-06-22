@@ -4,10 +4,10 @@ import org.example.project.data.dto.Email
 import org.example.project.data.dto.ForgotPasswordResponseDto
 import org.example.project.domain.repository.ForgotPasswordRepository
 
-class ForgotPasswordUseCase(
+class ForgotPasswordUseCaseImpl(
     private val repository: ForgotPasswordRepository
-) {
-    suspend operator fun invoke(email: String): Result<ForgotPasswordResponseDto> {
+) : ForgotPasswordUseCase {
+    override suspend fun forgotPassword(email: String): Result<ForgotPasswordResponseDto> {
         return repository.forgotPassword(Email(email))
     }
 }
