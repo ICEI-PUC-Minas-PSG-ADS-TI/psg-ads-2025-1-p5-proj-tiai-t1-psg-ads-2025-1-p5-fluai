@@ -1,19 +1,34 @@
 package org.example.project
 
 import android.app.Application
+import android.content.Context
+import com.google.firebase.FirebaseApp
 import org.example.project.di.dataModules
-import org.example.project.room.di.androidPlatformModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.initialize
+import kotlinx.coroutines.runBlocking
 
 class MainApplication : Application() {
+    companion object {
+        var appContext: Context? = null
+            private set
+    }
     override fun onCreate() {
         super.onCreate()
-        startKoin{
-            androidLogger()
-            modules(androidPlatformModule + dataModules)
-            androidContext(this@MainApplication)
+        appContext = this
+        runBlocking {
+            FirebaseApp.initializeApp(this@MainApplication)
+            Firebase.initialize(this@MainApplication)
         }
+
+        startKoin {
+            androidContext(this@MainApplication)
+            androidLogger()
+            modules(dataModules)
+        }
+
     }
 }

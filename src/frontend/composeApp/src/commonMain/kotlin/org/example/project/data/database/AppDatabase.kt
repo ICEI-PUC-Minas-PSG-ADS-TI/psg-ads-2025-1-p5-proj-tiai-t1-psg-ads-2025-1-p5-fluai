@@ -7,7 +7,7 @@ import org.example.project.data.database.entities.UserEntity
 
 @Database(
    entities = [UserEntity::class],
-   version = 2,
+   version = 9,
    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

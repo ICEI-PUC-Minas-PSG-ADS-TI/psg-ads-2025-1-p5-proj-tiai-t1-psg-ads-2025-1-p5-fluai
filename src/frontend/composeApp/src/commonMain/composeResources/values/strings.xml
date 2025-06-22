@@ -19,7 +19,30 @@
     <string name="signup_text_button_login">Já tem uma conta? Faça o Log in</string>
     <string name="success_feedback_title">Sucesso</string>
     <string name="success_feedback_subtitle">Parabéns, você completou o seu cadastro</string>
+    <string name="success_feedback_subtitle_auth">Login realizado com sucesso.</string>
     <string name="success_feedback_button_continue">Continuar</string>
     <string name="error_feedback_title">Erro</string>
     <string name="error_feedback_button">Ok</string>
+    <string name="home_subtitle_label">Vamos começar!</string>
+    <string name="home_learning_card_title">O que você quer aprender?</string>
+    <string name="home_learning_card_button">Começar</string>
+    <string name="home_study_plan_title">Plano de estudo</string>
+    <string name="home_banner_title">FluAI</string>
+    <string name="home_banner_subtitle">Domine o inglês com IA!</string>
+    <string name="home_learning_progress_text">Aprendizado de hoje</string>
+    <string name="user_account_title">Conta</string>
+    <string name="user_account_edit_profile_text">Editar perfil</string>
+    <string name="user_account_logout_text">Sair</string>
+    <string name="learning_path_title">Trilha</string>
+    <string name="learning_path_test_smart_challenges">Smart Challenges</string>
+    <string name="learning_path_test_fluency_boost">Fluency Boost</string>
+    <string name="learning_path_test_card_text">Completed</string>
+    <string name="learning_path_banner_text">Domine o inglês com lições adaptadas!</string>
+
+
+
+
+
+
+
 </resources>
