@@ -14,7 +14,7 @@ class SignUpNetworkingImpl(
 ) : SignUpNetworking {
     override suspend fun postUser(user: UserRequestDto): Result<Unit> {
         return safeApiCall {
-            httpClient.post(urlString = "http://192.168.100.48:5050/users/signup") {
+            httpClient.post(urlString = "http://10.0.2.2:5050/users/signup") {
                 contentType(ContentType.Application.Json)
                 setBody(user)
             }.body<Unit>()

@@ -51,3 +51,23 @@ def recover_password():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@user_bp.route("/verify-leveling-test", methods=["POST"])
+def verify_leveling_test():
+    try:
+        data = request.get_json()
+        email = data.get("email")
+
+        user = get_user_by_email(email)
+
+        if not user:
+            return jsonify({"error": "Usuario nao encontrado."}), 404
+
+        if not user.level:
+            return jsonify({"response": "Usuario não realizou o teste de nivelamento."}), 404
+
+        return jsonify({"response": user.level}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
