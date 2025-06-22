@@ -31,14 +31,27 @@ class ForgotPasswordViewModel(
     private fun sendResetLink(email: String) {
         viewModelScope.launch {
             val result = forgotPasswordUseCase(email)
-
             result
-                .onSuccess { resetLink ->
-                    onNavigateToResetLinkScreen(resetLink)
+                .onSuccess { response ->
+                    val oobCode = extractOobCode(response.message)
+                    println("Link recebido: ${response.message}")
+                    println("oobCode extraído: $oobCode")
+                    if (oobCode != null) {
+                        println("Chamando navegação...")
+                        onNavigateToResetLinkScreen(oobCode)
+                    } else {
+                        println("Erro: oobCode não encontrado no link.")
+                    }
                 }
                 .onFailure { error ->
+                    error.printStackTrace()
                     println("Erro ao enviar email de redefinição: ${error.message}")
                 }
         }
+    }
+
+    private fun extractOobCode(link: String): String? {
+        val regex = Regex("[?&]oobCode=([^&]+)")
+        return regex.find(link)?.groupValues?.get(1)
     }
 }

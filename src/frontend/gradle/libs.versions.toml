@@ -10,6 +10,7 @@ compose-multiplatform = "1.7.0"
 firebaseApp = "2.1.0"
 firebaseAuth = "2.1.0"
 firebaseAuthKtx = "23.2.0"
+firebaseAuthVersion = "VERSION"
 firebaseCommon = "2.1.0"
 firebaseFirestore = "2.1.0"
 firebaseFirestoreIos = "2.1.0"
@@ -41,6 +42,7 @@ androidx-navigation-compose = {group = "org.jetbrains.androidx.navigation", name
 
 #Ktor
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+firebase-auth-vversion = { module = "dev.gitlive:firebase-auth", version.ref = "firebaseAuthVersion" }
 firebase-common = { module = "dev.gitlive:firebase-common", version.ref = "firebaseCommon" }
 gitlive-firebase-app = { module = "dev.gitlive:firebase-app", version.ref = "firebaseApp" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }

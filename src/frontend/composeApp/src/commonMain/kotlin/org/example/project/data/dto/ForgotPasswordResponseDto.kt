@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ForgotPasswordResponseDto(
-    val error: String
+    val message: String
 )

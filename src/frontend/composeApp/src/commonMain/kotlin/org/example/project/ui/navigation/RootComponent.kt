@@ -7,6 +7,7 @@ import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.pushToFront
+import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import org.koin.core.component.get
 import kotlinx.serialization.Serializable
@@ -112,7 +113,9 @@ class RootComponent(
                     parametersOf(
                         context,
                         { navigation.pop() },
-                        { _: String -> println("Reset link recebido!") }
+                        { resetLink: String ->
+                            navigation.pushNew(Configuration.ResetPasswordScreen(resetLink = resetLink))
+                        }
                     )
                 })
             )
@@ -122,7 +125,7 @@ class RootComponent(
                     parametersOf(
                         context,
                         config.resetLink,
-                        { navigation.replaceCurrent(Configuration.AuthScreen) }
+                        { navigation.replaceAll(Configuration.AuthScreen) }
                     )
                 })
             )

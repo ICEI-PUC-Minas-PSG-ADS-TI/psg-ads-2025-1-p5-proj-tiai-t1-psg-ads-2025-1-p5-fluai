@@ -7,7 +7,6 @@ import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.FirebaseFirestore
 import dev.gitlive.firebase.firestore.firestore
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
 import org.example.project.AuthDataSource
 import org.example.project.AuthDataSourceImpl
 import org.example.project.DatabaseProvider
@@ -40,12 +39,14 @@ import org.example.project.ui.screens.splash.SplashViewModel
 import org.example.project.ui.screens.useraccount.UserAccountViewModel
 import org.koin.dsl.module
 import org.example.project.domain.usecase.ForgotPasswordUseCase
-
-
-
+import org.example.project.domain.usecase.ResetPasswordUseCase
+import org.example.project.ui.screens.resetpassword.ResetPasswordViewModel
 
 
 val dataModules = module {
+
+    single<HttpClient> { KtorApiClient.getClient("") }
+
     single<AuthDataSource> {AuthDataSourceImpl()}
     single<FirebaseAuth> { Firebase.auth }
     single<FirebaseFirestore> { Firebase.firestore }
@@ -55,7 +56,7 @@ val dataModules = module {
     single<UserLocalDataSource> { UserLocalDataSourceImpl(get()) }
 
 
-    single<SignUpNetworking> { SignUpNetworkingImpl(httpClient = KtorApiClient.getClient("")) }
+    single<SignUpNetworking> { SignUpNetworkingImpl(httpClient = get()) }
     single<SignUpRepository> { SignUpRepositoryImpl(get(), get()) }
     single<SignUpUseCase> { SignUpUseCaseImpl(get()) }
 
@@ -68,7 +69,9 @@ val dataModules = module {
     single { ForgotPasswordUseCase(get()) }
     single<ForgotPasswordNetworking> { ForgotPasswordNetworkingImpl(get()) }
     single<ForgotPasswordRepository> { ForgotPasswordRepositoryImpl(get()) }
-    single<HttpClient> { HttpClient(CIO) }
+
+    single { ResetPasswordUseCase() }
+
 
     factory { (componentContext: ComponentContext, onNavigateToAuth: () -> Unit, onNavigateToAuthBySignUp: () -> Unit) ->
         SignUpViewModel(
@@ -121,6 +124,15 @@ val dataModules = module {
             onNavigateBack = onNavigateBack,
             onNavigateToResetLinkScreen = onNavigateToReset,
             forgotPasswordUseCase = get()
+        )
+    }
+
+    factory { (componentContext: ComponentContext, oobCode: String, onPasswordResetSuccess: () -> Unit) ->
+        ResetPasswordViewModel(
+            componentContext = componentContext,
+            oobCode = oobCode,
+            onPasswordResetSuccess = onPasswordResetSuccess,
+            resetPasswordUseCase = get()
         )
     }
 }
