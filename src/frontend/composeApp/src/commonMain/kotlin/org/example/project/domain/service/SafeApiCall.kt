@@ -20,9 +20,6 @@ suspend fun <T> safeApiCall(call: suspend () -> T): Result<T> {
         Result.failure(Throwable(e.error))
     } catch (e: Exception) {
         Result.failure(Throwable("Erro desconhecido. Tente novamente."))
-        println("ERRO REAL: ${e::class.simpleName} - ${e.message}")
-        e.printStackTrace()
-        Result.failure(e)
     }
 }
 

@@ -1,5 +1,5 @@
-package org.example.project.domain.usecase
+package org.example.project.domain.repository
 
-interface ResetPasswordUseCase {
+interface ResetPasswordRepository {
     suspend fun resetPassword(oobCode: String, newPassword: String) : Result<Unit>
 }

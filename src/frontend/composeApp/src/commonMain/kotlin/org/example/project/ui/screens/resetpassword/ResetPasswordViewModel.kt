@@ -14,24 +14,27 @@ class ResetPasswordViewModel(
     private val resetPasswordUseCase: ResetPasswordUseCase
 ) : ComponentContext by componentContext {
 
-    private val scope = coroutineScope
-    private val _state = MutableSharedFlow<ResetPasswordResult>()
-    val state = _state.asSharedFlow()
+    private val _resetPasswordResult = MutableSharedFlow<ResetPasswordResult>()
+    val resetPasswordResult = _resetPasswordResult.asSharedFlow()
+
+    private suspend  fun resetPassword(newPassword : String){
+        _resetPasswordResult.emit(ResetPasswordResult.Loading)
+        val result = resetPasswordUseCase.resetPassword(oobCode = oobCode, newPassword = newPassword)
+        result
+            .onSuccess {
+                _resetPasswordResult.emit(ResetPasswordResult.Success)
+                onPasswordResetSuccess()
+            }
+            .onFailure {
+                _resetPasswordResult.emit(ResetPasswordResult.Error(it.message ?: "Erro desconhecido"))
+            }
+    }
 
     fun onEvent(event: ResetPasswordEvent) {
         when (event) {
             is ResetPasswordEvent.ConfirmReset -> {
-                scope.launch {
-                    _state.emit(ResetPasswordResult.Loading)
-                    val result = resetPasswordUseCase(oobCode, event.newPassword)
-                    result
-                        .onSuccess {
-                            _state.emit(ResetPasswordResult.Success)
-                            onPasswordResetSuccess()
-                        }
-                        .onFailure {
-                            _state.emit(ResetPasswordResult.Error(it.message ?: "Erro desconhecido"))
-                        }
+                coroutineScope.launch {
+                   resetPassword(event.newPassword)
                 }
             }
         }

@@ -90,7 +90,7 @@ class RootComponent(
                 get<SignUpViewModel>(parameters = {
                     parametersOf(
                         context,
-                        { navigation.pushToFront(Configuration.AuthScreen) },
+                        { navigation.replaceCurrent(Configuration.AuthScreen) },
                         { navigation.replaceCurrent(Configuration.AuthScreen) })
                 })
             )

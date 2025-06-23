@@ -32,7 +32,7 @@ fun ResetPasswordScreen(viewModel: ResetPasswordViewModel) {
     val uiState = rememberUiCommonState()
 
     LaunchedEffect(Unit) {
-        viewModel.state.collect { result ->
+        viewModel.resetPasswordResult.collect { result ->
             when (result) {
                 is ResetPasswordResult.Loading -> uiState.showCircularProgressBar.value = true
                 is ResetPasswordResult.Success -> {
@@ -49,11 +49,6 @@ fun ResetPasswordScreen(viewModel: ResetPasswordViewModel) {
     }
 
     Surface(modifier = Modifier.fillMaxSize()) {
-        LoadingComponent(uiState.showCircularProgressBar.value)
-        showErrorDialog(uiState.isDisplayDialogError, uiState.errorMessage.value)
-        showSuccessDialog(uiState.isDisplaySuccessDialog, "Senha redefinida com sucesso.") {
-            viewModel.onPasswordResetSuccess()
-        }
 
         val password = rememberTextFieldState(validators = PasswordValidator(), isPassword = true)
         val confirmPassword = rememberTextFieldState(validators = PasswordValidator(), isPassword = true)
@@ -63,6 +58,12 @@ fun ResetPasswordScreen(viewModel: ResetPasswordViewModel) {
                 password.textState.value.text == confirmPassword.textState.value.text &&
                         password.fieldState.value is TextFieldState.SUCCESS
             }
+        }
+
+        LoadingComponent(uiState.showCircularProgressBar.value)
+        showErrorDialog(uiState.isDisplayDialogError, uiState.errorMessage.value)
+        showSuccessDialog(uiState.isDisplaySuccessDialog, "Senha redefinida com sucesso.") {
+            viewModel.onEvent(ResetPasswordEvent.ConfirmReset(confirmPassword.textState.value.text))
         }
 
         Column(
