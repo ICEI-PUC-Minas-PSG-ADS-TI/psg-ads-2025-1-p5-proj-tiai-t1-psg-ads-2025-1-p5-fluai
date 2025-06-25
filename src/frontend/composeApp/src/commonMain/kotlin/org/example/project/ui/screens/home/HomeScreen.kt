@@ -54,10 +54,6 @@ import frontend.composeapp.generated.resources.home_learning_progress_text
 import frontend.composeapp.generated.resources.home_study_plan_title
 import frontend.composeapp.generated.resources.home_subtitle_label
 import frontend.composeapp.generated.resources.meetup_image
-//import frontend.composeapp.generated.resources.card_image_1
-//import frontend.composeapp.generated.resources.card_image_2
-//import frontend.composeapp.generated.resources.default_avatar
-//import frontend.composeapp.generated.resources.meetup_image
 import org.example.project.theme.Blue
 import org.example.project.theme.Cyan
 import org.example.project.theme.Dark_Blue

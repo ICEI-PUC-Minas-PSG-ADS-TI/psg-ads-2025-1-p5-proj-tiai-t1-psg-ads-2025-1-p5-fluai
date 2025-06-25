@@ -22,7 +22,6 @@ import frontend.composeapp.generated.resources.default_avatar
 import frontend.composeapp.generated.resources.user_account_edit_profile_text
 import frontend.composeapp.generated.resources.user_account_logout_text
 import frontend.composeapp.generated.resources.user_account_title
-//import frontend.composeapp.generated.resources.default_avatar
 import org.example.project.ui.theme.PoppinsTypography
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
