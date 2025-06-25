@@ -4,15 +4,19 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.pushToFront
+import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import org.koin.core.component.get
 import kotlinx.serialization.Serializable
 import org.example.project.domain.model.AuthData
 import org.example.project.ui.screens.auth.AuthViewModel
+import org.example.project.ui.screens.forgotpassword.ForgotPasswordViewModel
 import org.example.project.ui.screens.fluencyboost.FluencyBoostViewModel
 import org.example.project.ui.screens.home.HomeViewModel
+import org.example.project.ui.screens.resetpassword.ResetPasswordViewModel
 import org.example.project.ui.screens.learningpath.LearningPathViewModel
 import org.example.project.ui.screens.levelingtest.LevelingTestViewModel
 import org.example.project.ui.screens.signup.SignUpViewModel
@@ -76,7 +80,9 @@ class RootComponent(
                             navigation.replaceCurrent(
                                 Configuration.HomeScreen(authData)
                             )
-                        })
+                        },
+                        { navigation.pushNew(Configuration.ForgotPasswordScreen) }
+                    )
                 })
             )
 
@@ -84,7 +90,7 @@ class RootComponent(
                 get<SignUpViewModel>(parameters = {
                     parametersOf(
                         context,
-                        { navigation.pushToFront(Configuration.AuthScreen) },
+                        { navigation.replaceCurrent(Configuration.AuthScreen) },
                         { navigation.replaceCurrent(Configuration.AuthScreen) })
                 })
             )
@@ -109,6 +115,28 @@ class RootComponent(
                     parametersOf(
                         context,
                         ::logout
+                    )
+                })
+            )
+
+            is Configuration.ForgotPasswordScreen -> Child.ForgotPasswordScreen(
+                get<ForgotPasswordViewModel>(parameters = {
+                    parametersOf(
+                        context,
+                        { navigation.pop() },
+                        { resetLink: String ->
+                            navigation.pushNew(Configuration.ResetPasswordScreen(resetLink = resetLink))
+                        }
+                    )
+                })
+            )
+
+            is Configuration.ResetPasswordScreen -> Child.ResetPasswordScreen(
+                get<ResetPasswordViewModel>(parameters = {
+                    parametersOf(
+                        context,
+                        config.resetLink,
+                        { navigation.replaceAll(Configuration.AuthScreen) }
                     )
                 })
             )
@@ -184,6 +212,8 @@ class RootComponent(
         data class SignUpScreen(val component: SignUpViewModel) : Child()
         data class HomeScreen(val component: HomeViewModel) : Child()
         data class UserAccount(val component: UserAccountViewModel) : Child()
+        data class ForgotPasswordScreen(val component: ForgotPasswordViewModel) : Child()
+        data class ResetPasswordScreen(val component: ResetPasswordViewModel) : Child()
         data class LearningPath(val component : LearningPathViewModel): Child()
         data class LevelingTest(val component: LevelingTestViewModel): Child()
         data class FluencyBoost(val component: FluencyBoostViewModel): Child()
@@ -205,6 +235,12 @@ class RootComponent(
 
         @Serializable
         data object UserAccount : Configuration()
+
+        @Serializable
+        data object ForgotPasswordScreen : Configuration()
+
+        @Serializable
+        data class ResetPasswordScreen(val resetLink: String) : Configuration()
 
         @Serializable
         data class LearningPath(val authData: AuthData) : Configuration()
