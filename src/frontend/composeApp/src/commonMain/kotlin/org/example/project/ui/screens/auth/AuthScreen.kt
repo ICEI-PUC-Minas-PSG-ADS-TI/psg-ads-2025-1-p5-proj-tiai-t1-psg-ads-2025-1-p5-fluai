@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import frontend.composeapp.generated.resources.Res
 import frontend.composeapp.generated.resources.auth_button_text
 import frontend.composeapp.generated.resources.auth_email_label_text
@@ -86,9 +87,14 @@ fun AuthScreen(
         ) {
             AuthHeader()
             Spacer(modifier = Modifier.height(50.dp))
-            LoginForm{ email, password ->
-                viewModel.onEvent(event = AuthScreenEvent.SignIn(email, password))
-            }
+            LoginForm(
+                onSignInClick = { email, password ->
+                    viewModel.onEvent(AuthScreenEvent.SignIn(email, password))
+                },
+                onForgotPasswordClick = {
+                    viewModel.onEvent(AuthScreenEvent.GoToForgotPassword)
+                }
+            )
             AuthFooter {
                 viewModel.onEvent(AuthScreenEvent.GoToSignUp)
             }
@@ -126,7 +132,7 @@ private fun ColumnScope.AuthHeader() {
 }
 
 @Composable
-private fun ColumnScope.LoginForm(onClick : (email : String, password : String) -> Unit) {
+private fun ColumnScope.LoginForm( onSignInClick: (email: String, password: String) -> Unit,onForgotPasswordClick: () -> Unit) {
 
     val email = rememberTextFieldState(validators = EmailValidator())
     val password = rememberTextFieldState(validators = PasswordValidator(), isPassword = true)
@@ -140,7 +146,9 @@ private fun ColumnScope.LoginForm(onClick : (email : String, password : String) 
 
     email.TextFieldGeneric(label = stringResource(Res.string.auth_email_label_text), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email))
     password.TextFieldGeneric(label = stringResource(Res.string.auth_password_label_text), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password))
-    TextButton(modifier = Modifier.Companion.align(Alignment.End), onClick = {}) {
+    TextButton(modifier = Modifier.Companion.align(Alignment.End), onClick = {
+        onForgotPasswordClick()
+    }) {
         Text(
             text = stringResource(Res.string.auth_text_button_forget_password),
             fontWeight = FontWeight.W400,
@@ -158,7 +166,7 @@ private fun ColumnScope.LoginForm(onClick : (email : String, password : String) 
         textColor = Color.White,
         enable = isValid.value,
         onClick = {
-            onClick.invoke(email.textState.value.text, password.textState.value.text)
+            onSignInClick(email.textState.value.text, password.textState.value.text)
         }
     )
 }
